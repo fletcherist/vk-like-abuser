@@ -83,12 +83,16 @@ class Likes {
     this.likes[target] = like
     return new Console().success('{Likes} like has been added')
   }
+
+  showLikes () {
+    console.log(this.likes)
+  }
 }
 
 const users = new Users()
 const likes = new Likes()
 
-const addLike = ({target, object}) => {
+const addLike = ({object, target}) => {
   if (users.findById(target) && users.findById(object)) {
     likes.add({
       target: target,
@@ -97,31 +101,78 @@ const addLike = ({target, object}) => {
   }
 }
 
-const peopleAmount = 10
-for (let i = 1; i <= peopleAmount; i++) {
+const PEOPLE_AMOUNT = 10
+
+for (let i = 1; i <= PEOPLE_AMOUNT; i++) {
   users.add({
     id: i.toString(),
     username: i.toString()
   })
 }
 
-const us = users.getUsers()
-console.log(us)
+let people = users.getUsers()
+people = shuffleArray(people)
 
-function getPeople () {
-  
-  let arr = []
+const a = getGroups(people.length)
+
+console.log(people)
+console.log(a)
+
+const groups = []
+
+const { groupsCount, peopleInGroup } = a
+
+for (let i = 0; i < groupsCount; i++) {
+  groups.push([])
+  for (let e = 0; e < peopleInGroup; e++) {
+    groups[i].push(people[0])
+    people.splice(0, 1)
+  }
+}
+
+
+for (let group of groups) {
+  console.log('-----')
+
+  for (let i = 0; i < group.length; i++) {
+    for (let e = 0; e < group.length; e++) {
+      if (i !== e) {
+        const object = group[i].id
+        const target = group[e].id
+
+        addLike({object, target})
+      }
+    }
+  }
+}
+
+
+
+console.log(likes.showLikes())
+
+
+
+function getGroups (peopleAmount) {
+  if (!peopleAmount) return new Console().error('Failed to split into groups')
+  let medianArray = []
   let count = 0
-  for (let i = 2; i < peopleAmount; i++) {
+  for (let i = 2; i <= peopleAmount; i++) {
     
     if (peopleAmount % i == 0) {
       count++
-      arr.push(i)
+      medianArray.push(i)
     }
   }
+  console.log('count', count)
+  console.log(medianArray)
 
-  const groupCountValue = arr[Math.round(arr.length / 2)]
-  const groupsCount = peopleAmount / groupCountValue
+  const peopleInGroup = medianArray[Math.floor(medianArray.length / 2)]
+  const groupsCount = peopleAmount / peopleInGroup
+
+  return {
+    peopleInGroup,
+    groupsCount
+  }
 }
 
 function shuffleArray (arr) {
@@ -134,6 +185,7 @@ function shuffleArray (arr) {
     let tmp = arr[e]
     arr[e] = arr[i]
     arr[i] = tmp
+
   }
   return arr
 }
