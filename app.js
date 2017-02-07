@@ -53,6 +53,14 @@ class Users {
       return false
     }
   }
+
+  getUsers () {
+    var userList = []
+    for (let user in this.users) {
+      userList.push(this.users[user])
+    }
+    return userList
+  }
 }
 
 
@@ -80,7 +88,6 @@ class Likes {
 const users = new Users()
 const likes = new Likes()
 
-
 const addLike = ({target, object}) => {
   if (users.findById(target) && users.findById(object)) {
     likes.add({
@@ -90,17 +97,18 @@ const addLike = ({target, object}) => {
   }
 }
 
+const peopleAmount = 10
+for (let i = 1; i <= peopleAmount; i++) {
+  users.add({
+    id: i.toString(),
+    username: i.toString()
+  })
+}
 
+const us = users.getUsers()
+console.log(us)
 
 function getPeople () {
-  const peopleAmount = 1000
-
-  for (let i = 1; i <= peopleAmount; i++) {
-    users.add({
-      id: i.toString(),
-      username: i.toString()
-    })
-  }
   
   let arr = []
   let count = 0
@@ -130,13 +138,3 @@ function shuffleArray (arr) {
   return arr
 }
 
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-shuffleArray(arr)
-console.log(arr)
-
-
-// console.log(users.findById('500'))
-
-
-
-users.showUsers()
