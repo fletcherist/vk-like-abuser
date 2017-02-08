@@ -1,0 +1,24 @@
+{
+  "name": "vk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "devtool --watch app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fletcherist/vk-free-likes.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fletcherist/vk-free-likes/issues"
+  },
+  "homepage": "https://github.com/fletcherist/vk-free-likes#readme",
+  "dependencies": {
+    "node-fetch": "^1.6.3",
+    "node-vkapi": "^2.1.0"
+  }
+}
