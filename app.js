@@ -5,7 +5,7 @@ class Console {
   constructor (msg) {
     this.config = {
       errors: true,
-      success: false,
+      success: true,
       notifications: true
     }
   }
@@ -35,11 +35,39 @@ class Users {
     if (!usersInstance) {
       this.users = {}
       this.usersCount = 0
+      this.initialized = false
 
       usersInstance = this
     }
 
     return usersInstance
+  }
+
+  initialize () {
+    return new Promise ((resolve, reject) => {
+      this.fetchUsers()
+        .then(res => {
+          this.initialized = true
+          new Console().success('Class {Users} has been successfully initialized')
+
+          resolve()
+        })
+        .catch(e => {
+          new Console().error('{Users} Can`t be initialized')
+          reject()
+        })
+    })
+  }
+
+  fetchUsers () {
+    return new Promise((resolve, reject) => {
+      new DB().getUsers()
+        .then(users => {
+          this.users = users
+          resolve()
+        })
+        .catch(e => reject())
+    })
   }
 
   showUsers () {
@@ -126,7 +154,11 @@ class Likes {
 class Like extends Likes {
   constructor ({object, target}) {
     super()
+    if (!object) return new Console().error('{Like} No object user')
+    if (!target) return new Console().error('{Like} No target user')
+      
     return new Promise ((resolve, reject) => {
+
       setTimeout(() => {
         if (users.findById(target) && users.findById(object)) {
           likes.add({
@@ -158,6 +190,10 @@ class Groups {
   destructor () {
     groupsInstance = null
     return null
+  }
+
+  get () {
+    return this.groups
   }
 
   splitIntoGroups () {
@@ -235,21 +271,6 @@ class Tests {
 }
 
 
-const users = new Users()
-new Tests().generateRandomUsers();
-
-const groups = new Groups()
-
-
-
-class Engine {
-  constructor () {
-    this.users = new Users()
-    this.groups = new Groups()    
-  }
-}
-
-
 const VKApi = require('node-vkapi')
 const ACCESS_TOKEN = 'bd7026f0b47f6ed7212ccc4f5d56f54b20d26d10c617731ddcfc7c8007b9bd5ea634806e064bf87b5a754'
 class VK {
@@ -270,14 +291,6 @@ class VK {
       })
       .catch(e => {
         return reject(e)
-      })
-    })
-  }
-
-  isUserExist (user_ids) {
-    return new Promise((resolve, reject) => {
-      this.vk.call('users.get', {
-
       })
     })
   }
@@ -315,10 +328,9 @@ class VK {
 }
 
 const vk = new VK(ACCESS_TOKEN)
-vk.like()
-.then(r => new Console().success('Like has been set.'))
-.catch(e => new Console().error(e))
-
+// vk.like()
+// .then(r => new Console().success('Like has been set.'))
+// .catch(e => new Console().error(e))
 
 const firebase = require('firebase')
 const firebaseConfig = require('./firebaseConfig')
@@ -330,6 +342,7 @@ class DB {
       this.app = firebase.initializeApp(firebaseConfig)
       this.db = this.app.database()
 
+      new Console().success('{DB} Connection established')
       dbInstance = this
     }
 
@@ -340,7 +353,22 @@ class DB {
     return new Promise ((resolve, reject) => {
       this.db.ref('/users').once('value')
       .then(snapshot => {
-        console.log(snapshot.val())
+        let users = snapshot.val()
+        return resolve(users)
+      })
+      .catch(e => reject())
+    })
+  }
+
+  getUserById (id) {
+    return new Promise ((resolve, reject) => {
+      let user = this.db.ref(`/users/${id}`)
+      user.once('value').then(r => {
+        if (r.val() == null) {
+          return resolve(r.val())
+        }
+
+        return reject()
       })
     })
   }
@@ -369,7 +397,7 @@ class DB {
           username,
           token,
           id
-        })
+        }).then(r => new Console().success(`{DB} User ${username} has been added`))
       }
     ).catch(e => {
       return new Console().error('{DB} User is already exist')
@@ -386,41 +414,66 @@ class DB {
   }
 }
 
-let db = new DB()
-db.addUser({
-  username: 'Leo',
-  token: 'asdasdsad',
-  id: '44'
-})
+// db.addUser({
+//   id: 86440538,
+//   username: 'gleb lebedev',
+//   token: 'asdasd'
+// })
 
+class Engine {
+  constructor () {
+    this.db = new DB()
+    this.users = new Users()
+
+    this.users.initialize()
+      .then(() => {
+        this.groups = new Groups()
+        console.log(this.groups)
+
+        new Console().success('{Engine} is initialized')
+        this.getTasks()
+      })
+  }
+
+  getTasks () {
+    let groups = this.groups.get()
+    console.log(groups)
+    for (let group of groups) {
+      console.log('-----')
+
+      for (let i = 0; i < group.length; i++) {
+        for (let e = 0; e < group.length; e++) {
+          if (i !== e) {
+            const object = group[i].id
+            const target = group[e].id
+
+            // await new Like({object, target})
+          }
+        }
+      }
+    }
+  }
+
+  getNextTask () {
+
+  }
+
+  doTask () {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve()
+      }, 1000)
+    })
+  }
+}
+
+const engine = new Engine()
 
 // const users = new Users()
 // const likes = new Likes()
 
 // console.log(users)
-console.log(groups)
 // groups.findOptimalGroupsCount()
-
-
-// async function doWork () {
-//   for (let group of groups) {
-//     console.log('-----')
-
-//     for (let i = 0; i < group.length; i++) {
-//       for (let e = 0; e < group.length; e++) {
-//         if (i !== e) {
-//           const object = group[i].id
-//           const target = group[e].id
-
-//           await new Like({object, target})
-//         }
-//       }
-//     }
-//   }  
-// }
-
-// doWork()
-
 
 // console.log(likes.showLikes())
 
