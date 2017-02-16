@@ -1,13 +1,25 @@
 const PEOPLE_AMOUNT = 17
 const VK_API_WAIT = 500
 
+let usersInstance = null
+let consoleInstance = null
+let groupsInstance = null
+let dbInstance = null
+
+
 class Console {
   constructor (msg) {
-    this.config = {
-      errors: true,
-      success: true,
-      notifications: true
+    if (!consoleInstance) {
+      this.config = {
+        errors: true,
+        success: true,
+        notifications: true
+      }
+
+      consoleInstance = this
     }
+
+    return consoleInstance
   }
 
   error (msg) {
@@ -29,7 +41,6 @@ class Console {
   }
 }
 
-let usersInstance = null
 class Users {
   constructor () {
     if (!usersInstance) {
@@ -208,7 +219,6 @@ class Like extends Likes {
   }
 }
 
-let groupsInstance = null
 class Groups {
   constructor () {
     if (!groupsInstance) {
@@ -380,17 +390,12 @@ class VK {
   }
 }
 
-// vk.like()
-// .then(r => new Console().success('Like has been set.'))
-// .catch(e => new Console().error(e))
-
 const firebase = require('firebase')
 const firebaseConfig = require('./firebaseConfig')
 
 let app = firebase.initializeApp(firebaseConfig)
 let db = app.database()
 
-let dbInstance = null
 class DB {
   constructor () {
     if (!dbInstance) {
@@ -504,7 +509,6 @@ class DB {
 
     let likedYou = this.db.ref(`/statistics/${target}/liked_you`)
     likedYou.transaction(currentValue => (currentValue || 0) + 1)
-
   }
 
 }
