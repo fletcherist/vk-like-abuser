@@ -9,9 +9,30 @@ let usersInstance = null
 let consoleInstance = null
 let groupsInstance = null
 let dbInstance = null
+let pushesInstance = null
 
 let app = firebase.initializeApp(firebaseConfig)
 let db = app.database()
+
+
+class Pushes {
+  constructor () {
+    if (!pushesInstance) {
+      this.db = db
+      this.pushes = this.db.ref('/pushes')
+      
+      pushesInstance = this
+    }
+    return pushesInstance
+  }
+
+  send (msg) {
+    this.pushes.push({
+      time: new Date().toString(),
+      message: msg
+    })
+  }
+}
 
 class Console {
   constructor (msg) {
@@ -24,26 +45,31 @@ class Console {
 
       consoleInstance = this
     }
-
     return consoleInstance
   }
 
   error (msg) {
     if (!this.config.errors)
       return false
-    console.warn('Error: ' + msg)
+    let message = 'Error: ' + msg
+    console.log(message)
+    new Pushes().send(message)
   }
 
   success (msg) {
     if (!this.config.success)
       return false
-    console.log('Success: ' + msg)
+    let message = 'Success: ' + msg
+    console.log(message)
+    new Pushes().send(message)
   }
 
   notify (msg) {
     if (!this.config.notifications)
       return false
-    console.log('Notification: ' + msg)
+    let message = 'Notification: ' + msg
+    console.log(message)
+    new Pushes().send(message)
   }
 }
 
@@ -210,13 +236,13 @@ class Like extends Likes {
                 type: 'photo',
                 id: id
               })
+              new Console().success(`{Like} id${object} liked id${target}`)
               return resolve()
             }).catch(e => {
-              console.log('error' + e)
+              new Console().error(`{Like} id${object} DOES NOT LIKED id${target}`)
               return reject(e)
             })
           }).catch(e => {
-            console.log(`db.findAvailableItemToLike: ${e}`)
             return resolve()
           })
         })
@@ -520,7 +546,6 @@ class Engine {
     this.users.initialize()
       .then(() => {
         this.groups = new Groups()
-        console.log(this.groups)
 
         new Console().success('{Engine} is initialized')
         this.getTasks()
