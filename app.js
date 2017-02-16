@@ -1,3 +1,7 @@
+const VKApi = require('node-vkapi')
+const firebase = require('firebase')
+const firebaseConfig = require('./firebaseConfig')
+
 const PEOPLE_AMOUNT = 17
 const VK_API_WAIT = 500
 
@@ -6,6 +10,8 @@ let consoleInstance = null
 let groupsInstance = null
 let dbInstance = null
 
+let app = firebase.initializeApp(firebaseConfig)
+let db = app.database()
 
 class Console {
   constructor (msg) {
@@ -324,8 +330,6 @@ class Tests {
   }
 }
 
-
-const VKApi = require('node-vkapi')
 class VK {
   constructor (access_token) {
     if (!access_token) return new Console().error('{VK} No access token provided')
@@ -389,12 +393,6 @@ class VK {
     })
   }
 }
-
-const firebase = require('firebase')
-const firebaseConfig = require('./firebaseConfig')
-
-let app = firebase.initializeApp(firebaseConfig)
-let db = app.database()
 
 class DB {
   constructor () {
