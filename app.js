@@ -1,5 +1,5 @@
 const PEOPLE_AMOUNT = 17
-const VK_API_WAIT = 1000
+const VK_API_WAIT = 500
 
 class Console {
   constructor (msg) {
@@ -154,19 +154,49 @@ class Likes {
 class Like extends Likes {
   constructor ({object, target}) {
     super()
-    if (!object) return new Console().error('{Like} No object user')
-    if (!target) return new Console().error('{Like} No target user')
-      
     return new Promise ((resolve, reject) => {
+      if (!object || !target) {
+        new Console().error('No object or target id')
+        return reject()
+      }
+
+      let user = new Users().findById(object)
+      if (!user) {
+        new Console().error('{Like} No user with this id')
+        return reject()
+      }
 
       setTimeout(() => {
-        if (users.findById(target) && users.findById(object)) {
-          likes.add({
-            target: target,
-            object: object
-          })
-        }
+        const token = user.access_token
+        if (!token) return reject()
+        let vk = new VK(token)
+        let db = new DB()
 
+        vk.getPhotos(target).then(r => {
+
+          const { count, items } = r
+          if (count === 0) return reject()
+
+          console.log(items)
+          let id = items[0].id
+          vk.like({
+            target: target,
+            id: items[0].id
+          })
+          .then(r => {
+            db.addToLikedList({
+              object: object,
+              target: target,
+              type: 'photo',
+              id: id
+            })
+            return resolve()
+          })
+          .catch(e => {
+            console.log('error' + e)
+            return reject(e)
+          })
+        })
         resolve()
       }, VK_API_WAIT)
     })
@@ -220,6 +250,15 @@ class Groups {
 
   findOptimalGroupsCount (peopleAmount) {
     if (!peopleAmount) return new Console().error('Failed to split into groups')
+    if (peopleAmount < 4) {
+      this.peopleInGroup = peopleAmount
+      this.groupsCount = 1
+
+      return {
+        peopleInGroup: peopleAmount,
+        groupsCount: 1
+      }
+    }
     let medianArray = []
     let count = 0
     for (let i = 2; i <= peopleAmount; i++) {
@@ -272,10 +311,9 @@ class Tests {
 
 
 const VKApi = require('node-vkapi')
-const ACCESS_TOKEN = 'bd7026f0b47f6ed7212ccc4f5d56f54b20d26d10c617731ddcfc7c8007b9bd5ea634806e064bf87b5a754'
 class VK {
   constructor (access_token) {
-    if (!access_token) return new Console().error('No access token provided')
+    if (!access_token) return new Console().error('{VK} No access token provided')
     this.vk = new VKApi({
       token: access_token
     })
@@ -295,12 +333,15 @@ class VK {
     })
   }
 
-  like () {
+  like ({target, id, type}) {
+    if (!target) return new Console().error('{VK} no target')
+    if (!id) return new Console().error('{VK} no id')
+
     return new Promise ((resolve, reject) => {
       this.vk.call('likes.add', {
-        type: 'post',
-        owner_id: 142395293,
-        item_id: 318
+        type: 'photo',
+        owner_id: target,
+        item_id: id
       }).then(res => {
         console.log(res)
         return resolve()
@@ -314,10 +355,9 @@ class VK {
       if (!user_id) return reject('No user id provided')
       this.vk.call('photos.get', {
         owner_id: user_id,
-        album_id: 'profile',
-        rev: 0
+        album_id: 'wall',
+        rev: 1
       }).then(res => {
-        console.log(res)
         return resolve(res)
       })
       .catch(e => {
@@ -327,7 +367,6 @@ class VK {
   }
 }
 
-const vk = new VK(ACCESS_TOKEN)
 // vk.like()
 // .then(r => new Console().success('Like has been set.'))
 // .catch(e => new Console().error(e))
@@ -335,12 +374,15 @@ const vk = new VK(ACCESS_TOKEN)
 const firebase = require('firebase')
 const firebaseConfig = require('./firebaseConfig')
 
+let app = firebase.initializeApp(firebaseConfig)
+let db = app.database()
+
 let dbInstance = null
 class DB {
   constructor () {
     if (!dbInstance) {
-      this.app = firebase.initializeApp(firebaseConfig)
-      this.db = this.app.database()
+      this.app = app
+      this.db = db
 
       new Console().success('{DB} Connection established')
       dbInstance = this
@@ -354,11 +396,13 @@ class DB {
       this.db.ref('/users').once('value')
       .then(snapshot => {
         let users = snapshot.val()
+        console.log(users)
         return resolve(users)
       })
       .catch(e => reject())
     })
   }
+
 
   getUserById (id) {
     return new Promise ((resolve, reject) => {
@@ -404,26 +448,32 @@ class DB {
     })
   }
 
-  auth () {
-    // firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
-    //   // Handle Errors here.
-    //   var errorCode = error.code;
-    //   var errorMessage = error.message;
-    //   // ...
-    // });
+  isInLikedList () {
+    return true
   }
-}
 
-// db.addUser({
-//   id: 86440538,
-//   username: 'gleb lebedev',
-//   token: 'asdasd'
-// })
+  addToLikedList ({object, target, type, id}) {
+    if (!object) return new Console().error('{DB} No object user profided')
+    if (!target) return new Console().error('{DB} No target user provided')
+    if (!type) return new Console().error('{DB} No type provided')
+    if (!id) return new Console().error('{DB} No id provided')
+
+    this.db.ref(`/likes/${object}/${target}/${type}/${id}`).set(1)
+    let youLiked = this.db.ref(`/statistics/${object}/you_liked`)
+    youLiked.transaction(currentValue => (currentValue || 0) + 1)
+
+    let likedYou = this.db.ref(`/statistics/${target}/liked_you`)
+    likedYou.transaction(currentValue => (currentValue || 0) + 1)
+
+  }
+
+}
 
 class Engine {
   constructor () {
     this.db = new DB()
     this.users = new Users()
+    this.tasks = []
 
     this.users.initialize()
       .then(() => {
@@ -432,22 +482,24 @@ class Engine {
 
         new Console().success('{Engine} is initialized')
         this.getTasks()
+        this.start()
       })
+  }
+
+  start () {
+    this.getNextTask(1)
   }
 
   getTasks () {
     let groups = this.groups.get()
-    console.log(groups)
     for (let group of groups) {
-      console.log('-----')
-
       for (let i = 0; i < group.length; i++) {
         for (let e = 0; e < group.length; e++) {
           if (i !== e) {
-            const object = group[i].id
-            const target = group[e].id
-
-            // await new Like({object, target})
+            this.tasks.push({
+              object: group[i].id,
+              target: group[e].id
+            })
           }
         }
       }
@@ -455,28 +507,30 @@ class Engine {
   }
 
   getNextTask () {
-
+    if (this.tasks.length === 0) {
+      new Console().success('{Engine} All tasks are done')
+      return
+    }
+    this.doTask(this.tasks[this.tasks.length - 1]).then(() => {
+      this.tasks.pop()
+      this.getNextTask()
+    })
   }
 
-  doTask () {
+  doTask ({object, target}) {
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve()
-      }, 1000)
+      new Like({object, target})
+        .then(() => {
+          resolve()
+        })
+        .catch(() => {
+          resolve()
+        })
     })
   }
 }
 
 const engine = new Engine()
-
-// const users = new Users()
-// const likes = new Likes()
-
-// console.log(users)
-// groups.findOptimalGroupsCount()
-
-// console.log(likes.showLikes())
-
 
 function shuffleArray (arr) {
   let i = arr.length
