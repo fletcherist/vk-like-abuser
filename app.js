@@ -177,27 +177,32 @@ class Like extends Likes {
           const { count, items } = r
           if (count === 0) return reject()
 
-          console.log(items)
-          let id = items[0].id
-          vk.like({
-            target: target,
-            id: items[0].id
-          })
-          .then(r => {
-            db.addToLikedList({
-              object: object,
+          db.findAvailableItemToLike({
+            type: 'photo',
+            object,
+            target,
+            items: items
+          }).then(id => {
+            vk.like({
               target: target,
-              type: 'photo',
               id: id
+            }).then(r => {
+              db.addToLikedList({
+                object: object,
+                target: target,
+                type: 'photo',
+                id: id
+              })
+              return resolve()
+            }).catch(e => {
+              console.log('error' + e)
+              return reject(e)
             })
+          }).catch(e => {
+            console.log(`db.findAvailableItemToLike: ${e}`)
             return resolve()
           })
-          .catch(e => {
-            console.log('error' + e)
-            return reject(e)
-          })
         })
-        resolve()
       }, VK_API_WAIT)
     })
   }
@@ -358,6 +363,14 @@ class VK {
         album_id: 'wall',
         rev: 1
       }).then(res => {
+        const { count , items } = res
+        if (count === 0) {
+          return reject()
+        }
+
+        items.forEach((item, index, array) => {
+          array[index] = item.id
+        })
         return resolve(res)
       })
       .catch(e => {
@@ -396,6 +409,12 @@ class DB {
       this.db.ref('/users').once('value')
       .then(snapshot => {
         let users = snapshot.val()
+        for (let userId in users) {
+          let user = users[userId]
+          if (user.isActive === false) {
+            delete users[userId]
+          }
+        }
         console.log(users)
         return resolve(users)
       })
@@ -426,6 +445,27 @@ class DB {
         }
 
         return reject()
+      })
+    })
+  }
+
+  findAvailableItemToLike ({object, target, type, items}) {
+    return new Promise((resolve, reject) => {
+      const alreadyLiked = this.db.ref(`/likes/${object}/${target}/${type}`)
+      alreadyLiked.once('value', likes => {
+        if (likes.val()) {
+          const alreadyLikedList = likes.val()
+          for (let availableItemId of items) {
+            if (alreadyLikedList[availableItemId] === 1) {
+              // In that case do nothing
+            } else {
+              return resolve(availableItemId)
+            }
+          }
+
+          return reject()
+        }
+        
       })
     })
   }
