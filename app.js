@@ -1,35 +1,78 @@
+const VKApi = require('node-vkapi')
+const firebase = require('firebase')
+const firebaseConfig = require('./firebaseConfig')
+
 const PEOPLE_AMOUNT = 17
-const VK_API_WAIT = 500
+const VK_API_WAIT = 1000
+
+let usersInstance = null
+let consoleInstance = null
+let groupsInstance = null
+let dbInstance = null
+let pushesInstance = null
+
+let app = firebase.initializeApp(firebaseConfig)
+let db = app.database()
+
+
+class Pushes {
+  constructor () {
+    if (!pushesInstance) {
+      this.db = db
+      this.pushes = this.db.ref('/pushes')
+      
+      pushesInstance = this
+    }
+    return pushesInstance
+  }
+
+  send (msg) {
+    // this.pushes.push({
+    //   time: new Date().toString(),
+    //   message: msg
+    // })
+  }
+}
 
 class Console {
   constructor (msg) {
-    this.config = {
-      errors: true,
-      success: true,
-      notifications: true
+    if (!consoleInstance) {
+      this.config = {
+        errors: true,
+        success: true,
+        notifications: true
+      }
+
+      consoleInstance = this
     }
+    return consoleInstance
   }
 
   error (msg) {
     if (!this.config.errors)
       return false
-    console.warn('Error: ' + msg)
+    let message = 'Error: ' + msg
+    console.log(message)
+    new Pushes().send(message)
   }
 
   success (msg) {
     if (!this.config.success)
       return false
-    console.log('Success: ' + msg)
+    let message = 'Success: ' + msg
+    console.log(message)
+    new Pushes().send(message)
   }
 
   notify (msg) {
     if (!this.config.notifications)
       return false
-    console.log('Notification: ' + msg)
+    let message = 'Notification: ' + msg
+    console.log(message)
+    new Pushes().send(message)
   }
 }
 
-let usersInstance = null
 class Users {
   constructor () {
     if (!usersInstance) {
@@ -166,44 +209,58 @@ class Like extends Likes {
         return reject()
       }
 
+
+      // const types = ['post', 'photo']
+
       setTimeout(() => {
         const token = user.access_token
-        if (!token) return reject()
+        if (!token) {
+          new Console().error('{Like} NO ACCESS_TOKEN')
+          return reject()
+        }
         let vk = new VK(token)
         let db = new DB()
-
         vk.getPhotos(target).then(r => {
-
+          console.log(r)
           const { count, items } = r
           if (count === 0) return reject()
 
-          console.log(items)
-          let id = items[0].id
-          vk.like({
-            target: target,
-            id: items[0].id
-          })
-          .then(r => {
-            db.addToLikedList({
-              object: object,
+          db.findAvailableItemToLike({
+            type: 'photo',
+            object,
+            target,
+            items: items
+          }).then(id => {
+            vk.like({
               target: target,
-              type: 'photo',
               id: id
+            }).then(r => {
+              db.addToLikedList({
+                object: object,
+                target: target,
+                type: 'photo',
+                id: id
+              })
+              new Console().success(`{Like} id${object} liked id${target}`)
+              return resolve()
+            }).catch(e => {
+              new Console().error(`{Like} id${object} DOES NOT LIKED id${target}`)
+              return reject(e)
             })
+          }).catch(e => {
+            new Console().error(`{Like} id${object} DOES NOT LIKED id${target}`)
             return resolve()
           })
-          .catch(e => {
-            console.log('error' + e)
-            return reject(e)
-          })
+        }).catch(e => {
+          new Console().error(`{Like} can't get user ${target} vk photos`)
+          return resolve()
         })
-        resolve()
+        return resolve()
       }, VK_API_WAIT)
     })
   }
 }
 
-let groupsInstance = null
 class Groups {
   constructor () {
     if (!groupsInstance) {
@@ -309,8 +366,6 @@ class Tests {
   }
 }
 
-
-const VKApi = require('node-vkapi')
 class VK {
   constructor (access_token) {
     if (!access_token) return new Console().error('{VK} No access token provided')
@@ -322,10 +377,11 @@ class VK {
   getUser (user_ids) {
     return new Promise((resolve, reject) => {
       this.vk.call('users.get', {
-        user_ids: user_ids
+        user_ids: user_ids,
+        fields: ['photo_50', 'photo_100']
       }).then(res => {
-        console.log(res)
-        return resolve()
+        if (res.length > 0) res = res[0]
+        return resolve(res)
       })
       .catch(e => {
         return reject(e)
@@ -346,18 +402,36 @@ class VK {
         console.log(res)
         return resolve()
       })
-      .catch(e => reject(e))
+      .catch(e => {
+        console.log(e)
+        reject(e)
+      })
     })
   }
 
+  getWall (user_id) {
+
+  }
+
   getPhotos (user_id) {
+    const types = ['wall', 'profile']
+    const typeToSearch = types[Math.floor(Math.random() * types.length)]
+
     return new Promise ((resolve, reject) => {
       if (!user_id) return reject('No user id provided')
       this.vk.call('photos.get', {
         owner_id: user_id,
-        album_id: 'wall',
+        album_id: typeToSearch,
         rev: 1
       }).then(res => {
+        const { count , items } = res
+        if (count === 0) {
+          return reject()
+        }
+
+        items.forEach((item, index, array) => {
+          array[index] = item.id
+        })
         return resolve(res)
       })
       .catch(e => {
@@ -367,17 +441,38 @@ class VK {
   }
 }
 
-// vk.like()
-// .then(r => new Console().success('Like has been set.'))
-// .catch(e => new Console().error(e))
+class Listeners {
+  constructor () {
+    this.listenForNewUsers()
+  }
 
-const firebase = require('firebase')
-const firebaseConfig = require('./firebaseConfig')
+  listenForNewUsers () {
+    new Console().notify('{Listeners} Listening for new users..')
+    let users = db.ref('users')
 
-let app = firebase.initializeApp(firebaseConfig)
-let db = app.database()
+    users.orderByChild('createdAt').startAt(Date.now()).on('child_added', data => {
 
-let dbInstance = null
+      let user = data.val()
+      const { access_token, id } = user
+      let vk = new VK(access_token)
+      vk.getUser(id).then(_user => {
+        console.log(_user)
+        if (_user) {
+          const { first_name, last_name, photo_100, photo_50 } = _user
+          const username = `${first_name} ${last_name}`
+
+          db.ref(`users/${id}`).update({
+            username: username,
+            photo_100: photo_100,
+            photo_50: photo_50
+          })
+          new Console().success(`{Listeners} ${username} has joined`)
+        }
+      })
+    })
+  }
+}
+
 class DB {
   constructor () {
     if (!dbInstance) {
@@ -389,13 +484,33 @@ class DB {
     }
 
     return dbInstance
-  } 
+  }
+
+  updateUserinfo (id) {
+    let user = this.db.ref(`users/${id}`)
+    user.once('value', value => {
+      // User exists
+      if (value.val()) {
+        console.log(value.val())
+
+      } else {
+        // Requested user is not exist
+        new Console().error('{DB} Requested user is not exist')
+      }
+    })
+  }
 
   getUsers () {
     return new Promise ((resolve, reject) => {
       this.db.ref('/users').once('value')
       .then(snapshot => {
         let users = snapshot.val()
+        for (let userId in users) {
+          let user = users[userId]
+          if (user.isActive === false) {
+            delete users[userId]
+          }
+        }
         console.log(users)
         return resolve(users)
       })
@@ -430,17 +545,39 @@ class DB {
     })
   }
 
-  addUser ({username, token, id}) {
+  findAvailableItemToLike ({object, target, type, items}) {
+    return new Promise((resolve, reject) => {
+      const alreadyLiked = this.db.ref(`/likes/${object}/${target}/${type}`)
+
+      alreadyLiked.once('value', likes => {
+        if (likes.val()) {
+          const alreadyLikedList = likes.val()
+          for (let availableItemId of items) {
+            if (alreadyLikedList[availableItemId] === 1) {
+              // In that case do nothing
+            } else {
+              return resolve(availableItemId)
+            }
+          }
+        }
+
+        return resolve(items[0])
+      })
+    })
+  }
+
+  addUser ({username, access_token, id}) {
     if (!username) return new Console().error('{DB} No username provided')
-    if (!token) return new Console().error('{DB} No access token provided')
+    if (!access_token) return new Console().error('{DB} No access token provided')
     if (!id) return new Console().error('{DB} No vk id provided')
 
     this.isUserExist(id)
     .then(isUserExist => {
         this.db.ref(`users/${id}`).set({
           username,
-          token,
-          id
+          access_token,
+          id,
+          createdAt: firebase.database.ServerValue.TIMESTAMP
         }).then(r => new Console().success(`{DB} User ${username} has been added`))
       }
     ).catch(e => {
@@ -464,7 +601,6 @@ class DB {
 
     let likedYou = this.db.ref(`/statistics/${target}/liked_you`)
     likedYou.transaction(currentValue => (currentValue || 0) + 1)
-
   }
 
 }
@@ -478,7 +614,6 @@ class Engine {
     this.users.initialize()
       .then(() => {
         this.groups = new Groups()
-        console.log(this.groups)
 
         new Console().success('{Engine} is initialized')
         this.getTasks()
@@ -487,7 +622,7 @@ class Engine {
   }
 
   start () {
-    this.getNextTask(1)
+    this.getNextTask()
   }
 
   getTasks () {
@@ -530,7 +665,10 @@ class Engine {
   }
 }
 
-const engine = new Engine()
+
+const listeners = new Listeners()
+
+// const engine = new Engine()
 
 function shuffleArray (arr) {
   let i = arr.length
