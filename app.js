@@ -2,12 +2,11 @@ const VKApi = require('node-vkapi')
 const firebase = require('firebase')
 const firebaseConfig = require('./firebaseConfig')
 
-const PEOPLE_AMOUNT = 17
-const VK_API_WAIT = 1000
+const VK_API_WAIT = 5000
+const RESTART_ENGINE_TIME = 60000
 
 let usersInstance = null
 let consoleInstance = null
-let groupsInstance = null
 let dbInstance = null
 let pushesInstance = null
 
@@ -262,20 +261,11 @@ class Like extends Likes {
 
 class Groups {
   constructor () {
-    if (!groupsInstance) {
-      this.groups = []
-      this.peopleInGroup = 0
-      this.groupsCount = 0
+    this.groups = []
+    this.peopleInGroup = 0
+    this.groupsCount = 0
 
-      groupsInstance = this
-    }
     this.splitIntoGroups()
-    return groupsInstance
-  }
-
-  destructor () {
-    groupsInstance = null
-    return null
   }
 
   get () {
@@ -510,7 +500,6 @@ class DB {
             delete users[userId]
           }
         }
-        console.log(users)
         return resolve(users)
       })
       .catch(e => reject())
@@ -610,6 +599,10 @@ class Engine {
     this.users = new Users()
     this.tasks = []
 
+    if (!this.isItTimeToRunEngine()) {
+      return false
+    }
+
     this.users.initialize()
       .then(() => {
         this.groups = new Groups()
@@ -643,6 +636,12 @@ class Engine {
   getNextTask () {
     if (this.tasks.length === 0) {
       new Console().success('{Engine} All tasks are done')
+
+    new Console().notify('{Engine} New engine cycle will be started in 30s')
+      setTimeout(() => {
+        new Console().notify('{Engine} New engine has been just started')
+        new Engine()
+      }, RESTART_ENGINE_TIME)
       return
     }
     this.doTask(this.tasks[this.tasks.length - 1]).then(() => {
@@ -662,12 +661,21 @@ class Engine {
         })
     })
   }
+
+  isItTimeToRunEngine () {
+    new Console().notify('{Engine} Its not a time to run Engine')
+
+    const currentTime = new Date().getHours()
+    if (currentTime > 2 && currentTime < 8) {
+      return false
+    }
+    return true
+  }
 }
 
 
 const listeners = new Listeners()
-
-// const engine = new Engine()
+const engine = new Engine()
 
 function shuffleArray (arr) {
   let i = arr.length
