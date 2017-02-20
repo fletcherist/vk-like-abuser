@@ -208,8 +208,7 @@ class Like extends Likes {
         new Console().error('{Like} No user with this id')
         return reject()
       }
-
-
+      
       // const types = ['post', 'photo']
 
       setTimeout(() => {
