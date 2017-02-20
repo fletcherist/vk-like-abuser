@@ -2,8 +2,8 @@ const VKApi = require('node-vkapi')
 const firebase = require('firebase')
 const firebaseConfig = require('./firebaseConfig')
 
-const VK_API_WAIT = 5000
-const RESTART_ENGINE_TIME = 60000
+const VK_API_WAIT = 1000
+const RESTART_ENGINE_TIME = 120000
 
 let usersInstance = null
 let consoleInstance = null
@@ -663,10 +663,9 @@ class Engine {
   }
 
   isItTimeToRunEngine () {
-    new Console().notify('{Engine} Its not a time to run Engine')
-
     const currentTime = new Date().getHours()
     if (currentTime > 2 && currentTime < 8) {
+      new Console().notify('{Engine} Its not a time to run Engine')
       return false
     }
     return true
