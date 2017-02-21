@@ -2,7 +2,6 @@ const VKApi = require('node-vkapi')
 const firebase = require('firebase')
 const firebaseConfig = require('./firebaseConfig')
 
-const VK_API_WAIT = 1000
 const RESTART_ENGINE_TIME = 120000
 
 let usersInstance = null
@@ -254,7 +253,7 @@ class Like extends Likes {
           return resolve()
         })
         return resolve()
-      }, VK_API_WAIT)
+      }, VK_API_WAIT())
     })
   }
 }
@@ -442,31 +441,8 @@ class Listeners {
     let users = db.ref('users')
 
     users.orderByChild('createdAt').startAt(Date.now()).on('child_added', data => {
-
       let user = data.val()
-      const { access_token, id } = user
-      let vk = new VK(access_token)
-      vk.getUser(id).then(_user => {
-        console.log(_user)
-        if (_user) {
-          const { first_name, last_name, photo_100, photo_50 } = _user
-          const username = `${first_name} ${last_name}`
-
-          db.ref(`users/${id}`).update({
-            username: username,
-            photo_100: photo_100,
-            photo_50: photo_50
-          })
-          new Console().success(`{Listeners} ${username} has joined`)
-        }
-      }).catch(e => {
-          db.ref(`users/${id}`).update({
-            isValid: false,
-            isActive: false
-          })
-
-          new Console().error(`{Listeners} ${id} couldnt do authentication`)
-        })
+      new DB().updateUserInfo(user)
     })
   }
 }
@@ -731,7 +707,17 @@ class Engine {
 
 
 const listeners = new Listeners()
-// const engine = new Engine()
+const engine = new Engine()
+
+function VK_API_WAIT () {
+  const generated = randomFromInterval(1000, 3000)
+  console.log(generated)
+  return generated
+}
+
+function randomFromInterval(min,max) {
+    return Math.floor(Math.random() * (max - min + 1) + min)
+}
 
 function anArrayFromObject (obj) {
   const arr = []
