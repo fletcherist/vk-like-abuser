@@ -460,8 +460,11 @@ class Listeners {
           new Console().success(`{Listeners} ${username} has joined`)
         }
       }).catch(e => {
-          let notValid = db.ref(`users/${id}/isValid`)
-          notValid.transaction(currentValue => false)
+          db.ref(`users/${id}`).update({
+            isValid: false,
+            isActive: false
+          })
+
           new Console().error(`{Listeners} ${id} couldnt do authentication`)
         })
     })
@@ -481,36 +484,65 @@ class DB {
     return dbInstance
   }
 
-  updateUsersInfo () {
-    let _scopeDelay = 500
-    let users = db.ref('users')
-    users.on('child_added', data => {
-      setTimeout(() => {
-        let user = data.val()
-        const { access_token, id } = user
-        console.log('trying ' + id)
-        let vk = new VK(access_token)
-        vk.getUser(id).then(_user => {
-          if (_user) {
-            const { first_name, last_name, photo_100, photo_50 } = _user
-            const username = `${first_name} ${last_name}`
+  updateUserInfo (user) {
+    return new Promise((resolve, reject) => {
+      const { access_token, id } = user
 
-            db.ref(`users/${id}`).update({
-              username: username,
-              photo_100: photo_100,
-              photo_50: photo_50,
-              isValid: true
-            })
-            new Console().success(`{Listeners} ${username} has joined`)
-          }
-        }).catch(e => {
-          let notValid = db.ref(`users/${id}/isValid`)
-          notValid.transaction(currentValue => false)
-          new Console().error(`{Listeners} ${id} couldnt do authentication`)
+      let vk = new VK(access_token)
+      vk.getUser(id).then(_user => {
+        if (_user) {
+          const { first_name, last_name, photo_100, photo_50 } = _user
+          const username = `${first_name} ${last_name}`
+
+          db.ref(`users/${id}`).update({
+            username: username,
+            photo_100: photo_100,
+            photo_50: photo_50,
+            isValid: true
+          })
+          new Console().success(`{Listeners} ${username} is OK`)
+          return resolve()
+        } else {
+          return reject()
+        }
+      }).catch(e => {
+        db.ref(`users/${id}`).update({
+          isValid: false,
+          isActive: false
         })
-      }, _scopeDelay)
+        new Console().error(`{Listeners} ${id} couldnt do authentication`)
+        return reject()
+      })
+    })
+  }
 
-      _scopeDelay += _scopeDelay
+  updateUsersInfo () {
+    return new Promise((resolve, reject) => {
+      let users = db.ref('users')
+      users.once('value', data => {
+        const users = anArrayFromObject(data.val())
+        const promises = []
+
+        users.forEach(user => {
+          if (user.isValid) {
+            promises.push(new Promise((resolve, reject) => {
+              this.updateUserInfo(user)
+                .then(r => resolve(r))
+                .catch(e => reject(e))
+            }))
+          }
+        })
+
+        return Promise.all(promises)
+          .then(r => {
+            new Console().success('{DB} All users are fine')
+            return resolve()
+          })
+          .catch(e => {
+            new Console().success('{DB} NOT all the users are fine')
+            return reject()
+          })
+      })
     })
   }
 
@@ -700,6 +732,14 @@ class Engine {
 
 const listeners = new Listeners()
 // const engine = new Engine()
+
+function anArrayFromObject (obj) {
+  const arr = []
+  for (let val in obj) {
+    arr.push(obj[val])
+  }
+  return arr
+}
 
 function shuffleArray (arr) {
   let i = arr.length
