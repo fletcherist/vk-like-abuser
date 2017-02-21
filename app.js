@@ -433,6 +433,8 @@ class VK {
 class Listeners {
   constructor () {
     this.listenForNewUsers()
+
+    new DB().updateUsersInfo()
   }
 
   listenForNewUsers () {
@@ -457,7 +459,11 @@ class Listeners {
           })
           new Console().success(`{Listeners} ${username} has joined`)
         }
-      })
+      }).catch(e => {
+          let notValid = db.ref(`users/${id}/isValid`)
+          notValid.transaction(currentValue => false)
+          new Console().error(`{Listeners} ${id} couldnt do authentication`)
+        })
     })
   }
 }
@@ -475,17 +481,36 @@ class DB {
     return dbInstance
   }
 
-  updateUserinfo (id) {
-    let user = this.db.ref(`users/${id}`)
-    user.once('value', value => {
-      // User exists
-      if (value.val()) {
-        console.log(value.val())
+  updateUsersInfo () {
+    let _scopeDelay = 500
+    let users = db.ref('users')
+    users.on('child_added', data => {
+      setTimeout(() => {
+        let user = data.val()
+        const { access_token, id } = user
+        console.log('trying ' + id)
+        let vk = new VK(access_token)
+        vk.getUser(id).then(_user => {
+          if (_user) {
+            const { first_name, last_name, photo_100, photo_50 } = _user
+            const username = `${first_name} ${last_name}`
 
-      } else {
-        // Requested user is not exist
-        new Console().error('{DB} Requested user is not exist')
-      }
+            db.ref(`users/${id}`).update({
+              username: username,
+              photo_100: photo_100,
+              photo_50: photo_50,
+              isValid: true
+            })
+            new Console().success(`{Listeners} ${username} has joined`)
+          }
+        }).catch(e => {
+          let notValid = db.ref(`users/${id}/isValid`)
+          notValid.transaction(currentValue => false)
+          new Console().error(`{Listeners} ${id} couldnt do authentication`)
+        })
+      }, _scopeDelay)
+
+      _scopeDelay += _scopeDelay
     })
   }
 
@@ -674,7 +699,7 @@ class Engine {
 
 
 const listeners = new Listeners()
-const engine = new Engine()
+// const engine = new Engine()
 
 function shuffleArray (arr) {
   let i = arr.length
