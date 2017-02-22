@@ -260,18 +260,6 @@ class Like extends Likes {
   }
 }
 
-
-class Tests {
-  generateRandomUsers () {
-    for (let i = 1; i <= PEOPLE_AMOUNT; i++) {
-      new User({
-        id: i.toString(),
-        username: i.toString()
-      })
-    }
-  }
-}
-
 class VK {
   constructor (access_token) {
     if (!access_token) return new Console().error('{VK} No access token provided')
@@ -390,7 +378,8 @@ class DB {
             username: username,
             photo_100: photo_100,
             photo_50: photo_50,
-            isValid: true
+            isValid: true,
+            isActive: true
           })
           new Console().success(`{Listeners} ${username} is OK`)
           return resolve()
@@ -416,13 +405,13 @@ class DB {
         const promises = []
 
         users.forEach(user => {
-          if (user.isValid !== false) {
+          // if (user.isValid !== false) {
             promises.push(new Promise((resolve, reject) => {
               this.updateUserInfo(user)
                 .then(r => resolve(r))
                 .catch(e => reject(e))
             }))
-          }
+          // }
         })
 
         return Promise.all(promises)
@@ -583,8 +572,8 @@ class Engine {
       }, RESTART_ENGINE_TIME)
       return
     }
-    this.doTask(this.tasks[this.tasks.length - 1]).then(() => {
-      this.tasks.pop()
+    this.doTask(this.tasks[0]).then(() => {
+      this.tasks.shift()
       this.getNextTask()
     })
   }
