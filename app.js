@@ -2,7 +2,7 @@ const VKApi = require('node-vkapi')
 const firebase = require('firebase')
 const firebaseConfig = require('./firebaseConfig')
 
-const RESTART_ENGINE_TIME = 120000
+const RESTART_ENGINE_TIME = 180000
 
 let usersInstance = null
 let consoleInstance = null
@@ -737,7 +737,7 @@ const listeners = new Listeners()
 const engine = new Engine()
 
 function VK_API_WAIT () {
-  const generated = randomFromInterval(1000, 7000)
+  const generated = randomFromInterval(1000, 10000)
   return generated
 }
 
