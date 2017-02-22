@@ -141,6 +141,9 @@ class Users {
     let i = 0
     for (let user in this.users) {
       i++
+      if (!this.users[user].latestLike) {
+        this.users[user].latestLike = 0
+      }
       userList.push(this.users[user])
     }
     this.usersCount = i
@@ -554,8 +557,6 @@ class Engine {
 
     this.users.initialize()
       .then(() => {
-        this.groups = new Groups()
-
         new Console().success('{Engine} is initialized')
         this.getTasks()
         this.start()
@@ -567,7 +568,7 @@ class Engine {
   }
 
   getTasks () {
-    this.tasks = new Groups()
+    this.tasks = new Queue()
     console.log(this.tasks)
   }
 
@@ -613,6 +614,7 @@ class Engine {
 class Algorithms {
   constructor () {
     this.tasks = []
+    this.users = new Users().getUsers()
   }
 }
 
@@ -630,34 +632,16 @@ class Groups extends Algorithms {
     return this.tasks
   }
 
-  getTasks () {
-    let groups = this.groups
-    for (let group of groups) {
-      for (let i = 0; i < group.length; i++) {
-        for (let e = 0; e < group.length; e++) {
-          if (i !== e) {
-            this.tasks.push({
-              object: group[i].id,
-              target: group[e].id
-            })
-          }
-        }
-      }
-    }
-  }
-
   splitIntoGroups () {
-    let people = new Users().getUsers()
-
-    let peopleAmount = people.length
+    let peopleAmount = this.users.length
     this.findOptimalGroupsCount(peopleAmount)
-    people = shuffleArray(people)
+    this.users = shuffleArray(this.users)
 
     for (let i = 0; i < this.groupsCount; i++) {
       this.groups.push([])
       for (let e = 0; e < this.peopleInGroup; e++) {
-        this.groups[i].push(people[0])
-        people.splice(0, 1)
+        this.groups[i].push(this.users[0])
+        this.users.shift()
       }
     }
 
@@ -698,6 +682,53 @@ class Groups extends Algorithms {
       peopleInGroup,
       groupsCount
     }
+  }
+
+  getTasks () {
+    let groups = this.groups
+    for (let group of groups) {
+      for (let i = 0; i < group.length; i++) {
+        for (let e = 0; e < group.length; e++) {
+          if (i !== e) {
+            this.tasks.push({
+              object: group[i].id,
+              target: group[e].id
+            })
+          }
+        }
+      }
+    }
+  }
+}
+
+class Queue extends Algorithms {
+  constructor () {
+    super()
+
+    this.users.sort((a, b) => {
+      return a.latestLike > b.latestLike
+    })
+
+    for (let i = 0; i <= this.users.length - 1; i++) {
+      if (i === this.users.length - 1) {
+        this.tasks.push({
+          object: this.users[i].id,
+          target: this.users[0].id
+        })
+        break
+      }
+
+      this.tasks.push({
+        object: this.users[i].id,
+        target: this.users[i + 1].id
+      })
+    }
+
+    this.users.forEach(user => {
+      console.log(new Date() - user.latestLike)
+    })
+
+    return this.tasks
   }
 }
 
