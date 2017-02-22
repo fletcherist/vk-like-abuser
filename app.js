@@ -218,7 +218,6 @@ class Like extends Likes {
         let vk = new VK(token)
         let db = new DB()
         vk.getPhotos(target).then(r => {
-          console.log(r)
           const { count, items } = r
           if (count === 0) return reject()
 
@@ -258,90 +257,6 @@ class Like extends Likes {
   }
 }
 
-class Groups {
-  constructor () {
-    this.groups = []
-    this.peopleInGroup = 0
-    this.groupsCount = 0
-
-    this.splitIntoGroups()
-  }
-
-  get () {
-    return this.groups
-  }
-
-  splitIntoGroups () {
-    let people = new Users().getUsers()
-
-    let peopleAmount = people.length
-    this.findOptimalGroupsCount(peopleAmount)
-    people = shuffleArray(people)
-
-    for (let i = 0; i < this.groupsCount; i++) {
-      this.groups.push([])
-      for (let e = 0; e < this.peopleInGroup; e++) {
-        this.groups[i].push(people[0])
-        people.splice(0, 1)
-      }
-    }
-
-    return this.groups
-  }
-
-  showGroups () {
-    console.log(this.groups)
-  }
-
-  findOptimalGroupsCount (peopleAmount) {
-    if (!peopleAmount) return new Console().error('Failed to split into groups')
-    if (peopleAmount < 4) {
-      this.peopleInGroup = peopleAmount
-      this.groupsCount = 1
-
-      return {
-        peopleInGroup: peopleAmount,
-        groupsCount: 1
-      }
-    }
-    let medianArray = []
-    let count = 0
-    for (let i = 2; i <= peopleAmount; i++) {
-      if (peopleAmount % i == 0) {
-        count++
-        medianArray.push(i)
-      }
-    }
-
-    if (count === 0 || count === 1) {
-      return this.findOptimalGroupsCount(peopleAmount - 1)
-    }
-
-    const peopleInGroup = medianArray[Math.floor(medianArray.length / 2)]
-    const groupsCount = peopleAmount / peopleInGroup
-
-    this.peopleInGroup = peopleInGroup
-    this.groupsCount = groupsCount
-
-    return {
-      peopleInGroup,
-      groupsCount
-    }
-  }
-}
-
-class Group extends Groups {
-  constructor (users) {
-    console.log('eeee', users)
-    super()
-    if (!users || users.length === 0) return new Console().error('{Groups}: No any users have been provided')
-    for (let user of users) {
-      if (!this.isUserExist(user.id)) return new Console().error('{Groups}: User does not exist')
-    }
-
-    this.groups.push(users)
-  }
-}
 
 class Tests {
   generateRandomUsers () {
@@ -387,11 +302,9 @@ class VK {
         owner_id: target,
         item_id: id
       }).then(res => {
-        console.log(res)
         return resolve()
       })
       .catch(e => {
-        console.log(e)
         reject(e)
       })
     })
@@ -500,7 +413,7 @@ class DB {
         const promises = []
 
         users.forEach(user => {
-          if (user.isValid) {
+          if (user.isValid !== false) {
             promises.push(new Promise((resolve, reject) => {
               this.updateUserInfo(user)
                 .then(r => resolve(r))
@@ -622,6 +535,9 @@ class DB {
 
     let likedYou = this.db.ref(`/statistics/${target}/liked_you`)
     likedYou.transaction(currentValue => (currentValue || 0) + 1)
+
+    let latestLike = this.db.ref(`/users/${object}/latestLike`)
+    latestLike.transaction(currentValue => firebase.database.ServerValue.TIMESTAMP)
   }
 
 }
@@ -651,19 +567,8 @@ class Engine {
   }
 
   getTasks () {
-    let groups = this.groups.get()
-    for (let group of groups) {
-      for (let i = 0; i < group.length; i++) {
-        for (let e = 0; e < group.length; e++) {
-          if (i !== e) {
-            this.tasks.push({
-              object: group[i].id,
-              target: group[e].id
-            })
-          }
-        }
-      }
-    }
+    this.tasks = new Groups()
+    console.log(this.tasks)
   }
 
   getNextTask () {
@@ -705,13 +610,103 @@ class Engine {
   }
 }
 
+class Algorithms {
+  constructor () {
+    this.tasks = []
+  }
+}
+
+class Groups extends Algorithms {
+  constructor () {
+    super()
+    this.groups = []
+    
+    this.peopleInGroup = 0
+    this.groupsCount = 0
+
+    this.splitIntoGroups()
+    this.getTasks()
+
+    return this.tasks
+  }
+
+  getTasks () {
+    let groups = this.groups
+    for (let group of groups) {
+      for (let i = 0; i < group.length; i++) {
+        for (let e = 0; e < group.length; e++) {
+          if (i !== e) {
+            this.tasks.push({
+              object: group[i].id,
+              target: group[e].id
+            })
+          }
+        }
+      }
+    }
+  }
+
+  splitIntoGroups () {
+    let people = new Users().getUsers()
+
+    let peopleAmount = people.length
+    this.findOptimalGroupsCount(peopleAmount)
+    people = shuffleArray(people)
+
+    for (let i = 0; i < this.groupsCount; i++) {
+      this.groups.push([])
+      for (let e = 0; e < this.peopleInGroup; e++) {
+        this.groups[i].push(people[0])
+        people.splice(0, 1)
+      }
+    }
+
+    return this.groups
+  }
+
+  findOptimalGroupsCount (peopleAmount) {
+    if (!peopleAmount) return new Console().error('Failed to split into groups')
+    if (peopleAmount < 4) {
+      this.peopleInGroup = peopleAmount
+      this.groupsCount = 1
+
+      return {
+        peopleInGroup: peopleAmount,
+        groupsCount: 1
+      }
+    }
+    let medianArray = []
+    let count = 0
+    for (let i = 2; i <= peopleAmount; i++) {
+      if (peopleAmount % i == 0) {
+        count++
+        medianArray.push(i)
+      }
+    }
+
+    if (count === 0 || count === 1) {
+      return this.findOptimalGroupsCount(peopleAmount - 1)
+    }
+
+    const peopleInGroup = medianArray[Math.floor(medianArray.length / 2)]
+    const groupsCount = peopleAmount / peopleInGroup
+
+    this.peopleInGroup = peopleInGroup
+    this.groupsCount = groupsCount
+
+    return {
+      peopleInGroup,
+      groupsCount
+    }
+  }
+}
+
 
 const listeners = new Listeners()
 const engine = new Engine()
 
 function VK_API_WAIT () {
-  const generated = randomFromInterval(1000, 3000)
-  console.log(generated)
+  const generated = randomFromInterval(1000, 7000)
   return generated
 }
 
