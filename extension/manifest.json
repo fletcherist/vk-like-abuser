@@ -22,8 +22,8 @@
     {
       "matches": ["http://google.com/*"],
       "css": ["styles.css"],
-      "js": ["vue.js", "scripts/firebase.js", "scripts/vuefire.js", "scripts/d3.v4.min.js"]
+      "js": ["vue.js", "scripts/firebase.js", "scripts/vuefire.js", "scripts/d3.v4.min.js", "scripts/options.js"]
     }
   ],
-  "content_security_policy": "script-src 'self' https://cdn.firebase.com https://*.firebaseio.com; object-src 'self'"
+  "content_security_policy": "script-src 'self' https://www.google-analytics.com https://cdn.firebase.com https://*.firebaseio.com; object-src 'self'"
 }
