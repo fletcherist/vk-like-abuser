@@ -5,9 +5,7 @@
   "author": "fletcherist <romanovexports@gmail.com>",
   "private": true,
   "scripts": {
-    "dev": "node build/dev-server.js",
-    "build": "node build/build.js",
-    "lint": "eslint --ext .js,.vue src"
+    "deploy": "cd .. && rm -rf extension.zip && zip -r -9 extension extension"
   },
   "dependencies": {
     "vue": "^2.1.0",

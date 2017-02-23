@@ -130,7 +130,12 @@ users.once('value', __users => {
     const _likes = __likes.val()
 
     let usersIncrementId = 0
+    let limit = 15
+
     for (let user in _users) {
+      if (usersIncrementId > limit) {
+        break
+      }
       if (_users[user].id) {
         nodes.push(_users[user])
         usersTable[user] = usersIncrementId
@@ -140,12 +145,17 @@ users.once('value', __users => {
 
     restart()
     setTimeout(() => {
+      let i = 0
       for (let sourceUserId in _likes) {
+        if (i > Math.PI * limit) {
+          break
+        }
         for (let targetUserId in _likes[sourceUserId]) {
           addToLinks({
             source: usersTable[sourceUserId],
             target: usersTable[targetUserId]
           })
+          i++
         }
       }
     }, 500)
@@ -161,6 +171,7 @@ let addToLinks = obj => {
       return false
     }
     links.push(obj)
+    console.log(links.length)
     restart()
   }, delayTimeout)
   delayTimeout += 100
