@@ -151,10 +151,14 @@ users.once('value', __users => {
           break
         }
         for (let targetUserId in _likes[sourceUserId]) {
-          addToLinks({
-            source: usersTable[sourceUserId],
-            target: usersTable[targetUserId]
-          })
+          let source = usersTable[sourceUserId]
+          let target = usersTable[targetUserId]
+          if (source && target) {
+            addToLinks({
+              source,
+              target
+            })
+          }
           i++
         }
       }
@@ -171,7 +175,6 @@ let addToLinks = obj => {
       return false
     }
     links.push(obj)
-    console.log(links.length)
     restart()
   }, delayTimeout)
   delayTimeout += 100
