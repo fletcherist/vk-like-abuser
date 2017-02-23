@@ -67,25 +67,25 @@ let app = new Vue({
   }
 })
 
-let usersVue = new Vue({
-  el: '#users',
-  data: () => {
-  },
-  firebase: {
-    users: users,
-    me: {
-      source: me,
-      asObject: true
-    },
-    stats: {
-      source: stats,
-      asObject: true
-    },
-    pushes: pushes
-  },
-  methods: {
-  }
-})
+// let usersVue = new Vue({
+//   el: '#users',
+//   data: () => {
+//   },
+//   firebase: {
+//     users: users,
+//     me: {
+//       source: me,
+//       asObject: true
+//     },
+//     stats: {
+//       source: stats,
+//       asObject: true
+//     },
+//     pushes: pushes
+//   },
+//   methods: {
+//   }
+// })
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   if (ACCESS_TOKEN) {
@@ -120,23 +120,22 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   }
 })
 
-
 const nodes = []
 const links = []
 const usersTable = {}
 
-
-users..once('value', __users => {
+users.once('value', __users => {
   likes.once('value', __likes => {
     const _users = __users.val()
     const _likes = __likes.val()
 
-    
     let usersIncrementId = 0
     for (let user in _users) {
-      nodes.push(_users[user])
-      usersTable[user] = usersIncrementId
-      usersIncrementId++
+      if (_users[user].id) {
+        nodes.push(_users[user])
+        usersTable[user] = usersIncrementId
+        usersIncrementId++
+      }
     }
 
     restart()
@@ -157,10 +156,14 @@ users..once('value', __users => {
 let delayTimeout = 200
 let addToLinks = obj => {
   setTimeout(() => {
+    const { source, target } = obj
+    if (!source || !target) {
+      return false
+    }
     links.push(obj)
     restart()
   }, delayTimeout)
-  delayTimeout += 50
+  delayTimeout += 100
 }
 
 users.on('child_changed', snap => {
@@ -181,8 +184,8 @@ svg
 
 
 var simulation = d3.forceSimulation(nodes)
-    .force('charge', d3.forceManyBody().strength(-1900))
-    .force('link', d3.forceLink(links).distance(240))
+    .force('charge', d3.forceManyBody().strength(-3000))
+    .force('link', d3.forceLink(links).distance(width/Math.PI))
     .force('x', d3.forceX())
     .force('y', d3.forceY())
     .alphaTarget(1)
