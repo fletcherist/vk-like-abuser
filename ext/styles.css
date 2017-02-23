@@ -1,0 +1,182 @@
+body {
+  margin: 0px;
+  font-family: -apple-system,BlinkMacSystemFont,Roboto,Open Sans,Helvetica Neue,sans-serif;
+  background: #edeef0;
+}
+
+a {
+  color: #2a5885;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.not-active {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.7 !important;
+}
+
+.button {
+  padding: 7px 16px 8px;
+  margin: 0;
+  font-size: 12.5px;
+  display: inline-block;
+  zoom: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  outline: none;
+  font-family: -apple-system,BlinkMacSystemFont,Roboto,Open Sans,Helvetica Neue,sans-serif;
+  vertical-align: top;
+  line-height: 15px;
+  text-align: center;
+  text-decoration: none;
+  background: none;
+  background-color: #5e81a8;
+  color: #fff;
+  border: 0;
+  border-radius: 2px;
+  box-sizing: border-box;
+
+  transition: .2s;
+
+  padding-left: 32px;
+  padding-right: 32px;
+  cursor: pointer;
+
+  user-select: none;
+  opacity: 1;
+}
+
+.button:hover {
+  text-decoration: none !important; 
+}
+
+
+.foo {
+  display: flex;
+  justify-content: flex-end;
+  padding: .5rem;
+  min-height: 4rem;
+}
+
+.username {
+  color: #2a5885;
+  display: flex;
+  align-items: center;
+}
+
+.username__holder {
+  margin: 0px 10px;
+}
+
+.avatar {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  margin: 0px 5px;
+}
+
+.activate {
+  width: 100%;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.button__activate {
+  min-width: 170px;
+}
+
+.is-working {
+  color: #388e3c;
+}
+
+.button:hover {
+  opacity: .9;
+}
+
+.button--center {
+
+}
+
+.wrapper {
+  max-width: 350px;
+  width: 80vw;
+  background-color: white;
+  box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
+  padding: .7rem;
+  margin: 20vh auto;
+  margin-bottom: 0rem;
+}
+
+.wrapper--next {
+  margin: 2vh auto;
+}
+
+.stats {
+  text-align: center;
+}
+
+.stats__item {
+  padding: 2px;
+}
+
+.disclaimer {
+  text-align: center;
+  max-width: 70%;
+  margin: 0px auto;
+  margin-bottom: 1rem;
+  line-height: 1.2rem;
+}
+
+.disclaimer__agree {
+  margin-top: 1rem;
+}
+
+.stats b {
+  color: #2a5885;
+}
+
+.help {
+  margin-top: 2rem;
+  display: flex;
+  width: 100%;
+}
+
+.help__messages {
+}
+
+.help__group {
+  margin-left: auto;
+}
+
+.svg__image {
+  clip-path: border-box;
+  border-radius: 25%;
+}
+
+#graph {
+  position: absolute;
+  margin: -20vh auto;
+  z-index: -2;
+}
+
+
+.users__user {
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.users__user_avatar {
+  width: 50px;
+  padding: .5rem 0rem 0rem .75rem;
+}
+
+.users__user_avatar-img {
+  border-radius: 50px;
+  height: 40px;
+  width: 40px;
+}

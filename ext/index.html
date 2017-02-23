@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <link rel='stylesheet' href='./styles.css' />
+</head>
+<script src='./vue.js'></script>
+<script src='scripts/firebase.js'></script>
+<script src='scripts/vuefire.js'></script>
+<script src='scripts/d3.v4.min.js'></script>
+<body>
+  <svg id='graph'></svg>
+  <div id="app" class='wrapper'>
+    <div class='foo'>
+      <div v-if='authorized' class='username'>
+        <img v-show='me.photo_100' v-bind:src='me.photo_100' class='avatar'>
+        <span class='username__holder'>{{me.username}} </span>
+        <span>
+          <b><a v-on:click='logout()'>выйти</a></b>
+        </span>
+      </div>
+      <div v-else>
+          <a href='https://oauth.vk.com/authorize?client_id=5133221&scope=wall,friends,offline&redirect_uri=https://oauth.vk.com/blank.html&display=popup&v=5.17&response_type=token' class='button' target='_blank'
+          v-bind:class="{'not-active': !agreedWithTerms}">Войти</a>
+      </div>
+    </div>
+    <div v-if='authorized'>
+      <div class='activate'>
+        <div class='button button__activate button--center' v-on:click="toggle()">
+          <span v-if='me.isActive'>Приостановить</span>
+          <span v-else>Начать</span>
+        </div>
+      </div>
+      <div class='stats'>
+        <div class='stats__item'>
+          Статус:
+            <b>
+              <span v-if='me.isActive' class='is-working'>Работает</span>
+              <span v-else>Приостановлено</span>
+            </b>
+        </div>
+        <div class='stats__item'>Вы поставили лайков: <b>{{stats.you_liked || 0}}</b></div>
+        <div class='stats__item'>Вам поставили лайков: <b>{{stats.liked_you || 0}}</b></div>
+      </div>
+      <div class='help'>
+        <div class='help__messages'>
+          <a href='https://vk.com/im?media=&sel=96170043' target='_blank'>У меня ничего не работает!</a>
+        </div>
+
+        <div class='help__group'>
+          <a href='https://vk.com/vk_king_likes' target='_blank'>Группа ВКонтакте</a>
+        </div>
+      </div>
+    </div>
+    <div v-else class='disclaimer'>
+      Чтобы начать пользоваться приложением, необходимо авторизоваться. Напоминаем, что накрутка лайков <b>нарушает</b> правила ВКонтакте.
+      <div class='disclaimer__agree'>
+        <input
+          type='checkbox'
+          v-model='agreedWithTerms'
+        />
+        <a href='https://vk.com/terms' target='_blank'>Я нарушаю правила ВКонтакте</a>
+      </div>
+    </div>
+  </div>
+  <div id='users' class='wrapper wrapper--next'>
+    {{users.length}} человек
+    <div v-for='user in users'>
+      <div class='users__user'>
+        <div class='users__user_avatar'>
+          <img class='users__user_avatar-img' v-bind:src='user.photo_100' />
+        </div>
+        <a target='_blank' href='http://vk.com/id{{user.id}}'>{{user.username}}</a>
+      </div>
+    </div>
+  </div>
+  <script src='./common.js'></script>
+</body>
+</html>

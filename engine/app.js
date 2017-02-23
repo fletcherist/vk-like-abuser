@@ -373,13 +373,11 @@ class DB {
         if (_user) {
           const { first_name, last_name, photo_100, photo_50 } = _user
           const username = `${first_name} ${last_name}`
-
           db.ref(`users/${id}`).update({
             username: username,
             photo_100: photo_100,
             photo_50: photo_50,
-            isValid: true,
-            isActive: true
+            isValid: true
           })
           new Console().success(`{Listeners} ${username} is OK`)
           return resolve()
@@ -387,6 +385,7 @@ class DB {
           return reject()
         }
       }).catch(e => {
+        console.log(e)
         db.ref(`users/${id}`).update({
           isValid: false,
           isActive: false
