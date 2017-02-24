@@ -712,17 +712,36 @@ class Queue extends Algorithms {
       })
     }
 
-    this.users.forEach(user => {
-      console.log(new Date() - user.latestLike)
-    })
-
     return this.tasks
+  }
+}
+
+class Autofixers {
+  constructor () {
+    this.db = db
+
+    this.fixUsersStats()
+  }
+
+  fixUsersStats () {
+    const stats = this.db.ref('statistics')
+    stats.once('value', snap => {
+      console.log(snap.val())
+      let statistics = snap.val()
+      for (let stat in statistics) {
+        if (!stat.you_liked || !stat.liked_you) {
+          console.log(stat)
+        } 
+      }
+    })
   }
 }
 
 
 const listeners = new Listeners()
 const engine = new Engine()
+
+const autofixers = new Autofixers()
 
 function VK_API_WAIT () {
   const generated = randomFromInterval(1000, 10000)
