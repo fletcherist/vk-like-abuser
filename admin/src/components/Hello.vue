@@ -1,15 +1,25 @@
 <template>  
   <div>
-    <h1>{{users.length}} человека</h1>
-    <div v-for='user in users'>
-      <div class='user'>
-        <a target='_blank' :href="'http://vk.com/id' + user.id">
-          <img class='avatar' v-bind:src='user.photo_100'/>
-        </a>
-        <div>
+    <div class='stats'>
+      <h1>{{users.length}} users</h1>
+      <div class='stats__active'>{{isActive}} active</div>
+      <div class='stats__not-active'>{{isNotActive}} not active</div>
+    </div>
+    <div class='users'>
+      <div class='user' v-for='user in users'>
+        <div class='user__avatar'>
           <a target='_blank' :href="'http://vk.com/id' + user.id">
-            {{user.username}} {{getStats(user.id)}}
+            <img
+              class='avatar'
+              v-bind:src='user.photo_100'
+              v-bind:class="{ 'avatar--isNotActive' : !user.isActive }"
+            />
           </a>
+        </div>
+        <div class='user__stats'>
+          <b>{{getStats(user.id).you_liked || 0}}</b>
+          /
+          <b>{{getStats(user.id).liked_you || 0}}</b>
         </div>
       </div>
     </div>
@@ -40,7 +50,6 @@ export default {
   name: 'hello',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
     }
   },
   firebase: {
@@ -55,18 +64,53 @@ export default {
   },
   methods: {
     getStats: function (id) {
-      if (!id) return 'undef. / undef.'
+      let you_liked = 0
+      let liked_you = 0
+
+      if (!id) {
+        return {
+          you_liked,
+          liked_you
+        }
+      }
+
       if (this.stats && this.stats.length > 0) {
         let i = 0
         for (let stat of this.stats) {
           if (stat['.key'] === id) {
-            console.log(stat['.key'], id, this.stats[i])
-            let { you_liked, liked_you } = this.stats[i]
-            return `${you_liked}/${liked_you}`
+            you_liked = this.stats[i].you_liked
+            liked_you = this.stats[i].liked_you
+
+            break
           }
           i++
         }
       }
+
+      return {
+        you_liked,
+        liked_you
+      }
+    }
+  },
+  computed: {
+    isActive: function () {
+      if (this.users && this.users.length) {
+        let isActiveCount = 0
+        this.users.forEach(user => {
+          if (user.isActive === true) {
+            isActiveCount++
+          }
+        })
+        return isActiveCount
+      }
+      return 'loading...'
+    },
+    isNotActive: function () {
+      if (this.users && this.users.length) {
+        return this.users.length - this.isActive
+      }
+      return 'loading...'
     }
   }
 }
@@ -78,19 +122,56 @@ a {
   text-decoration: none;
   color: black;
 }
-.user {
+
+.users {
   display: flex;
-  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.user {
+  width: 100px;
+  padding: .5rem;
+  border: 1px solid #cfd8dc;
+  margin-left: -1px;
+  margin-bottom: -1px;
 }
 
 .user:hover {
   background-color: #dfe6ed;
 }
 
+.user__stats {
+  text-align: center;
+  font-size: .75rem;
+  color: #546e7a !important;
+}
+
+.user__avatar {
+  display: flex;
+  justify-content: center;
+}
+
+.stats {
+  margin: 1rem;
+}
+
+.stats__active {
+  color: #2e7d32;
+}
+.stats__not-active {
+  color: #d32f2f;
+}
+
 .avatar {
-  border-radius: 50px;
+  border-radius: 100%;
+  border: 2px solid white;
   height: 50px;
   width: 50px;
-  margin: 0 1rem 0 1rem;
 }
+
+.avatar--isNotActive {
+  border-color: red !important;
+}
+
 </style>

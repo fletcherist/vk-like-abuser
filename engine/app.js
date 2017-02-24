@@ -2,7 +2,7 @@ const VKApi = require('node-vkapi')
 const firebase = require('firebase')
 const firebaseConfig = require('./firebaseConfig')
 
-const RESTART_ENGINE_TIME = 180000
+const RESTART_ENGINE_TIME = 20000
 
 let usersInstance = null
 let consoleInstance = null
@@ -377,7 +377,8 @@ class DB {
             username: username,
             photo_100: photo_100,
             photo_50: photo_50,
-            isValid: true
+            isValid: true,
+            isActive: true
           })
           new Console().success(`{Listeners} ${username} is OK`)
           return resolve()
@@ -404,13 +405,13 @@ class DB {
         const promises = []
 
         users.forEach(user => {
-          // if (user.isValid !== false) {
+          if (user.isValid !== false) {
             promises.push(new Promise((resolve, reject) => {
               this.updateUserInfo(user)
                 .then(r => resolve(r))
                 .catch(e => reject(e))
             }))
-          // }
+          }
         })
 
         return Promise.all(promises)
@@ -556,7 +557,7 @@ class Engine {
   }
 
   getTasks () {
-    this.tasks = new Queue()
+    this.tasks = new Groups()
     console.log(this.tasks)
   }
 
@@ -744,7 +745,7 @@ const engine = new Engine()
 const autofixers = new Autofixers()
 
 function VK_API_WAIT () {
-  const generated = randomFromInterval(1000, 10000)
+  const generated = randomFromInterval(1000, 2000)
   return generated
 }
 
