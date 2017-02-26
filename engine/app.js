@@ -217,7 +217,7 @@ class Engine {
 }
 
 const listeners = new Listeners()
-// const engine = new Engine()
+const engine = new Engine()
 
 // const autofixers = new Autofixers()
 
