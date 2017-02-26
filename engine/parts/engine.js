@@ -70,13 +70,13 @@ class Engine {
   getNextTask () {
     if (this.tasks.length === 0) {
       new Console().success('{Engine} All tasks are done')
+
+      if (this.situation === SITUATIONS.FAST_TO_TARGET) {
+        return false
+      }
+
       new Console().notify('{Engine} New engine cycle will be started in 30s')
-
       setTimeout(() => {
-        if (this.situation === SITUATIONS.FAST_TO_TARGET) {
-          return false
-        }
-
         new Console().notify('{Engine} New engine has been just started')
         return new Engine()
       }, RESTART_ENGINE_TIME)

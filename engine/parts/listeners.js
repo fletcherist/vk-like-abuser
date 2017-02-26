@@ -1,5 +1,7 @@
 const DB = require('./db')
 const Console = require('./console')
+const Engine = require('./console')
+const SITUATIONS = require('../config').SITUATIO
 
 class Listeners {
   constructor () {
@@ -18,6 +20,11 @@ class Listeners {
     users.orderByChild('createdAt').startAt(Date.now()).on('child_added', data => {
       let user = data.val()
       new DB().updateUserInfo(user)
+
+      new Engine({
+        situation: SITUATIONS.FAST_TO_TARGET,
+        target: user.id
+      })
     })
   }
 }

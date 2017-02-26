@@ -19,4 +19,11 @@ const algorithms = require('./algorithms')
 const listeners = new Listeners()
 const engine = new Engine()
 
+const SITUATIONS = require('./config').SITUATIONS
+
+// new Engine({
+//   situation: SITUATIONS.FAST_TO_TARGET,
+//   target: 74517317
+// })
+
 // const autofixers = new Autofixers()

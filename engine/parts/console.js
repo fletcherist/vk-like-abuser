@@ -40,7 +40,7 @@ class Console {
     if (!this.config.errors)
       return false
     let message = 'Error: ' + msg
-    console.log(message)
+    console.warn(message)
     new Pushes().send(message)
   }
 
