@@ -15,85 +15,11 @@ const VK = require('./parts/vk')
 const Console = require('./parts/console')
 const Listeners = require('./parts/listeners')
 
-class Users {
-  constructor () {
-    if (!usersInstance) {
-      this.users = {}
-      this.usersCount = 0
-      this.initialized = false
+const Users = require('./parts/users')
 
-      usersInstance = this
-    }
+const Algorithms = require('./algorithms/algorithms')
 
-    return usersInstance
-  }
 
-  initialize () {
-    return new Promise ((resolve, reject) => {
-      this.fetchUsers()
-        .then(res => {
-          this.initialized = true
-          new Console().success('Class {Users} has been successfully initialized')
-
-          resolve()
-        })
-        .catch(e => {
-          new Console().error('{Users} Can`t be initialized')
-          reject()
-        })
-    })
-  }
-
-  fetchUsers () {
-    return new Promise((resolve, reject) => {
-      new DB().getUsers()
-        .then(users => {
-          this.users = users
-          resolve()
-        })
-        .catch(e => reject())
-    })
-  }
-
-  showUsers () {
-    for (let user in this.users) {
-      console.log(this.users[user].id)
-    }
-  }
-
-  findById (id) {
-    if (!id) return new Console().error('{Users} [id] is not provided.')
-
-    if (typeof this.users[id] !== 'undefined') {
-      return this.users[id]
-    } else {
-      new Console().notify(`{Users} User with id ${id} not found`)
-      return false
-    }
-  }
-
-  isUserExist (id) {
-    if (this.findById(id) !== false) {
-      return true
-    }
-
-    return false
-  }
-
-  getUsers () {
-    var userList = []
-    let i = 0
-    for (let user in this.users) {
-      i++
-      if (!this.users[user].latestLike) {
-        this.users[user].latestLike = 0
-      }
-      userList.push(this.users[user])
-    }
-    this.usersCount = i
-    return userList
-  }
-}
 
 class User extends Users {
   constructor ({username, id}) {
@@ -283,13 +209,6 @@ class Engine {
   }
 }
 
-class Algorithms {
-  constructor () {
-    this.tasks = []
-    this.users = new Users().getUsers()
-  }
-}
-
 class Groups extends Algorithms {
   constructor () {
     super()
@@ -373,64 +292,9 @@ class Groups extends Algorithms {
   }
 }
 
-class Queue extends Algorithms {
-  constructor () {
-    super()
 
-
-    // Latest
-    // this.users.sort((a, b) => {
-    //   return a.latestLike > b.latestLike
-    // })
-
-    // Randomize
-    this.users = shuffleArray(this.users)
-
-
-
-    for (let i = 0; i <= this.users.length - 1; i++) {
-      if (i === this.users.length - 1) {
-        this.tasks.push({
-          object: this.users[i].id,
-          target: this.users[0].id
-        })
-        break
-      }
-
-      this.tasks.push({
-        object: this.users[i].id,
-        target: this.users[i + 1].id
-      })
-    }
-
-    return this.tasks
-  }
-}
-
-class Autofixers {
-  constructor () {
-    this.db = db
-
-    this.fixUsersStats()
-  }
-
-  fixUsersStats () {
-    const stats = this.db.ref('statistics')
-    stats.once('value', snap => {
-      // console.log(snap.val())
-      let statistics = snap.val()
-      for (let stat in statistics) {
-        if (!stat.you_liked || !stat.liked_you) {
-          // console.log(stat)
-        } 
-      }
-    })
-  }
-}
-
-
-const listeners = new Listeners()
-const engine = new Engine()
+// const listeners = new Listeners()
+// const engine = new Engine()
 
 // const autofixers = new Autofixers()
 
@@ -441,19 +305,4 @@ function VK_API_WAIT () {
 
 function randomFromInterval(min,max) {
     return Math.floor(Math.random() * (max - min + 1) + min)
-}
-
-function shuffleArray (arr) {
-  let i = arr.length
-  while (i > 0) {
-    i--
-    let e = Math.floor(Math.random() * arr.length)
-    let k = Math.floor(Math.random() * arr.length)
-
-    let tmp = arr[e]
-    arr[e] = arr[i]
-    arr[i] = tmp
-
-  }
-  return arr
 }
