@@ -43,15 +43,7 @@
         <div class='stats__item'>Вы поставили лайков: <b>{{stats.you_liked || 0}}</b></div>
         <div class='stats__item'>Вам поставили лайков: <b>{{stats.liked_you || 0}}</b></div>
       </div>
-      <div class='help'>
-        <div class='help__messages'>
-          <a href='https://vk.com/im?media=&sel=96170043' target='_blank'>У меня ничего не работает!</a>
-        </div>
-
-        <div class='help__group'>
-          <a href='https://vk.com/vk_king_likes' target='_blank'>Группа ВКонтакте</a>
-        </div>
-      </div>
+      <help></help>
     </div>
     <div v-else class='disclaimer'>
       Чтобы начать пользоваться приложением, необходимо авторизоваться. Напоминаем, что накрутка лайков <b>нарушает</b> правила ВКонтакте.
@@ -64,17 +56,6 @@
       </div>
     </div>
   </div>
-  <!-- <div id='users' class='wrapper wrapper--next'>
-    {{users.length}} человек
-    <div v-for='user in users'>
-      <div class='users__user'>
-        <div class='users__user_avatar'>
-          <img class='users__user_avatar-img' v-bind:src='user.photo_100' />
-        </div>
-        <a target='_blank' href='http://vk.com/id{{user.id}}'>{{user.username}}</a>
-      </div>
-    </div>
-  </div> -->
   <script src='./common.js'></script>
 </body>
 </html>

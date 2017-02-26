@@ -7,12 +7,16 @@
     </div>
     <div class='users'>
       <div class='user' v-for='user in users'>
+        <div @click='removeUser(user.id)'>x</div>
         <div class='user__avatar'>
           <a target='_blank' :href="'http://vk.com/id' + user.id">
             <img
               class='avatar'
               v-bind:src='user.photo_100'
-              v-bind:class="{ 'avatar--isNotActive' : !user.isActive }"
+              v-bind:class="{ 
+                'avatar--isNotActive' : user.isActive === false,
+                'avatar--isActive': user.isActive === true
+              }"
             />
           </a>
         </div>
@@ -53,7 +57,12 @@ export default {
     }
   },
   firebase: {
-    users: users,
+    users: {
+      source: users,
+      callback: function () {
+        console.log('USERS ARE HERE')
+      }
+    },
     // stats: {
     //   source: stats,
     //   asObject: true
@@ -91,6 +100,10 @@ export default {
         you_liked,
         liked_you
       }
+    },
+    removeUser: function (id) {
+      console.log(this.$firebaseRefs.users)
+      // db.ref(`users/${id}`).remove()
     }
   },
   computed: {
@@ -171,7 +184,11 @@ a {
 }
 
 .avatar--isNotActive {
-  border-color: red !important;
+  border-color: #ef5350;
+}
+
+.avatar--isActive {
+  border-color: #81d4fa;
 }
 
 </style>

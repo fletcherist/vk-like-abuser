@@ -17,6 +17,20 @@ firebase.initializeApp(config)
 let ACCESS_TOKEN = localStorage.getItem('access_token')
 let MY_ID = localStorage.getItem('user_id')
 
+Vue.component('help', {
+  template: `
+    <div class='help'>
+      <div class='help__messages'>
+        <a href='https://vk.com/im?media=&sel=96170043' target='_blank'>У меня ничего не работает!</a>
+      </div>
+
+      <div class='help__group'>
+        <a href='https://vk.com/vk_king_likes' target='_blank'>Группа ВКонтакте</a>
+      </div>
+    </div>
+  `
+})
+
 
 Vue.use(VueFire)
 let db = firebase.database()
@@ -26,6 +40,17 @@ let me = db.ref(`users/${MY_ID}`)
 let stats = db.ref(`statistics/${MY_ID}`)
 let pushes = db.ref('pushes')
 let likes = db.ref('likes')
+
+const activateButton = {
+  template: `
+    <div class='activate'>
+      <div class='button button__activate button--center' v-on:click="toggle()">
+        <span v-if='me.isActive'>Приостановить</span>
+        <span v-else>Начать</span>
+      </div>
+    </div>
+  `
+}
 
 let app = new Vue({
   el: '#app',
@@ -64,6 +89,9 @@ let app = new Vue({
 
       chrome.tabs.reload()
     }
+  },
+  components: {
+    'activate-button': activateButton
   }
 })
 

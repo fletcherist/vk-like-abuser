@@ -2,7 +2,7 @@ const VKApi = require('node-vkapi')
 const firebase = require('firebase')
 const firebaseConfig = require('./firebaseConfig')
 
-const RESTART_ENGINE_TIME = 20000
+const RESTART_ENGINE_TIME = 60000
 
 let usersInstance = null
 let consoleInstance = null
@@ -11,7 +11,6 @@ let pushesInstance = null
 
 let app = firebase.initializeApp(firebaseConfig)
 let db = app.database()
-
 
 class Pushes {
   constructor () {
@@ -209,6 +208,7 @@ class Like extends Likes {
         new Console().error('{Like} No user with this id')
         return reject()
       }
+
       
       // const types = ['post', 'photo']
 
@@ -218,23 +218,27 @@ class Like extends Likes {
           new Console().error('{Like} NO ACCESS_TOKEN')
           return reject()
         }
-        let vk = new VK(token)
-        let db = new DB()
-        vk.getPhotos(target).then(r => {
+        this.vk = new VK(token)
+
+        this.db = new DB()
+        this.object = object
+        this.target = target
+
+        this.vk.getPhotos(target).then(r => {
           const { count, items } = r
           if (count === 0) return reject()
 
-          db.findAvailableItemToLike({
+          this.db.findAvailableItemToLike({
             type: 'photo',
             object,
             target,
             items: items
           }).then(id => {
-            vk.like({
+            this.vk.like({
               target: target,
               id: id
             }).then(r => {
-              db.addToLikedList({
+              this.db.addToLikedList({
                 object: object,
                 target: target,
                 type: 'photo',
@@ -244,10 +248,12 @@ class Like extends Likes {
               return resolve()
             }).catch(e => {
               new Console().error(`{Like} id${object} DOES NOT LIKED id${target}`)
+              this.errorHandler(e)
               return reject(e)
             })
           }).catch(e => {
             new Console().error(`{Like} id${object} DOES NOT LIKED id${target}`)
+            this.errorHandler(e)
             return resolve()
           })
         }).catch(e => {
@@ -257,6 +263,12 @@ class Like extends Likes {
         return resolve()
       }, VK_API_WAIT())
     })
+  }
+
+  errorHandler (e) {
+    if (this.object && this.target) {
+      this.db.setNotValid(this.object)
+    }
   }
 }
 
@@ -377,8 +389,7 @@ class DB {
             username: username,
             photo_100: photo_100,
             photo_50: photo_50,
-            isValid: true,
-            isActive: true
+            isValid: true
           })
           new Console().success(`{Listeners} ${username} is OK`)
           return resolve()
@@ -386,7 +397,6 @@ class DB {
           return reject()
         }
       }).catch(e => {
-        console.log(e)
         db.ref(`users/${id}`).update({
           isValid: false,
           isActive: false
@@ -532,6 +542,13 @@ class DB {
     latestLike.transaction(currentValue => firebase.database.ServerValue.TIMESTAMP)
   }
 
+  setNotValid (id) {
+    if (!id) return false
+    const isValid = this.db.ref(`/users/${id}/isValid`)
+    isValid.transaction(currentValue => false)
+  }
+
+
 }
 
 class Engine {
@@ -557,8 +574,7 @@ class Engine {
   }
 
   getTasks () {
-    this.tasks = new Groups()
-    console.log(this.tasks)
+    this.tasks = new Queue()
   }
 
   getNextTask () {
@@ -694,9 +710,16 @@ class Queue extends Algorithms {
   constructor () {
     super()
 
-    this.users.sort((a, b) => {
-      return a.latestLike > b.latestLike
-    })
+
+    // Latest
+    // this.users.sort((a, b) => {
+    //   return a.latestLike > b.latestLike
+    // })
+
+    // Randomize
+    this.users = shuffleArray(this.users)
+
+
 
     for (let i = 0; i <= this.users.length - 1; i++) {
       if (i === this.users.length - 1) {
@@ -727,11 +750,11 @@ class Autofixers {
   fixUsersStats () {
     const stats = this.db.ref('statistics')
     stats.once('value', snap => {
-      console.log(snap.val())
+      // console.log(snap.val())
       let statistics = snap.val()
       for (let stat in statistics) {
         if (!stat.you_liked || !stat.liked_you) {
-          console.log(stat)
+          // console.log(stat)
         } 
       }
     })
@@ -742,10 +765,10 @@ class Autofixers {
 const listeners = new Listeners()
 const engine = new Engine()
 
-const autofixers = new Autofixers()
+// const autofixers = new Autofixers()
 
 function VK_API_WAIT () {
-  const generated = randomFromInterval(1000, 2000)
+  const generated = randomFromInterval(1000, 10000)
   return generated
 }
 
