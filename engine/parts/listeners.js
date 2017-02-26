@@ -8,7 +8,7 @@ class Listeners {
     this.console = new Console()
 
     this.listenForNewUsers()
-    this.db.updateUsersInfo()
+    // this.db.updateUsersInfo()
   }
 
   listenForNewUsers () {

@@ -4,8 +4,6 @@ const firebaseConfig = require('./firebaseConfig')
 
 const RESTART_ENGINE_TIME = 60000
 
-let usersInstance = null
-
 let app = require('./parts/app')
 let db = app.database()
 
@@ -16,8 +14,17 @@ const Console = require('./parts/console')
 const Listeners = require('./parts/listeners')
 
 const Users = require('./parts/users')
+const GlobalStats = require('./parts/globalStats')
 
-const Algorithms = require('./algorithms/algorithms')
+const globalStats = new GlobalStats()
+
+globalStats.countAllCounters()
+  .then(r => {
+    console.log('counted')
+  })
+
+const algorithms = require('./algorithms')
+
 
 
 
@@ -115,15 +122,15 @@ class Like extends Likes {
                 type: 'photo',
                 id: id
               })
-              new Console().success(`{Like} id${object} liked id${target}`)
+              new Console().success(`{Like} id${object} >>> id${target}`)
               return resolve()
             }).catch(e => {
-              new Console().error(`{Like} id${object} DOES NOT LIKED id${target}`)
+              new Console().error(`{Like} id${object} ☒☒☒ id${target}`)
               this.errorHandler(e)
               return reject(e)
             })
           }).catch(e => {
-            new Console().error(`{Like} id${object} DOES NOT LIKED id${target}`)
+            new Console().error(`{Like} id${object} ☒☒☒ id${target}`)
             this.errorHandler(e)
             return resolve()
           })
@@ -167,7 +174,7 @@ class Engine {
   }
 
   getTasks () {
-    this.tasks = new Queue()
+    this.tasks = new algorithms.Queue()
   }
 
   getNextTask () {
@@ -209,91 +216,7 @@ class Engine {
   }
 }
 
-class Groups extends Algorithms {
-  constructor () {
-    super()
-    this.groups = []
-    
-    this.peopleInGroup = 0
-    this.groupsCount = 0
-
-    this.splitIntoGroups()
-    this.getTasks()
-
-    return this.tasks
-  }
-
-  splitIntoGroups () {
-    let peopleAmount = this.users.length
-    this.findOptimalGroupsCount(peopleAmount)
-    this.users = shuffleArray(this.users)
-
-    for (let i = 0; i < this.groupsCount; i++) {
-      this.groups.push([])
-      for (let e = 0; e < this.peopleInGroup; e++) {
-        this.groups[i].push(this.users[0])
-        this.users.shift()
-      }
-    }
-
-    return this.groups
-  }
-
-  findOptimalGroupsCount (peopleAmount) {
-    if (!peopleAmount) return new Console().error('Failed to split into groups')
-    if (peopleAmount < 4) {
-      this.peopleInGroup = peopleAmount
-      this.groupsCount = 1
-
-      return {
-        peopleInGroup: peopleAmount,
-        groupsCount: 1
-      }
-    }
-    let medianArray = []
-    let count = 0
-    for (let i = 2; i <= peopleAmount; i++) {
-      if (peopleAmount % i == 0) {
-        count++
-        medianArray.push(i)
-      }
-    }
-
-    if (count === 0 || count === 1) {
-      return this.findOptimalGroupsCount(peopleAmount - 1)
-    }
-
-    const peopleInGroup = medianArray[Math.floor(medianArray.length / 2)]
-    const groupsCount = peopleAmount / peopleInGroup
-
-    this.peopleInGroup = peopleInGroup
-    this.groupsCount = groupsCount
-
-    return {
-      peopleInGroup,
-      groupsCount
-    }
-  }
-
-  getTasks () {
-    let groups = this.groups
-    for (let group of groups) {
-      for (let i = 0; i < group.length; i++) {
-        for (let e = 0; e < group.length; e++) {
-          if (i !== e) {
-            this.tasks.push({
-              object: group[i].id,
-              target: group[e].id
-            })
-          }
-        }
-      }
-    }
-  }
-}
-
-
-// const listeners = new Listeners()
+const listeners = new Listeners()
 // const engine = new Engine()
 
 // const autofixers = new Autofixers()

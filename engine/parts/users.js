@@ -1,5 +1,7 @@
 const DB = require('./db')
+const Console = require('./console')
 
+let usersInstance = null
 class Users {
   constructor () {
     if (!usersInstance) {
