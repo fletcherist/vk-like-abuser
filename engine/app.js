@@ -19,9 +19,7 @@ const GlobalStats = require('./parts/globalStats')
 const globalStats = new GlobalStats()
 
 globalStats.countAllCounters()
-  .then(r => {
-    console.log('counted')
-  })
+  .then(r => {})
 
 const algorithms = require('./algorithms')
 
@@ -151,8 +149,24 @@ class Like extends Likes {
 }
 
 
+const SITUATIONS = {
+  DEFAULT: 'DEFAULT',
+  FAST_TO_TARGET: 'FAST_TO_TARGET'
+}
+
 class Engine {
-  constructor () {
+  constructor (config) {
+    this.situation = null
+    this.target = null
+
+    if (config) {
+      const { situation, target } = config
+      if (situation.length > 0) {
+        this.situation = config.situation
+        this.target = config.target
+      }
+    }
+
     this.db = new DB()
     this.users = new Users()
     this.tasks = []
@@ -174,7 +188,23 @@ class Engine {
   }
 
   getTasks () {
-    this.tasks = new algorithms.Queue()
+    new Console().notify(`{Engine} Current Situation >>> «${this.situation}»`)
+    switch (this.situation) {
+      case SITUATIONS.DEFAULT:
+        new Console().notify(`{Engine} Choosing Queue Algorithm`)
+        this.tasks = new algorithms.Queue()
+        break
+      case SITUATIONS.FAST_TO_TARGET:
+        if (this.target) {
+          new Console().notify(`{Engine} Choosing Fast To Target Algorithm`)
+          this.tasks = new algorithms.FastToTarget(this.target)
+        }
+        break
+      default:
+        new Console().notify(`{Engine} Choosing Queue Algorithm`)
+        this.tasks = new algorithms.Queue()
+        break
+    }
   }
 
   getNextTask () {
@@ -217,7 +247,9 @@ class Engine {
 }
 
 const listeners = new Listeners()
-const engine = new Engine()
+const engine = new Engine({
+  situation: SITUATIONS.DEFAULT, target: ''
+})
 
 // const autofixers = new Autofixers()
 

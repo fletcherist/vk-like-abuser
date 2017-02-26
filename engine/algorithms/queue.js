@@ -1,17 +1,13 @@
 const Algorithms = require('./algorithms')
-const shuffleArray = require('../funcs/shuffleArray')
 
 class Queue extends Algorithms {
   constructor () {
     super()
 
-    // Latest
-    // this.users.sort((a, b) => {
-    //   return a.latestLike > b.latestLike
-    // })
 
     // Randomize
-    this.users = shuffleArray(this.users)
+    this.sortUsersByRandom()
+    console.log(this.users)
 
     for (let i = 0; i <= this.users.length - 1; i++) {
       if (i === this.users.length - 1) {
