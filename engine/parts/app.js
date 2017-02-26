@@ -1,5 +1,5 @@
 const firebase = require('firebase')
-const firebaseConfig = require('../firebaseConfig')
+const firebaseConfig = require('../config').firebase
 
 let app = firebase.initializeApp(firebaseConfig)
 
