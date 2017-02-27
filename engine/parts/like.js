@@ -81,11 +81,13 @@ class Like extends Likes {
               new Console().success(`{Like} id${object} >>> id${target}`)
               return resolve()
             }).catch(e => {
+              console.log(e)
               new Console().error(`{Like} id${object} ☒☒☒ id${target}`)
               this.errorHandler(e)
               return reject(e)
             })
           }).catch(e => {
+            console.log(e)
             new Console().error(`{Like} id${object} ☒☒☒ id${target}`)
             this.errorHandler(e)
             return resolve()
@@ -100,6 +102,29 @@ class Like extends Likes {
   }
 
   errorHandler (e) {
+    const alerts = {
+      floodControl: {
+        msg: 'Flood control',
+        error: 'FLOOD_CONTROL'
+      },
+      validationRequired: {
+        msg: 'Validation required: please open redirect_uri in browser',
+        error: 'VALIDATION_REQUIRED'
+      }
+    }
+
+    const errorMessage = e.toString()
+    let error = null
+    for (let alert in alerts) {
+      if (errorMessage.match(alerts[alert].msg)) {
+        error = alerts[alert].error
+        break
+      }
+    }
+
+    console.log(e)
+
+
     if (this.object && this.target) {
       this.db.setNotValid(this.object)
     }
