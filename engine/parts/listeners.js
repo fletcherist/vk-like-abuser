@@ -1,7 +1,7 @@
 const DB = require('./db')
 const Console = require('./console')
 const Engine = require('./console')
-const SITUATIONS = require('../config').SITUATIO
+const SITUATIONS = require('../config').SITUATIONS
 
 class Listeners {
   constructor () {
@@ -10,7 +10,7 @@ class Listeners {
     this.console = new Console()
 
     this.listenForNewUsers()
-    // this.db.updateUsersInfo()
+    this.db.updateUsersInfo()
   }
 
   listenForNewUsers () {
