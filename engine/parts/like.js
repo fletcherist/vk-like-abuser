@@ -2,6 +2,7 @@ const VK = require('./vk')
 const Console = require('./console')
 const Users = require('./users')
 const DB = require('./db')
+const TasksToExtension = require('./tasksToExtension') 
 
 class Likes {
   constructor () {
@@ -68,6 +69,8 @@ class Like extends Likes {
             target,
             items: items
           }).then(id => {
+            this.item = id
+
             this.vk.like({
               target: target,
               id: id
@@ -102,14 +105,18 @@ class Like extends Likes {
   }
 
   errorHandler (e) {
+    const ERRORS = {
+      FLOOD_CONTROL: 'FLOOD_CONTROL',
+      VALIDATION_REQUIRED: 'VALIDATION_REQUIRED'
+    }
     const alerts = {
       floodControl: {
         msg: 'Flood control',
-        error: 'FLOOD_CONTROL'
+        error: ERRORS.FLOOD_CONTROL
       },
       validationRequired: {
         msg: 'Validation required: please open redirect_uri in browser',
-        error: 'VALIDATION_REQUIRED'
+        error: ERRORS.VALIDATION_REQUIRED
       }
     }
 
@@ -122,8 +129,23 @@ class Like extends Likes {
       }
     }
 
-    console.log(e)
+    console.log(error)
+    switch (error) {
+      case ERRORS.FLOOD_CONTROL:
+        this.db.setFloodControl(this.object)
+        break
+      case ERRORS.VALIDATION_REQUIRED:
+        const task = new TasksToExtension().add({
+          object: this.object,
+          target: this.target,
+          item: this.item
+        })
 
+        this.db.setInactive(this.object)
+        break
+      default:
+        break
+    }
 
     if (this.object && this.target) {
       this.db.setNotValid(this.object)

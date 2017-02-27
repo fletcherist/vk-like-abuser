@@ -1,4 +1,5 @@
 const VKApi = require('node-vkapi')
+const Console = require('./console')
 
 class VK {
   constructor (access_token) {

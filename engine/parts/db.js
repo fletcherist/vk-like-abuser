@@ -188,10 +188,22 @@ class DB {
     latestLike.transaction(currentValue => firebase.database.ServerValue.TIMESTAMP)
   }
 
+  setInactive (id) {
+    if (!id) return false
+    const isActive = this.db.ref(`/users/${id}/isActive`)
+    isActive.transaction(currentValue => false)
+  }
+
   setNotValid (id) {
     if (!id) return false
     const isValid = this.db.ref(`/users/${id}/isValid`)
     isValid.transaction(currentValue => false)
+  }
+
+  setFloodControl (id) {
+    if (!id) return false
+    const floodControl = this.db.ref(`/users/${id}/floodControl`)
+    floodControl.transaction(currentValue => firebase.database.ServerValue.TIMESTAMP)
   }
 }
 

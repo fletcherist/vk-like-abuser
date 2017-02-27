@@ -102,7 +102,6 @@ class Engine {
   }
 
   isItTimeToRunEngine () {
-    console.log(new Date().getHours())
     const currentTime = new Date().getHours()
     if (currentTime >= 2 && currentTime < 8) {
       new Console().notify('{Engine} Its not a time to run Engine yet!')
