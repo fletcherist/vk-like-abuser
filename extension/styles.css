@@ -54,6 +54,12 @@ a:hover {
   text-decoration: none !important; 
 }
 
+.button__donate {
+  background: #E55D87; /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #E55D87 , #5FC3E4);
+  background: linear-gradient(to right, #E55D87 , #5FC3E4);
+  
+}
 
 .foo {
   display: flex;

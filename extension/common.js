@@ -31,6 +31,64 @@ Vue.component('help', {
   `
 })
 
+Vue.component('donate', {
+  template: `
+    <div>
+      <div class='button button__donate'>Donate</div>
+      <a target='_blank' href='http://paypal.me/fletcherist'>Paypal</a>
+    </div>
+  `
+})
+
+
+const faq = [
+  {
+    title: 'Нет заданий',
+    description: 
+      `Площадки с заданиями — прошлый век.
+        Мы все здесь автоматизировали. Больше не надо 
+        ставить кому-то лайки самому. Люди ставят лайки вам,
+        а Вы — им. Автоматически.`
+  },
+  {
+    title: 'Могут ли заморозить?',
+    description: 
+      `ВКонтакте могут. Размораживайтесь, при этом 
+      обязательно пишите нам, если такое вдруг случится. 
+      Это важно, чтобы расширение было как можно безопаснее.
+      `
+  },
+  {
+    title: 'Не ставятся лайки',
+    description: `
+      Если 
+    `
+  },
+  {
+    title: 'Проблемы?',
+    description: `Вопросы и предложения 
+      можно задать прямо разработчикам.`
+  }
+]
+
+Vue.component('how-it-works', {
+  template: `
+    <div>
+      <div v-for='item in faq'>
+        <h1>{{item.title}}</h1>
+        <div>{{item.description}}</div>
+      </div>
+    </div>
+  `,
+  data: function () {
+    return {
+      faq
+    }
+  }
+})
+
+
+
 
 Vue.use(VueFire)
 let db = firebase.database()
