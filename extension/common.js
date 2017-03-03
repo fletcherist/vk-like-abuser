@@ -149,8 +149,11 @@ Vue.component('main-navigation', {
   },
   methods: {
     setCurrentPage: function (page) {
+      if (page === this.currentPage) {
+        this.currentPage = 0
+        return
+      }
       this.currentPage = page
-      console.log(this.currentPage)
     }
   },
 
