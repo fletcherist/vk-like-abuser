@@ -35,11 +35,16 @@ Vue.component('donate', {
   template: `
     <div>
       <h1>Пожертвования</h1>
+      <h2 class='text-grey'>Сервис в разработке</h2>
+      <div class='text-grey'>Все ссылки на донат появятся на этой неделе.
+      Пока работает только PayPal.</div>
+      <h1></h1>
       <div>
-        Пожертвование — это хороший способ поддержать разработчиков.
-
+        Пожертвование — это хороший способ поддержать разработчиков и 
+        <b>сделать вклад</b> в развитие проекта. Деньги идут на покупку рекламы.
       </div>
-      <div class='button button__donate'>Donate</div>
+      <h2>Список пожертвовавших</h2>
+      <div>Пока никого нет (: Будьте первым!</div>
       <a target='_blank' href='http://paypal.me/fletcherist'>Paypal</a>
       <a target='_blank' href='http://paypal.me/fletcherist'>Яндекс.Деньги</a>
       <a target='_blank' href='http://paypal.me/fletcherist'>Qiwi</a>
