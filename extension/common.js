@@ -81,10 +81,9 @@ const faq = [
   }
 ]
 
-Vue.component('how-it-works', {
+const howItWorks = Vue.component('faq', {
   template: `
     <div class='faq'>
-      <div @click='toggle()' class='faq__button'>{{isFaqOpened}} FAQ</div>
       <div v-for='item in faq'>
         <h1>{{item.title}}</h1>
         <div>{{item.description}}</div>
@@ -94,23 +93,57 @@ Vue.component('how-it-works', {
   `,
   data: function () {
     return {
-      faq,
-      isOpened: false
-    }
-  },
-  methods: {
-    toggle: function () {
-      this.isOpened = !this.isOpened
+      faq
     }
   },
 
   computed: {
     isFaqOpened: function () {
+      console.log(this.isOpened)
       if (this.isOpened === true) {
         return 'Свернуть'
       }
       return 'Развернуть'
     }
+  }
+})
+
+Vue.component('main-navigation', {
+  template: `
+    <div>
+      <div class='navigation__buttons'>
+        <div
+          @click='setCurrentPage(1)'
+          class='navigation__button'>FAQ</div>
+        <div
+          @click='setCurrentPage(2)'
+          class='navigation__button'>Donate</div>
+      </div>
+      <div v-if='this.currentPage === 1'>
+        <faq></faq>
+      </div>
+      <div v-else-if='this.currentPage === 2'>
+        <donate></donate>
+      </div>
+      <div v-else>
+        hello
+      </div>
+
+    </div>
+  `,
+  data: function () {
+    return {
+      currentPage: 0
+    }
+  },
+  methods: {
+    setCurrentPage: function (page) {
+      this.currentPage = page
+      console.log(this.currentPage)
+    }
+  },
+  components: {
+    'faq': howItWorks
   }
 })
 

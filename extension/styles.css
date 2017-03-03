@@ -188,23 +188,27 @@ a:hover {
 
 .developers {
   padding: 1rem 0 0;
-  /*font-weight: lighter;*/
-  /*letter-spacing: 1px;*/
 }
 
 .developers__developer {
   padding: 5px;
 }
 
-.faq {
+.navigation {
 
 }
 
-.faq__button {
+.navigation__buttons {
+  display: flex;
+}
+
+.navigation__button {
   text-align: center;
-  padding: 1rem;
+  padding: .5rem 3rem;
+  margin: 0px 10px 0 0;
   cursor: pointer;
   background-color: #e5ebf1;
   color: #55677d;
   border-radius: 3px;
+  user-select: none;
 }
