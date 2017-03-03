@@ -114,21 +114,25 @@ Vue.component('main-navigation', {
       <div class='navigation__buttons'>
         <div
           @click='setCurrentPage(1)'
-          class='navigation__button'>FAQ</div>
+          class='navigation__button'
+          v-bind:class="{
+            'navigation__button--selected': this.currentPage === 1,
+            'navigation__button--not-selected': this.currentPage !== 0
+          }">FAQ</div>
         <div
           @click='setCurrentPage(2)'
-          class='navigation__button'>Donate</div>
+          class='navigation__button'
+          v-bind:class="{
+            'navigation__button--selected': this.currentPage === 2,
+            'navigation__button--not-selected': this.currentPage !== 0
+          }">Donate</div>
       </div>
       <div v-if='this.currentPage === 1'>
         <faq></faq>
       </div>
-      <div v-else-if='this.currentPage === 2'>
+      <div v-if='this.currentPage === 2'>
         <donate></donate>
       </div>
-      <div v-else>
-        hello
-      </div>
-
     </div>
   `,
   data: function () {
@@ -144,6 +148,12 @@ Vue.component('main-navigation', {
   },
   components: {
     'faq': howItWorks
+  },
+
+  computed: {
+    isCurrentPage: function (page) {
+      return this.currentPage === page
+    }
   }
 })
 
