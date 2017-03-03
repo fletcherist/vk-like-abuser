@@ -195,7 +195,7 @@ a:hover {
 }
 
 .navigation {
-
+  margin: 1rem 0 0;
 }
 
 .navigation__buttons {
@@ -215,12 +215,11 @@ a:hover {
 }
 
 .navigation__button:hover {
-  background-color: #dfe6ed;
+  background-color: #e5ebf1;
 }
 
 .navigation__button--selected {
   background-color: #dfe6ed !important;
-  font-weight: bold;
 }
 
 .navigation__button--not-selected {

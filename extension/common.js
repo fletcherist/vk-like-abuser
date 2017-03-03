@@ -34,8 +34,16 @@ Vue.component('help', {
 Vue.component('donate', {
   template: `
     <div>
+      <h1>Пожертвования</h1>
+      <div>
+        Пожертвование — это хороший способ поддержать разработчиков.
+
+      </div>
       <div class='button button__donate'>Donate</div>
       <a target='_blank' href='http://paypal.me/fletcherist'>Paypal</a>
+      <a target='_blank' href='http://paypal.me/fletcherist'>Яндекс.Деньги</a>
+      <a target='_blank' href='http://paypal.me/fletcherist'>Qiwi</a>
+      <a target='_blank' href='http://paypal.me/fletcherist'>WebMoney</a>
     </div>
   `
 })
@@ -57,12 +65,6 @@ const faq = [
       обязательно пишите нам, если такое вдруг случится. 
       Это важно, чтобы расширение было как можно безопаснее.
       `
-  },
-  {
-    title: 'Не ставятся лайки',
-    description: `
-      Если 
-    `
   },
   {
     title: 'Хьюстон?',
@@ -110,7 +112,7 @@ const howItWorks = Vue.component('faq', {
 
 Vue.component('main-navigation', {
   template: `
-    <div>
+    <div class='navigation'>
       <div class='navigation__buttons'>
         <div
           @click='setCurrentPage(1)'
@@ -145,9 +147,6 @@ Vue.component('main-navigation', {
       this.currentPage = page
       console.log(this.currentPage)
     }
-  },
-  components: {
-    'faq': howItWorks
   },
 
   computed: {
