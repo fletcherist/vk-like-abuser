@@ -81,7 +81,7 @@ const faq = [
           <a href='https://vk.com/im?sel=96170043' target='_blank'>Фил Романов</a>
           и 
           <a href='https://vk.com/im?media=&sel=142395293' target='_blank'>Никита Жуков</a>
-          © 2017
+          попробуют помочь
         </div>
       </div>
     `
