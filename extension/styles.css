@@ -185,3 +185,26 @@ a:hover {
   height: 40px;
   width: 40px;
 }
+
+.developers {
+  padding: 1rem 0 0;
+  /*font-weight: lighter;*/
+  /*letter-spacing: 1px;*/
+}
+
+.developers__developer {
+  padding: 5px;
+}
+
+.faq {
+
+}
+
+.faq__button {
+  text-align: center;
+  padding: 1rem;
+  cursor: pointer;
+  background-color: #e5ebf1;
+  color: #55677d;
+  border-radius: 3px;
+}

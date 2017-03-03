@@ -65,24 +65,51 @@ const faq = [
     `
   },
   {
-    title: 'Проблемы?',
-    description: `Вопросы и предложения 
-      можно задать прямо разработчикам.`
+    title: 'Хьюстон?',
+    description: `Ничего не работает? Все вопросы и предложения 
+      можно задать прямо разработчикам.`,
+    additionHtml: `
+      <div class='developers'>
+        <div class='developers__developer'>
+          <a href='https://vk.com/im?sel=96170043' target='_blank'>Фил Романов</a>
+          и 
+          <a href='https://vk.com/im?media=&sel=142395293' target='_blank'>Никита Жуков</a>
+          © 2017
+        </div>
+      </div>
+    `
   }
 ]
 
 Vue.component('how-it-works', {
   template: `
-    <div>
+    <div class='faq'>
+      <div @click='toggle()' class='faq__button'>{{isFaqOpened}} FAQ</div>
       <div v-for='item in faq'>
         <h1>{{item.title}}</h1>
         <div>{{item.description}}</div>
+        {{{item.additionHtml}}}
       </div>
     </div>
   `,
   data: function () {
     return {
-      faq
+      faq,
+      isOpened: false
+    }
+  },
+  methods: {
+    toggle: function () {
+      this.isOpened = !this.isOpened
+    }
+  },
+
+  computed: {
+    isFaqOpened: function () {
+      if (this.isOpened === true) {
+        return 'Свернуть'
+      }
+      return 'Развернуть'
     }
   }
 })
