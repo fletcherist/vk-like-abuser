@@ -18,10 +18,11 @@
         <div class='user__avatar'>
         <!-- target='_blank' :href="'http://vk.com/id' + user.id" -->
         <a>
+        {{user.username}}
           <img
             class='avatar'
-            v-bind:src='user.photo_100'
-            v-bind:class="{ 
+            :src='user.photo_100'
+            :class="{ 
               'avatar--isNotActive' : user.isActive === false,
               'avatar--isActive': user.isActive === true
             }"
@@ -119,20 +120,6 @@ export default {
     removeUser: function (id) {
       console.log(this.$firebaseRefs.users)
       // db.ref(`users/${id}`).remove()
-    },
-    sortUsers: function () {
-      this.$unbind(users)
-      // this.users.sort((a, b) => {
-      //   return a.createdAt > b.createdAt
-      // })
-
-      // return users
-    },
-    sortUsersByLikes: function () {
-      // console.log(this.users)
-      // this.users.sort((a, b) => {
-
-      // })
     }
   },
   computed: {
@@ -157,7 +144,9 @@ export default {
     filteredUsers: function () {
       return this.users.filter(user => {
         if (user && user.username) {
-          return user.username.indexOf(this.queryUsername) > -1
+          return user.username
+            .toLowerCase()
+            .indexOf(this.queryUsername.toLowerCase()) > -1
         }
 
         return false
