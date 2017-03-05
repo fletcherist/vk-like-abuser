@@ -6,7 +6,7 @@
       title='VK Like Abuser'
     >
       <div slot="actions">
-        <div class='quick-stats'>228/54</div>
+        <!-- <div class='quick-stats'>228/54</div> -->
         <ui-icon-button
           color="black"
           icon="refresh"
@@ -15,12 +15,11 @@
         ></ui-icon-button>
       </div>
     </ui-toolbar>
-    <ui-tabs raised>
+    <ui-tabs
+      raised>
       <ui-tab title="Сей час">
-        <div class='stats'>
-          <!-- <h1>{{global_stats.users['total']}} пользователей</h1> -->
-          <!-- <div class='stats__active'>{{global_stats.users['active']}} active</div> -->
-          <!-- <div class='stats__not-active'>{{global_stats.users['inactive']}} not active</div> -->
+        <div v-if="global_stats">
+          <stats :globalStats="global_stats"></stats>
         </div>
       </ui-tab>
       <ui-tab title="Пользователи">
@@ -62,6 +61,7 @@
 
 <script>
 import firebase from 'firebase'
+import Stats from './Stats'
 
 var config = {
   apiKey: 'AIzaSyB1IjoxSLvx-C_hpyQ2irgzB01Tf3bts3I',
@@ -92,8 +92,11 @@ export default {
       sortedUsers: [],
       queryUsername: '',
       global_stats: {
-        total: '',
-        active: ''
+        users: {
+          total: 0,
+          active: 0,
+          inactive: 0
+        }
       }
     }
   },
@@ -181,6 +184,9 @@ export default {
         return false
       })
     }
+  },
+  components: {
+    'stats': Stats
   }
 }
 </script>
@@ -196,6 +202,14 @@ a {
   max-width: 80vw;
   margin: 4rem auto;
 }
+
+@media (max-width: 500px) {
+  .wrapper {
+    max-width: 100vw;
+    margin: 0rem auto;
+  }
+}
+
 
 .users {
   display: flex;
@@ -224,17 +238,6 @@ a {
 .user__avatar {
   display: flex;
   justify-content: center;
-}
-
-.stats {
-
-}
-
-.stats__active {
-  color: #2e7d32;
-}
-.stats__not-active {
-  color: #d32f2f;
 }
 
 .avatar {

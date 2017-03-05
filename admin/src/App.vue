@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <div></div>
     <router-view></router-view>
   </div>
 </template>
@@ -13,7 +12,16 @@ export default {
 </script>
 
 <style>
+
+body {
+  background-color: #424242 !important;
+}
+
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: 'Helvetica Neue';
+}
+
+.ui-tabs__body {
+  background-color: rgb(54, 57, 62) !important;
 }
 </style>
