@@ -2,6 +2,7 @@ const DB = require('./db')
 const Console = require('./console')
 const Users = require('./users')
 const Like = require('./like')
+const GlobalStats = require('./globalStats')
 
 const algorithms = require('../algorithms')
 const SITUATIONS = require('../config').SITUATIONS
@@ -25,6 +26,7 @@ class Engine {
 
     this.db = new DB()
     this.users = new Users()
+    this.globalStats = new GlobalStats()
     this.tasks = []
 
     if (!this.isItTimeToRunEngine()) {
@@ -92,11 +94,12 @@ class Engine {
     return new Promise((resolve, reject) => {
       new Like({object, target})
         .then(() => {
-          resolve()
+          this.globalStats.incrementLikesCount()
+          return resolve()
         })
         .catch((e) => {
           console.warn(e)
-          resolve()
+          return resolve()
         })
     })
   }

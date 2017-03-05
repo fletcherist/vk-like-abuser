@@ -1,42 +1,63 @@
 <template>  
-  <div>
-
-    <div class='stats'>
-      <h1>{{users.length}} users</h1>
-      <div class='stats__active'>{{isActive}} active</div>
-      <div class='stats__not-active'>{{isNotActive}} not active</div>
-    </div>
-
-    <ui-textbox icon="search" placeholder="Search" v-model="queryUsername"></ui-textbox>
-
-    <ui-button @click='sortUsers()'>Sort Users</ui-button>
-    <ui-button @click='sortUsers()'>Sort Users By Likes</ui-button>
-
-    <div class='users'>
-      <div class='user' v-for='user in filteredUsers' ref='user'>
-        <!-- <div @click='removeUser(user.id)'>x</div> -->
-        <div class='user__avatar'>
-        <!-- target='_blank' :href="'http://vk.com/id' + user.id" -->
-        <a>
-        {{user.username}}
-          <img
-            class='avatar'
-            :src='user.photo_100'
-            :class="{ 
-              'avatar--isNotActive' : user.isActive === false,
-              'avatar--isActive': user.isActive === true
-            }"
-          />
-        </a>
+  <div class='wrapper'>
+    <!-- <ui-button @click='sortUsers()'>Sort Users</ui-button> -->
+    <!-- <ui-button @click='sortUsers()'>Sort Users By Likes</ui-button> -->
+    <ui-toolbar
+      title='VK Like Abuser'
+    >
+      <div slot="actions">
+        <div class='quick-stats'>228/54</div>
+        <ui-icon-button
+          color="black"
+          icon="refresh"
+          size="large"
+          type="secondary"
+        ></ui-icon-button>
+      </div>
+    </ui-toolbar>
+    <ui-tabs raised>
+      <ui-tab title="Сей час">
+        <div class='stats'>
+          <!-- <h1>{{global_stats.users['total']}} пользователей</h1> -->
+          <!-- <div class='stats__active'>{{global_stats.users['active']}} active</div> -->
+          <!-- <div class='stats__not-active'>{{global_stats.users['inactive']}} not active</div> -->
         </div>
-        <div class='user__stats'>
-          <b>{{getStats(user.id).you_liked || 0}}</b>
-          /
-          <b>{{getStats(user.id).liked_you || 0}}</b>
+      </ui-tab>
+      <ui-tab title="Пользователи">
+        <div class='search__box'>
+          <ui-textbox
+            icon="search"
+            placeholder="Начните вводить имя"
+            v-model="queryUsername">
+          </ui-textbox>
+        </div>
+        <div class='users'>
+          <div class='user' v-for='user in filteredUsers' ref='user'>
+            <!-- <div @click='removeUser(user.id)'>x</div> -->
+            <div class='user__avatar'>
+            <!-- target='_blank' :href="'http://vk.com/id' + user.id" -->
+            <a>
+              <img
+                class='avatar'
+                :src='user.photo_100'
+                :class="{ 
+                  'avatar--isNotActive' : user.isActive === false,
+                  'avatar--isActive': user.isActive === true
+                }"
+              />
+            </a>
+            </div>
+            <div class='user__stats'>
+              <b>{{getStats(user.id).you_liked || 0}}</b>
+              /
+              <b>{{getStats(user.id).liked_you || 0}}</b>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
+      </ui-tab>
+    </ui-tabs>
+
 </template>
 
 <script>
@@ -69,7 +90,11 @@ export default {
       searchByUsername: '',
       users: this.users,
       sortedUsers: [],
-      queryUsername: ''
+      queryUsername: '',
+      global_stats: {
+        total: '',
+        active: ''
+      }
     }
   },
   firebase: {
@@ -80,7 +105,11 @@ export default {
     // },
     stats: stats,
     pushes: pushes,
-    likes: likes
+    likes: likes,
+    global_stats: {
+      source: db.ref('/global_stats'),
+      asObject: true
+    }
   },
   methods: {
     getStats: function (id) {
@@ -163,6 +192,11 @@ a {
   color: black;
 }
 
+.wrapper {
+  max-width: 80vw;
+  margin: 4rem auto;
+}
+
 .users {
   display: flex;
   flex-direction: row;
@@ -193,7 +227,7 @@ a {
 }
 
 .stats {
-  margin: 1rem;
+
 }
 
 .stats__active {
@@ -216,5 +250,15 @@ a {
 
 .avatar--isActive {
   border-color: #81d4fa;
+}
+
+.search__box {
+  max-width: 40vw;
+  margin: 0px auto;
+}
+
+.quick-stats {
+  display: inline-block;
+  margin: 1rem;
 }
 </style>

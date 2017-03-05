@@ -78,6 +78,12 @@ class GlobalStats {
     ])
   }
 
+  incrementLikesCount () {
+    console.log('incrementing')
+    const likesCount = this.db.ref('/global_stats/likes/all')
+    likesCount.transaction(currentValue => (currentValue || 0) + 1)
+  }
+
 }
 
 module.exports = GlobalStats
