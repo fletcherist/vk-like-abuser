@@ -8,6 +8,7 @@ class Users {
       this.users = {}
       this.usersCount = 0
       this.initialized = false
+      this.db = new DB()
 
       usersInstance = this
     }
@@ -33,7 +34,7 @@ class Users {
 
   fetchUsers () {
     return new Promise((resolve, reject) => {
-      new DB().getUsers()
+      this.db.getUsers()
         .then(users => {
           this.users = users
           resolve()
@@ -75,10 +76,24 @@ class Users {
       if (!this.users[user].latestLike) {
         this.users[user].latestLike = 0
       }
-      userList.push(this.users[user])
+
+      // If user with no VK id
+      if (!this.users[user].id) {
+        // Remove him from database
+        this.removeUser(user)
+      }
+
+      if (this.users[user].id) {
+        userList.push(this.users[user])
+      }
     }
     this.usersCount = i
     return userList
+  }
+
+
+  removeUser (id) {
+    // TODO
   }
 }
 

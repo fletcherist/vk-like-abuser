@@ -16,7 +16,6 @@ class Engine {
     if (config) {
       const { situation, target } = config
       if (situation.length > 0) {
-        console.warn('asdasdas')
         this.situation = config.situation
         this.target = config.target
       }
@@ -37,7 +36,7 @@ class Engine {
       .then(() => {
         new Console().success('{Engine} is initialized')
         this.getTasks()
-        this.start()
+        // this.start()
       })
   }
 
