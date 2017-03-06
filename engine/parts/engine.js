@@ -36,7 +36,7 @@ class Engine {
       .then(() => {
         new Console().success('{Engine} is initialized')
         this.getTasks()
-        // this.start()
+        this.start()
       })
   }
 

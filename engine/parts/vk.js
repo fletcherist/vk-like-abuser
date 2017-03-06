@@ -1,5 +1,6 @@
 const VKApi = require('node-vkapi')
 const Console = require('./console')
+const ErrorResolver = require('./errorResolver')
 
 class VK {
   constructor (access_token) {
@@ -68,6 +69,11 @@ class VK {
         return resolve(res)
       })
       .catch(e => {
+        console.warn(e)
+        new ErrorResolver({
+          error: e,
+          userId: user_id
+        })
         return reject(e)
       })
     })

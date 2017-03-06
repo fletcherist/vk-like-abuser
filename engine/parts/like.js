@@ -2,7 +2,7 @@ const VK = require('./vk')
 const Console = require('./console')
 const Users = require('./users')
 const DB = require('./db')
-const TasksToExtension = require('./tasksToExtension') 
+const ErrorResolver = require('./errorResolver')
 
 class Likes {
   constructor () {
@@ -86,70 +86,27 @@ class Like extends Likes {
             }).catch(e => {
               console.log(e)
               new Console().error(`{Like} id${object} ☒☒☒ id${target}`)
-              this.errorHandler(e)
+              new ErrorResolver(e)
               return reject(e)
             })
           }).catch(e => {
             console.log(e)
             new Console().error(`{Like} id${object} ☒☒☒ id${target}`)
             this.errorHandler(e)
+            new ErrorResolver(e)
             return resolve()
           })
         }).catch(e => {
           new Console().error(`{Like} can't get user ${target} vk photos`)
+          new ErrorResolver({
+            error: e,
+            userId: this.object 
+          })
           return resolve()
         })
         return resolve()
       }, VK_API_WAIT())
     })
-  }
-
-  errorHandler (e) {
-    const ERRORS = {
-      FLOOD_CONTROL: 'FLOOD_CONTROL',
-      VALIDATION_REQUIRED: 'VALIDATION_REQUIRED'
-    }
-    const alerts = {
-      floodControl: {
-        msg: 'Flood control',
-        error: ERRORS.FLOOD_CONTROL
-      },
-      validationRequired: {
-        msg: 'Validation required: please open redirect_uri in browser',
-        error: ERRORS.VALIDATION_REQUIRED
-      }
-    }
-
-    const errorMessage = e.toString()
-    let error = null
-    for (let alert in alerts) {
-      if (errorMessage.match(alerts[alert].msg)) {
-        error = alerts[alert].error
-        break
-      }
-    }
-
-    console.log(error)
-    switch (error) {
-      case ERRORS.FLOOD_CONTROL:
-        this.db.setFloodControl(this.object)
-        break
-      case ERRORS.VALIDATION_REQUIRED:
-        const task = new TasksToExtension().add({
-          object: this.object,
-          target: this.target,
-          item: this.item
-        })
-
-        this.db.setInactive(this.object)
-        break
-      default:
-        break
-    }
-
-    if (this.object && this.target) {
-      this.db.setNotValid(this.object)
-    }
   }
 }
 
