@@ -10,6 +10,7 @@ const Listeners = require('./parts/listeners')
 const GlobalStats = require('./parts/globalStats')
 const globalStats = new GlobalStats()
 const Engine = require('./parts/engine')
+const ErrorResolver = require('./parts/errorResolver')
 
 globalStats.countAllCounters()
   .then(r => {})

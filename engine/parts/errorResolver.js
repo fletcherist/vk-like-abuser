@@ -1,21 +1,22 @@
-const DB = require('./db')
 const Console = require('./console')
 const TasksToExtension = require('./tasksToExtension')
 
 class ErrorResolver {
   constructor (config) {
-    if (!config) {
-      return new Console().error('{Error Resolver} No config provided')
-    }
+    if (!config) return new Console().error('{Error Resolver} No config provided')
 
-    let { error, userId } = config
-    if (!error) {
-      return new Console().error('{Error Resolver} Error is not provided')
-    }
+    let { error, object, target, item } = config
 
-    if (!userId) {
-      return new Console().error('{Error Resolver} UserId is not provided')
-    }
+    if (!error) return new Console().error('{Error Resolver} Error is not provided')
+    if (!object) return new Console().error('{Error Resolver} object is not provided')
+
+    this.error = error
+    this.object = object
+    this.target = target
+    this.item = item
+
+    const DB = require('./db')
+    this.db = new DB()
 
     const ERRORS = {
       FLOOD_CONTROL: 'FLOOD_CONTROL',
@@ -65,9 +66,9 @@ class ErrorResolver {
         break
     }
 
-    if (this.object && this.target) {
-      this.db.setNotValid(this.object)
-    }
+    // if (this.object && this.target) {
+    //   this.db.setNotValid(this.object)
+    // }
   }
 }
 

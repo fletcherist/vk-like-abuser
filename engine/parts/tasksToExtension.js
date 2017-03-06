@@ -1,6 +1,4 @@
 const firebase = require('firebase')
-
-const DB = require('./db')
 const Console = require('./console')
 
 /*
@@ -14,7 +12,10 @@ const Console = require('./console')
 */
 class TasksToExtension {
   constructor () {
-    this.db = new DB().db
+    // Do not move to the top of the file
+    // While refactoring — doesn't working
+    const DB = require('./db')
+    this.db = new DB()
   }
 
   add ({object, target, item}) {
@@ -22,7 +23,7 @@ class TasksToExtension {
     this.target = target
     this.item = item
 
-    if (this.object && this.target) {
+    if (this.object && this.target && this.item) {
       this.db.ref(`/tasks/${this.object}`).push({
         object: this.object,
         target: this.target,

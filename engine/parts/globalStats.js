@@ -83,6 +83,11 @@ class GlobalStats {
     likesCount.transaction(currentValue => (currentValue || 0) + 1)
   }
 
+  incrementErrorsCount () {
+    const errorsCount = this.db.ref('/global_stats/errors/all')
+    errorsCount.transaction(currentValue => (currentValue || 0) + 1)
+  }
+
 }
 
 module.exports = GlobalStats

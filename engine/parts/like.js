@@ -86,26 +86,31 @@ class Like extends Likes {
             }).catch(e => {
               console.log(e)
               new Console().error(`{Like} id${object} ☒☒☒ id${target}`)
-              new ErrorResolver(e)
+              this.errorHandler(e)
               return reject(e)
             })
           }).catch(e => {
             console.log(e)
             new Console().error(`{Like} id${object} ☒☒☒ id${target}`)
             this.errorHandler(e)
-            new ErrorResolver(e)
             return resolve()
           })
         }).catch(e => {
           new Console().error(`{Like} can't get user ${target} vk photos`)
-          new ErrorResolver({
-            error: e,
-            userId: this.object 
-          })
+          
           return resolve()
         })
         return resolve()
       }, VK_API_WAIT())
+    })
+  }
+
+  errorHandler (e) {
+    return new ErrorResolver({
+      error: e,
+      object: this.object,
+      target: this.target,
+      item: this.item
     })
   }
 }
