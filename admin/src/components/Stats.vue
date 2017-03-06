@@ -2,34 +2,47 @@
   <div class='stats'>
     <!-- <div class='stats__active'>{{globalStats.users.active}} active</div>
     <div class='stats__not-active'>{{globalStats.users.inactive}} not active</div> -->
+    <recounters></recounters>
     <div v-if="globalStats.users">
       <div class='stats__container'>
         <div class='stats__block'>
           <ui-icon icon='favorite' class='stats__icon'></ui-icon>
-          <div class='stats__value'>{{globalStats.likes.all}}</div>
+          <div class='stats__value'>
+            {{globalStats.likes.all}}
+            <div class='stats__value_desc'>likes</div>
+          </div>
         </div>
       </div>
       <h1>users</h1>
       <div class='stats__container'>
         <div class='stats__block'>
-          <ui-icon
-            icon='accessibility'
+          <!-- <ui-icon
+            icon='mood'
             class='stats__icon'
-          ></ui-icon>
-          <div class='stats__value'>{{globalStats.users.active}}</div>
+          ></ui-icon> -->
+          <div class='stats__value'>
+            {{globalStats.users.active}}
+            <span class='stats__value_desc'>active</span>
+          </div>
         </div>
         <div class='stats__operators'>+</div>
         <div class='stats__block'>
-          <ui-icon
-            icon='accessible'
+          <!-- <ui-icon
+            icon='mood_bad'
             class='stats__icon'>
-          </ui-icon>
-          <div class='stats__value'>{{globalStats.users.inactive}}</div>
+          </ui-icon> -->
+          <div class='stats__value'>
+            {{globalStats.users.inactive}}
+            <span class='stats__value_desc'>passive</span>
+          </div>
         </div>
         <div class='stats__operators'>=</div>
         <div class='stats__block'>
-          <ui-icon icon='perm_identity' class='stats__icon'></ui-icon>
-          <div class='stats__value'>{{globalStats.users.total}}</div>
+          <!-- <ui-icon icon='perm_identity' class='stats__icon'></ui-icon> -->
+          <div class='stats__value'>
+            {{globalStats.users.total}}
+            <span class='stats__value_desc'>current</span>
+          </div>
         </div>
       </div>
     </div>
@@ -42,6 +55,7 @@
   </div>
 </template>
 <script>
+import Recounters from './Recounters'
 
 export default {
   name: 'stats',
@@ -62,6 +76,9 @@ export default {
       }
     },
     'message': String
+  },
+  components: {
+    'recounters': Recounters
   }
 }
 </script>
@@ -90,6 +107,11 @@ export default {
 .stats__value {
   font-size: 2rem;
   font-weight: lighter;
+}
+
+.stats__value_desc {
+  font-size: 1.25rem;
+  font-weight: normal;
 }
 
 .stats__operators {

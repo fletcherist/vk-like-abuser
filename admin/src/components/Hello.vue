@@ -3,7 +3,7 @@
     <!-- <ui-button @click='sortUsers()'>Sort Users</ui-button> -->
     <!-- <ui-button @click='sortUsers()'>Sort Users By Likes</ui-button> -->
     <ui-toolbar
-      title='VK Like Abuser'
+      title='VK Like Abuser Reactor'
     >
       <div slot="actions">
         <!-- <div class='quick-stats'>228/54</div> -->
