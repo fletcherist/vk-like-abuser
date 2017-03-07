@@ -93,14 +93,12 @@ class Like extends Likes {
             console.log(e)
             new Console().error(`{Like} id${object} ☒☒☒ id${target}`)
             this.errorHandler(e)
-            return resolve()
+            return reject(e)
           })
         }).catch(e => {
           new Console().error(`{Like} can't get user ${target} vk photos`)
-          
-          return resolve()
+          return reject(e)
         })
-        return resolve()
       }, VK_API_WAIT())
     })
   }

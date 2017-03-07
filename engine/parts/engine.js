@@ -64,8 +64,6 @@ class Engine {
         this.tasks = new algorithms.Queue()
         break
     }
-
-    console.log(this.tasks)
   }
 
   getNextTask () {

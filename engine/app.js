@@ -1,5 +1,4 @@
-let app = require('./parts/app')
-let db = app.database()
+const notifier = require('node-notifier')
 
 const DB = require('./parts/db')
 const VK = require('./parts/vk')
@@ -21,6 +20,11 @@ const listeners = new Listeners()
 const engine = new Engine()
 
 const SITUATIONS = require('./config').SITUATIONS
+
+notifier.notify({
+  'title': 'VK Like Abuser',
+  'message': 'Application has benn successfully started!'
+})
 
 // new Engine({
 //   situation: SITUATIONS.FAST_TO_TARGET,

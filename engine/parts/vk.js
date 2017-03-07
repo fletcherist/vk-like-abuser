@@ -8,6 +8,14 @@ class VK {
     this.vk = new VKApi({
       token: access_token
     })
+
+    this.vk.call('stats.trackVisitor')
+      .then(res => {
+
+      })
+      .catch(e => {
+        
+      })
   }
 
   getUser (user_ids) {

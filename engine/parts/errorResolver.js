@@ -5,7 +5,8 @@ const ERRORS = {
   FLOOD_CONTROL: 'FLOOD_CONTROL',
   VALIDATION_REQUIRED: 'VALIDATION_REQUIRED',
   DEACTIVATED: 'DEACTIVATED',
-  INVALID_ACCESS_TOKEN: 'INVALID_ACCESS_TOKEN'
+  INVALID_ACCESS_TOKEN: 'INVALID_ACCESS_TOKEN',
+  INVALID_SESSION: 'INVALID_SESSION'
 }
 
 class ErrorResolver {
@@ -23,7 +24,10 @@ class ErrorResolver {
     this.item = item
 
     const DB = require('./db')
+    const GlobalStats = require('./globalStats')
+
     this.db = new DB()
+    this.globalStats = new GlobalStats()
 
     error = this.findError()
     
@@ -46,6 +50,9 @@ class ErrorResolver {
         break
     }
 
+    // Incrementing the all errors counter
+    this.globalStats.incrementErrorsCount()
+
     // if (this.object && this.target) {
     //   this.db.setNotValid(this.object)
     // }
@@ -64,6 +71,10 @@ class ErrorResolver {
       invalidAccessToken: {
         msg: 'invalid access_token',
         error: ERRORS.INVALID_ACCESS_TOKEN
+      },
+      invalidSession: {
+        msg: 'invalid session',
+        error: ERRORS.INVALID_SESSION
       }
     }
 

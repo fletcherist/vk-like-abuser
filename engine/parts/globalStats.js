@@ -11,8 +11,12 @@ class GlobalStats {
 
   countAllLikes () {
     return new Promise((resolve, reject) => {
-
-      return resolve()
+      this.db.ref('/likes').once('value', snap => {
+        let likes = snap.val()
+        console.warn(likes)
+        return resolve() 
+      })
+      
     })
   }
 
@@ -84,6 +88,7 @@ class GlobalStats {
   }
 
   incrementErrorsCount () {
+    console.warn('incrmentni')
     const errorsCount = this.db.ref('/global_stats/errors/all')
     errorsCount.transaction(currentValue => (currentValue || 0) + 1)
   }
