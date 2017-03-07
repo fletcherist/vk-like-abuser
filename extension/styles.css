@@ -67,7 +67,7 @@ a:hover {
 
 .foo {
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-end;
   padding: .5rem;
   min-height: 4rem;
 }
@@ -92,6 +92,7 @@ a:hover {
 .activate {
   width: 100%;
   margin: 1rem 0;
+  text-align: center;
 }
 
 .button__activate {
@@ -110,14 +111,29 @@ a:hover {
 
 }
 
+.container {
+  /*display: flex;*/
+  margin: 20vh auto;
+  width: 600px;
+}
+
 .wrapper {
-  max-width: 350px;
-  width: 80vw;
+  max-width: 260px;
+  width: 30vw;
   background-color: white;
   box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
   padding: .7rem;
-  margin: 20vh auto;
   margin-bottom: 0rem;
+  border-radius: 2px;
+  float: left;
+}
+
+.wrapper__right {
+  float: left;
+  margin-left: 1rem;
+  width: 15vw;
+  max-width: 200px;
+  min-width: 200px;
 }
 
 .wrapper--next {
@@ -125,7 +141,7 @@ a:hover {
 }
 
 .stats {
-  /*text-align: center;*/
+  text-align: center;
 }
 
 .stats__item {
@@ -203,12 +219,13 @@ a:hover {
 
 .navigation__buttons {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .navigation__button {
   text-align: center;
-  padding: .5rem 2rem;
-  margin: 0px 10px 0 0;
+  padding: .5rem 1rem;
+  margin: 0px 10px 10px 0;
   cursor: pointer;
   background-color: #e5ebf1;
   color: #55677d;
@@ -227,4 +244,8 @@ a:hover {
 
 .navigation__button--not-selected {
   background-color: #f3f3f3;
+}
+
+.realtime-likes {
+
 }

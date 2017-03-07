@@ -11,52 +11,60 @@
 <script src='scripts/options.js'></script>
 <body>
   <svg id='graph'></svg>
-  <div id="app" class='wrapper'>
-    <div class='foo'>
-      <div v-if='authorized' class='username'>
-        <img v-show='me.photo_100' v-bind:src='me.photo_100' class='avatar'>
-        <span class='username__holder'>{{me.username}} </span>
-        <span>
-          <b><a v-on:click='logout()'>выйти</a></b>
-        </span>
-      </div>
-      <div v-else>
-          <a href='https://oauth.vk.com/authorize?client_id=5133221&scope=wall,friends,offline&redirect_uri=https://oauth.vk.com/blank.html&display=popup&v=5.17&response_type=token' class='button' target='_blank'
-          v-bind:class="{'not-active': !agreedWithTerms}">Войти</a>
-      </div>
-    </div>
-    <div v-if='authorized'>
-      <div class='activate'>
-        <div class='button button__activate button--center' v-on:click="toggle()">
-          <span v-if='me.isActive'>Приостановить</span>
-          <span v-else>Начать</span>
+  <div id="app" class='container'>
+    <div class='wrapper'>
+      <div class='foo'>
+        <div v-if='authorized'>
+          <div class='username'>
+            <img v-show='me.photo_100' v-bind:src='me.photo_100' class='avatar'>
+            <span class='username__holder'>{{me.username}} </span>
+            <span>
+              <b><a v-on:click='logout()'>выйти</a></b>
+            </span>
+          </div>
+        </div>
+        <div v-else>
+            <a href='https://oauth.vk.com/authorize?client_id=5133221&scope=wall,friends,offline&redirect_uri=https://oauth.vk.com/blank.html&display=popup&v=5.17&response_type=token' class='button' target='_blank'
+            v-bind:class="{'not-active': !agreedWithTerms}">Войти</a>
         </div>
       </div>
-      <div class='stats'>
-        <div class='stats__item'>
-          Статус:
-            <b>
-              <span v-if='me.isActive' class='is-working'>Работает</span>
-              <span v-else>Приостановлено</span>
-            </b>
+      <div v-if='authorized'>
+        <div class='activate'>
+          <div class='button button__activate button--center' v-on:click="toggle()">
+            <span v-if='me.isActive'>Приостановить</span>
+            <span v-else>Начать</span>
+          </div>
         </div>
-        <div class='stats__item'>Вы поставили лайков: <b>{{stats.you_liked || 0}}</b></div>
-        <div class='stats__item'>Вам поставили лайков: <b>{{stats.liked_you || 0}}</b></div>
+        <div class='stats'>
+          <div class='stats__item'>
+            Статус:
+              <b>
+                <span v-if='me.isActive' class='is-working'>Работает</span>
+                <span v-else>Приостановлено</span>
+              </b>
+          </div>
+          <div class='stats__item'>Вы поставили лайков: <b>{{stats.you_liked || 0}}</b></div>
+          <div class='stats__item'>Вам поставили лайков: <b>{{stats.liked_you || 0}}</b></div>
+        </div>
+        <main-navigation></main-navigation>
+        <help></help>
       </div>
-      <help></help>
-      <main-navigation></main-navigation>
+      <div v-else class='disclaimer'>
+        Чтобы начать пользоваться приложением, необходимо авторизоваться. Напоминаем, что накрутка лайков <b>нарушает</b> правила ВКонтакте.
+        <div class='disclaimer__agree'>
+          <input
+            type='checkbox'
+            v-model='agreedWithTerms'
+          />
+          <a href='https://vk.com/terms' target='_blank'>Я нарушаю правила ВКонтакте</a>
+        </div>
+      </div>
     </div>
-    <div v-else class='disclaimer'>
-      Чтобы начать пользоваться приложением, необходимо авторизоваться. Напоминаем, что накрутка лайков <b>нарушает</b> правила ВКонтакте.
-      <div class='disclaimer__agree'>
-        <input
-          type='checkbox'
-          v-model='agreedWithTerms'
-        />
-        <a href='https://vk.com/terms' target='_blank'>Я нарушаю правила ВКонтакте</a>
-      </div>
+    <div class='wrapper wrapper__right' v-if='authorized'>
+      <realtime-likes></realtime-likes>
     </div>
   </div>
+
   <script src='./common.js'></script>
 </body>
 </html>

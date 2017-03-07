@@ -51,13 +51,38 @@ Vue.component('stats', {
   }
 })
 
+Vue.component('realtime-likes', {
+  template: `
+    <div class='realtime-likes'>
+      Лайки в реальном времени
+      {{likes.length}}
+    </div>
+  `,
+  data: function () {
+    return {}
+  },
+  firebase: {
+    users: users,
+    likes: likes
+  },
+  mounted: function () {
+    console.log('realtime-t')
+  },
+  computed: {
+    getLike: function () {
+      console.log(this.likes)
+      return 'NO!'
+    }
+  }
+})
+
+likes.on('child_added', snap => {
+  console.log(snap.val())
+})
+
 Vue.component('help', {
   template: `
     <div class='help'>
-      <div class='help__messages'>
-        <a href='https://vk.com/im?media=&sel=96170043' target='_blank'>У меня ничего не работает!</a>
-      </div>
-
       <div class='help__group'>
         <a href='https://vk.com/vk_king_likes' target='_blank'>Группа ВКонтакте</a>
       </div>
@@ -69,15 +94,11 @@ Vue.component('donate', {
   template: `
     <div>
       <h1>Пожертвования</h1>
-      <h2 class='text-grey'>Сервис в разработке</h2>
-      <div class='text-grey'>Все ссылки на донат появятся на этой неделе.
-      Пока работает только PayPal.</div>
-      <h1></h1>
       <div>
         Пожертвование — это хороший способ поддержать разработчиков и 
         <b>сделать вклад</b> в развитие проекта. Деньги идут на покупку рекламы.
       </div>
-      <a href='https://vk.com/app5727453_-116428466' target='_blank'>Пожертвовать!</a>
+      <b><a href='https://vk.com/app5727453_-116428466' target='_blank'>Пожертвовать!</a></b>
     </div>
   `
 })

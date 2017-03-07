@@ -39,6 +39,7 @@ class Like extends Likes {
       }
 
       let user = new Users().findById(object)
+      console.log(user)
       if (!user) {
         new Console().error('{Like} No user with this id')
         return reject()
@@ -82,6 +83,8 @@ class Like extends Likes {
                 id: id
               })
               new Console().success(`{Like} id${object} >>> id${target}`)
+              this.createRealtimeLike()
+
               return resolve()
             }).catch(e => {
               console.log(e)
@@ -100,6 +103,28 @@ class Like extends Likes {
           return reject(e)
         })
       }, VK_API_WAIT())
+    })
+  }
+
+
+  // This creates a post in database with
+  // quick picture, target and object ids.
+  // And item, that was liked
+  createRealtimeLike () {
+
+    let objectUser = new Users().findById(this.object)
+    let targetUser = new Users().findById(this.target)
+
+    this.db.ref('realtime_likes').push({
+      object: {
+        photo_100: objectUser.photo_100,
+        id: this.object
+      },
+      target: {
+        photo_100: targetUser.photo_100,
+        id: this.target
+      },
+      item: this.item
     })
   }
 
