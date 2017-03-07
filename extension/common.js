@@ -17,6 +17,40 @@ firebase.initializeApp(config)
 let ACCESS_TOKEN = localStorage.getItem('access_token')
 let MY_ID = localStorage.getItem('user_id')
 
+Vue.use(VueFire)
+let db = firebase.database()
+
+let users = db.ref('/users')
+let me = db.ref(`/users/${MY_ID}`)
+let stats = db.ref(`/statistics/${MY_ID}`)
+let pushes = db.ref('/pushes')
+let likes = db.ref('/likes')
+
+let globalStats = db.ref('/global_stats')
+
+Vue.component('stats', {
+  template: `
+    <div class='stats'>
+      <h1>Общая статистика</h1>
+      <div class='stats__item'>Всего лайков поставлено: <b>{{globalStats.likes.all}}</b></div>
+      <div class='stats__item'>Пользователей в расширении: <b>{{globalStats.users.total}}</b></div>
+      <div class='stats__item'>Ваш вклад: {{yourContribution}}%</div>
+    </div>
+  `,
+  firebase: {
+    users: users,
+    globalStats: {
+      source: globalStats,
+      asObject: true
+    }
+  },
+  computed: {
+    yourContribution: function () {
+      return 23
+    }
+  }
+})
+
 Vue.component('help', {
   template: `
     <div class='help'>
@@ -43,12 +77,7 @@ Vue.component('donate', {
         Пожертвование — это хороший способ поддержать разработчиков и 
         <b>сделать вклад</b> в развитие проекта. Деньги идут на покупку рекламы.
       </div>
-      <h2>Список пожертвовавших</h2>
-      <div>Пока никого нет (: Будьте первым!</div>
-      <a target='_blank' href='http://paypal.me/fletcherist'>Paypal</a>
-      <a target='_blank' href='http://paypal.me/fletcherist'>Яндекс.Деньги</a>
-      <a target='_blank' href='http://paypal.me/fletcherist'>Qiwi</a>
-      <a target='_blank' href='http://paypal.me/fletcherist'>WebMoney</a>
+      <a href='https://vk.com/app5727453_-116428466' target='_blank'>Пожертвовать!</a>
     </div>
   `
 })
@@ -133,12 +162,22 @@ Vue.component('main-navigation', {
             'navigation__button--selected': this.currentPage === 2,
             'navigation__button--not-selected': this.currentPage !== 0
           }">Donate</div>
+        <div
+          @click='setCurrentPage(3)'
+          class='navigation__button'
+          v-bind:class="{
+            'navigation__button--selected': this.currentPage === 3,
+            'navigation__button--not-selected': this.currentPage !== 0
+          }">Статистика</div>
       </div>
       <div v-if='this.currentPage === 1'>
         <faq></faq>
       </div>
       <div v-if='this.currentPage === 2'>
         <donate></donate>
+      </div>
+      <div v-if='this.currentPage === 3'>
+        <stats :users='123' :likes='3223'></stats>
       </div>
     </div>
   `,
@@ -163,18 +202,6 @@ Vue.component('main-navigation', {
     }
   }
 })
-
-
-
-
-Vue.use(VueFire)
-let db = firebase.database()
-
-let users = db.ref('users')
-let me = db.ref(`users/${MY_ID}`)
-let stats = db.ref(`statistics/${MY_ID}`)
-let pushes = db.ref('pushes')
-let likes = db.ref('likes')
 
 const activateButton = {
   template: `

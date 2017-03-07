@@ -67,7 +67,7 @@ a:hover {
 
 .foo {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   padding: .5rem;
   min-height: 4rem;
 }
@@ -91,7 +91,6 @@ a:hover {
 
 .activate {
   width: 100%;
-  text-align: center;
   margin: 1rem 0;
 }
 
@@ -126,7 +125,7 @@ a:hover {
 }
 
 .stats {
-  text-align: center;
+  /*text-align: center;*/
 }
 
 .stats__item {
