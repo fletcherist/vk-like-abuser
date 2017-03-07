@@ -115,7 +115,7 @@ class Like extends Likes {
     let objectUser = new Users().findById(this.object)
     let targetUser = new Users().findById(this.target)
 
-    this.db.ref('realtime_likes').push({
+    this.db.db.ref('/realtime_likes').push({
       object: {
         photo_100: objectUser.photo_100,
         id: this.object

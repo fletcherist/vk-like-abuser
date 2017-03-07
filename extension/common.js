@@ -55,15 +55,21 @@ Vue.component('realtime-likes', {
   template: `
     <div class='realtime-likes'>
       Лайки в реальном времени
-      {{likes.length}}
+      <div v-for='like in realtimeLikes'>
+        <a href='https://vk.com/id{{like.object.id}}' target='_blank'>
+          <img :src='like.object.photo_100' class='realtime-likes__photo' />
+        </a>
+        <a href='https://vk.com/id{{like.target.id}}' target='_blank'>
+          <img :src='like.target.photo_100' class='realtime-likes__photo' />
+        </a>
+      </div>
     </div>
   `,
   data: function () {
     return {}
   },
   firebase: {
-    users: users,
-    likes: likes
+    realtimeLikes: db.ref('/realtime_likes')
   },
   mounted: function () {
     console.log('realtime-t')
@@ -74,10 +80,6 @@ Vue.component('realtime-likes', {
       return 'NO!'
     }
   }
-})
-
-likes.on('child_added', snap => {
-  console.log(snap.val())
 })
 
 Vue.component('help', {
