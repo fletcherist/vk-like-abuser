@@ -121,7 +121,7 @@ function VK_API_WAIT () {
   return generated
 }
 
-function randomFromInterval(min,max) {
+function randomFromInterval(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min)
 }
 

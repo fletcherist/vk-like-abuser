@@ -23,6 +23,8 @@ class TasksToExtension {
     this.target = target
     this.item = item
 
+    console.warn(this.object, this.target, this.item)
+
     if (this.object && this.target && this.item) {
       this.db.ref(`/tasks/${this.object}`).push({
         object: this.object,

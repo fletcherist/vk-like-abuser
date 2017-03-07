@@ -34,7 +34,8 @@ class DB {
             username: username,
             photo_100: photo_100,
             photo_50: photo_50,
-            isValid: true
+            isValid: true,
+            // isActive: true
           })
           new Console().success(`{Listeners} ${username} is OK`)
           return resolve()

@@ -69,10 +69,9 @@ class VK {
         return resolve(res)
       })
       .catch(e => {
-        console.warn(e)
         new ErrorResolver({
           error: e,
-          userId: user_id
+          object: user_id
         })
         return reject(e)
       })
