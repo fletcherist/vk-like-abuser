@@ -51,17 +51,42 @@ Vue.component('stats', {
   }
 })
 
+new Vue({
+  el: '#list-demo',
+  data: {
+    items: [1,2,3,4,5,6,7,8,9],
+    nextNum: 10
+  },
+  methods: {
+    randomIndex: function () {
+      return Math.floor(Math.random() * this.items.length)
+    },
+    add: function () {
+      this.items.splice(this.randomIndex(), 0, this.nextNum++)
+    },
+    remove: function () {
+      this.items.splice(this.randomIndex(), 1)
+    },
+  }
+})
+
 Vue.component('realtime-likes', {
   template: `
     <div class='realtime-likes'>
-      Лайки в реальном времени
-      <div v-for='like in realtimeLikes'>
-        <a href='https://vk.com/id{{like.object.id}}' target='_blank'>
-          <img :src='like.object.photo_100' class='realtime-likes__photo' />
-        </a>
-        <a href='https://vk.com/id{{like.target.id}}' target='_blank'>
-          <img :src='like.target.photo_100' class='realtime-likes__photo' />
-        </a>
+      <div class="realtime-likes__name">Лайки в реальном времени</div>
+      <div v-for='like in getLikes' transition="bounce" class="realtime-likes__like">
+        <div :key='like.item' class="realtime-likes__container">
+          <a href='https://vk.com/id{{like.object.id}}' target='_blank'>
+            <img :src='like.object.photo_100' class='realtime-likes__photo' />
+          </a>
+          <svg class="realtime-likes__arrow" fill="#55677d" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0 0h24v24H0z" fill="none"/>
+              <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+          </svg>
+          <a href='https://vk.com/id{{like.target.id}}' target='_blank'>
+            <img :src='like.target.photo_100' class='realtime-likes__photo' />
+          </a>
+        </div>
       </div>
     </div>
   `,
@@ -75,7 +100,13 @@ Vue.component('realtime-likes', {
     console.log('realtime-t')
   },
   computed: {
-    getLike: function () {
+    getLikes: function () {
+      if (this.realtimeLikes && this.realtimeLikes.length > 0) {
+        let likes = this.realtimeLikes.slice(this.realtimeLikes.length - 5).reverse()
+        return likes
+      }
+
+      return []
       console.log(this.likes)
       return 'NO!'
     }
@@ -279,26 +310,6 @@ let app = new Vue({
     'activate-button': activateButton
   }
 })
-
-// let usersVue = new Vue({
-//   el: '#users',
-//   data: () => {
-//   },
-//   firebase: {
-//     users: users,
-//     me: {
-//       source: me,
-//       asObject: true
-//     },
-//     stats: {
-//       source: stats,
-//       asObject: true
-//     },
-//     pushes: pushes
-//   },
-//   methods: {
-//   }
-// })
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   if (ACCESS_TOKEN) {

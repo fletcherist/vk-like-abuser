@@ -134,6 +134,7 @@ a:hover {
   width: 15vw;
   max-width: 200px;
   min-width: 200px;
+  padding: 0px;
 }
 
 .wrapper--next {
@@ -247,11 +248,69 @@ a:hover {
 }
 
 .realtime-likes {
-
+  overflow: hidden;
 }
 
 .realtime-likes__photo {
   border-radius: 100px;
   width: 50px;
   height: 50px;
+}
+
+.bounce-transition {
+  display: inline-block; /* otherwise scale animation won't work */
+}
+.bounce-enter {
+  animation: bounce-in .5s;
+}
+.bounce-leave {
+  animation: bounce-out .5s;
+}
+@keyframes bounce-in {
+  0% {
+    transform: translateX(-20px);
+    opacity: .3;
+  }
+  100% {
+    transform: translateX(0px);
+    opacity: 1;
+  }
+}
+@keyframes bounce-out {
+  0% {
+    transform: translateY(0px);
+    background-color: transparent;
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+}
+
+.realtime-likes__arrow {
+  padding: 10px;
+}
+
+.realtime-likes__name {
+  padding: 10px;
+}
+
+.realtime-likes__like {
+  width: 100%;
+  max-width: 200px;
+}
+
+.realtime-likes__container {
+  padding: 5px;
+  margin: 0px auto;
+  padding-left: 20px;
+}
+
+.realtime-likes__like:nth-child(2n) {
+  background-color: #e5ebf1 !important;
 }
