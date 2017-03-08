@@ -16,8 +16,8 @@
       <div class='foo'>
         <div v-if='authorized'>
           <div class='username'>
-            <img v-show='me.photo_100' v-bind:src='me.photo_100' class='avatar'>
-            <span class='username__holder'>{{me.username}} </span>
+            <img v-show='photo_100' v-bind:src='photo_100' class='avatar'>
+            <span class='username__holder'>{{username}} </span>
             <span>
               <b><a v-on:click='logout()'>выйти</a></b>
             </span>

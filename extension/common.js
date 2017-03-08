@@ -70,6 +70,50 @@ new Vue({
   }
 })
 
+function getRealtimeLikesFromCache () {
+  try {
+    const realtimeLikes = JSON.parse(localStorage.getItem('realtime_likes'))
+    return realtimeLikes
+  } catch (e) {
+    return []
+  }
+}
+
+function getUsernameFromCache () {
+
+}
+
+const fromCache = {
+  username: {
+    get: function () {
+      const username = localStorage.getItem('username')
+      if (username !== undefined || username !== null) {
+        return username
+      }
+
+      return 'загрузка..'
+    },
+    set: function (username) {
+      localStorage.setItem('username', username)
+      return username
+    }
+  },
+  photo_100: {
+    get: function () {
+      const photo_100 = localStorage.getItem('photo_100')
+      if (photo_100 !== undefined || photo_100 !== null) {
+        return photo_100
+      }
+
+      return 'загрузка..'
+    },
+    set: function (photo_100) {
+      localStorage.setItem('photo_100', photo_100)
+      return photo_100
+    }
+  }
+}
+
 Vue.component('realtime-likes', {
   template: `
     <div class='realtime-likes'>
@@ -91,7 +135,9 @@ Vue.component('realtime-likes', {
     </div>
   `,
   data: function () {
-    return {}
+    return {
+      realtimeLikes: getRealtimeLikesFromCache
+    }
   },
   firebase: {
     realtimeLikes: db.ref('/realtime_likes')
@@ -275,7 +321,8 @@ let app = new Vue({
       message: 'Hey',
       authorized: MY_ID ? true : false,
       activated: false,
-      agreedWithTerms: false
+      agreedWithTerms: false,
+      loaded: false
     }
   },
   firebase: {
@@ -304,6 +351,32 @@ let app = new Vue({
       localStorage.removeItem('username')
 
       chrome.tabs.reload()
+    }
+  },
+  computed: {
+    isLoaded: function () {
+      if (this.me && this.me.id) {
+        this.loaded = true
+        alert('loaded')
+        return true
+      }
+      return false
+    },
+    username: function () {
+      if (this.me && this.me.username) {
+        fromCache.username.set(this.me.username)
+        return this.me.username
+      }
+
+      return fromCache.username.get()
+    },
+    photo_100: function () {
+      if (this.me && this.me.photo_100) {
+        fromCache.photo_100.set(this.me.photo_100)
+        return this.me.photo_100
+      }
+      
+      return fromCache.photo_100.get()
     }
   },
   components: {

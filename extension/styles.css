@@ -135,6 +135,9 @@ a:hover {
   max-width: 200px;
   min-width: 200px;
   padding: 0px;
+  background-color: transparent;
+  box-shadow: none;
+  margin-top: -1px;
 }
 
 .wrapper--next {
@@ -247,10 +250,6 @@ a:hover {
   background-color: #f3f3f3;
 }
 
-.realtime-likes {
-  overflow: hidden;
-}
-
 .realtime-likes__photo {
   border-radius: 100px;
   width: 50px;
@@ -268,7 +267,7 @@ a:hover {
 }
 @keyframes bounce-in {
   0% {
-    transform: translateX(-20px);
+    transform: translateX(-40px);
     opacity: .3;
   }
   100% {
@@ -283,11 +282,11 @@ a:hover {
     opacity: 1;
   }
   80% {
-    transform: translateY(20px);
-    opacity: 0;
+    transform: translateY(10px);
+    opacity: .5;
   }
   100% {
-    transform: translateY(20px);
+    transform: translateY(10px);
     opacity: 0;
   }
 }
@@ -298,11 +297,24 @@ a:hover {
 
 .realtime-likes__name {
   padding: 10px;
+  background-color: white;
+  border: 1px solid #e3e4e8;
+  border-radius: 2px;
+  border-bottom: 0;
+}
+
+.realtime-likes {
+  overflow: hidden;
+  border-radius: 2px;
 }
 
 .realtime-likes__like {
   width: 100%;
   max-width: 200px;
+  background-color: white;
+  border: 1px solid #e3e4e8;
+  border-bottom: 0px;
+  border-top: 0px;
 }
 
 .realtime-likes__container {
@@ -313,4 +325,8 @@ a:hover {
 
 .realtime-likes__like:nth-child(2n) {
   background-color: #e5ebf1 !important;
+}
+
+.realtime-likes__like:last-child {
+  border-bottom: 1px solid #e3e4e8;
 }
