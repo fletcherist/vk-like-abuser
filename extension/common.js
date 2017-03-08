@@ -20,11 +20,10 @@ let MY_ID = localStorage.getItem('user_id')
 Vue.use(VueFire)
 let db = firebase.database()
 
-let users = db.ref('/users')
+let users = db.ref('/users').limitToLast(10)
 let me = db.ref(`/users/${MY_ID}`)
 let stats = db.ref(`/statistics/${MY_ID}`)
-let pushes = db.ref('/pushes')
-let likes = db.ref('/likes')
+let likes = db.ref('/likes').limitToLast(10)
 
 let globalStats = db.ref('/global_stats')
 
@@ -336,8 +335,7 @@ let app = new Vue({
     stats: {
       source: stats,
       asObject: true
-    },
-    pushes: pushes
+    }
   },
   methods: {
     toggle: function () {
@@ -429,8 +427,10 @@ users.once('value', __users => {
     const _users = __users.val()
     const _likes = __likes.val()
 
+    const usersArray = Object.keys(_users)
+
     let usersIncrementId = 0
-    let limit = 15
+    let limit = 10
 
     for (let user in _users) {
       if (usersIncrementId > limit) {
@@ -445,23 +445,32 @@ users.once('value', __users => {
 
     restart()
     setTimeout(() => {
-      let i = 0
-      for (let sourceUserId in _likes) {
-        if (i > Math.PI * limit) {
-          break
-        }
-        for (let targetUserId in _likes[sourceUserId]) {
-          let source = usersTable[sourceUserId]
-          let target = usersTable[targetUserId]
-          if (source && target) {
-            addToLinks({
-              source,
-              target
-            })
+      // let i = 0
+      // for (let sourceUserId in _likes) {
+      //   if (i > Math.PI * limit) {
+      //     break
+      //   }
+      //   for (let targetUserId in _likes[sourceUserId]) {
+      //     let source = usersTable[sourceUserId]
+      //     let target = usersTable[targetUserId]
+      //     if (source && target) {
+      //       addToLinks({
+      //         source,
+      //         target
+      //       })
+      //     }
+      //     i++
+      //   }
+        for (let i = 0; i < usersIncrementId; i++) {
+          for (let e = 1; e < usersIncrementId; e++) {
+            let source = usersTable[usersArray[i]]
+            let target = usersTable[usersArray[e]]
+
+            if (source && target) {
+              addToLinks({source, target})
+            }
           }
-          i++
         }
-      }
     }, 500)
       
   })
