@@ -141,6 +141,12 @@ a:hover {
   margin-right: -1px;
 }
 
+.wrapper--wide {
+  max-width: 350px;
+  width: 50vw;
+  margin: auto;
+}
+
 .wrapper--next {
   margin: 2vh auto;
 }
@@ -277,7 +283,7 @@ a:hover {
 }
 @keyframes bounce-out {
   0% {
-    transform: translateY(0px);
+    transform: translateY(-40px);
     background-color: transparent;
     opacity: 1;
   }

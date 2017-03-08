@@ -12,7 +12,9 @@
 <body>
   <svg id='graph'></svg>
   <div id="app" class='container'>
-    <div class='wrapper'>
+    <div
+      class='wrapper'
+      v-bind:class="{'wrapper--wide': !authorized}">
       <div class='foo'>
         <div v-if='authorized'>
           <div class='username'>
@@ -30,7 +32,10 @@
       </div>
       <div v-if='authorized'>
         <div class='activate'>
-          <div class='button button__activate button--center' v-on:click="toggle()">
+          <div
+            class='button button__activate button--center'
+            v-bind:class="{'button--disabled': }"
+            v-on:click="toggle()">
             <span v-if='me.isActive'>Приостановить</span>
             <span v-else>Начать</span>
           </div>
