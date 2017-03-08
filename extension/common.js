@@ -162,6 +162,9 @@ Vue.component('realtime-likes', {
 Vue.component('help', {
   template: `
     <div class='help'>
+      <div>
+        <span class='text-grey'>v0.1.1</span>
+      </div>
       <div class='help__group'>
         <a href='https://vk.com/vk_king_likes' target='_blank'>Группа ВКонтакте</a>
       </div>
@@ -375,7 +378,7 @@ let app = new Vue({
         fromCache.photo_100.set(this.me.photo_100)
         return this.me.photo_100
       }
-      
+
       return fromCache.photo_100.get()
     }
   },
