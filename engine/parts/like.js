@@ -39,7 +39,6 @@ class Like extends Likes {
       }
 
       let user = new Users().findById(object)
-      console.log(user)
       if (!user) {
         new Console().error('{Like} No user with this id')
         return reject()
@@ -115,7 +114,8 @@ class Like extends Likes {
     let objectUser = new Users().findById(this.object)
     let targetUser = new Users().findById(this.target)
 
-    this.db.db.ref('/realtime_likes').push({
+    const realtimeLikes = this.db.db.ref('/realtime_likes')
+    realtimeLikes.push({
       object: {
         photo_100: objectUser.photo_100,
         id: this.object
@@ -125,6 +125,23 @@ class Like extends Likes {
         id: this.target
       },
       item: this.item
+    })
+
+    realtimeLikes.once('value', snap => {
+      const likes = snap.val()
+      const likesAsObject = Object.keys(likes)
+      // Remove all branch
+      if (likesAsObject.length > 100) {
+        return realtimeLikes.remove() 
+      }
+      if (likesAsObject.length > 10) {
+
+        // Iterate over no-need keys and remove them
+        for (let i = 0; i <  likesAsObject.length - 10; i++) {
+          realtimeLikes.child(likesAsObject[i]).remove()
+        }
+        // realtimeLikes.child()
+      }
     })
   }
 
