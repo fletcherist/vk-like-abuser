@@ -34,8 +34,11 @@ class Engine {
 
     this.users.initialize()
       .then(() => {
-        new Console().success(`{Engine} is initialized for ${this.users.getUsers().length} people`)
         this.getTasks()
+        new Console().success(`{Engine} for 
+          ${this.users.getUsers().length} people and 
+          ${this.tasks.length} tasks.
+        `)
         this.start()
       })
   }
@@ -103,8 +106,6 @@ class Engine {
 
   isItTimeToRunEngine () {
     const currentTime = new Date().getHours()
-
-    return true
 
     if (currentTime >= 2 && currentTime < 8) {
       new Console().notify('{Engine} Its not a time to run Engine yet!')

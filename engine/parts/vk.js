@@ -23,19 +23,19 @@ class VK {
   }
 
   checkToken () {
-
-    const client_secret = require('../config').vk.client_secret
-    const app_id = require('../config').vk.app_id
-
-    console.warn(client_secret)
-    const appVK = new VKApi({
-      app: {
-        id: app_id,
-        secret: client_secret
-      }
-    })
-
     return new Promise((resolve, reject) => {
+
+      const client_secret = require('../config').vk.client_secret
+      const app_id = require('../config').vk.app_id
+
+      console.warn(client_secret)
+      const appVK = new VKApi({
+        app: {
+          id: app_id,
+          secret: client_secret
+        }
+      })
+
       appVK.auth.server().then(r => {
         const serverAccessToken = r.access_token
 
@@ -80,9 +80,8 @@ class VK {
         item_id: id
       }).then(res => {
         return resolve()
-      })
-      .catch(e => {
-        reject(e)
+      }).catch(e => {
+        return reject(e)
       })
     })
   }
@@ -120,6 +119,8 @@ class VK {
         }
 
         return reject()
+      }).catch(e => {
+        return reject(e)
       })
     })
   }

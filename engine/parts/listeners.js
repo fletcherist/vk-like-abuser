@@ -15,7 +15,7 @@ class Listeners {
 
     this.listenForNewUsers()
     this.listenForTokenFabrique()
-    this.db.updateUsersInfo()
+    // this.db.updateUsersInfo()
   }
 
   listenForNewUsers () {

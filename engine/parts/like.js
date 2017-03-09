@@ -4,34 +4,8 @@ const Users = require('./users')
 const DB = require('./db')
 const ErrorResolver = require('./errorResolver')
 
-class Likes {
-  constructor () {
-    this.likes = {
-
-    }
-  }
-
-  add ({target, object}) {
-    if (!target) return new Console().error('{Likes} target id is not provided')
-    if (!object) return new Console().error('{Likes} object id is not provided')
-
-    const like = {
-      target,
-      object
-    }
-
-    this.likes[target] = like
-    return new Console().success('{Likes} like has been added')
-  }
-
-  showLikes () {
-    console.log(this.likes)
-  }
-}
-
-class Like extends Likes {
+class Like {
   constructor ({object, target}) {
-    super()
     return new Promise ((resolve, reject) => {
       if (!object || !target) {
         new Console().error('No object or target id')
@@ -43,10 +17,7 @@ class Like extends Likes {
         new Console().error('{Like} No user with this id')
         return reject()
       }
-
       
-      // const types = ['post', 'photo']
-
       setTimeout(() => {
         const token = user.access_token
         if (!token) {
@@ -65,27 +36,29 @@ class Like extends Likes {
             target: target,
             id: this.item
           }).then(r => {
-            this.db.addToLikedList({
-              object: object,
-              target: target,
-              type: 'photo',
-              id: this.item
-            })
-            new Console().success(`{Like} id${object} >>> id${target}`)
+            // this.db.addToLikedList({
+            //   object: object,
+            //   target: target,
+            //   type: 'photo',
+            //   id: this.item
+            // })
+            new Console().success(`{Like} id${object} > id${target}`)
             this.createRealtimeLike()
 
             return resolve()
           }).catch(e => {
             console.log(e)
-            new Console().error(`{Like} id${object} ☒☒☒ id${target}`)
+            new Console().error(`{Like} id${object} ☒ id${target}`)
             this.errorHandler(e)
             return reject(e)
+            })
+          }).catch(e => {
+            console.log(e)
+            new Console().error(`{Like} can't get user ${target} vk photos`)
+            return reject(e)
           })
-        }).catch(e => {
-          new Console().error(`{Like} can't get user ${target} vk photos`)
-          return reject(e)
-        })
-      }, VK_API_WAIT())
+
+        }, VK_API_WAIT())
     })
   }
 

@@ -83,7 +83,7 @@ class Users {
         this.removeUser(user)
       }
 
-      if (this.users[user].id) {
+      if (this.users[user].id && this.users[user].isValid !== false) {
         userList.push(this.users[user])
       }
     }
