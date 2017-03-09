@@ -1,4 +1,5 @@
 const DB = require('../app').DB
+const TimeAssistant = require('./timeAssistant')
 
 let consoleInstance = null
 let pushesInstance = null
@@ -31,6 +32,8 @@ class Console {
         notifications: true
       }
 
+      this.time = new TimeAssistant
+
       consoleInstance = this
     }
     return consoleInstance
@@ -39,7 +42,7 @@ class Console {
   error (msg) {
     if (!this.config.errors)
       return false
-    let message = 'Error: ' + msg
+    let message = `[${this.time.getFormattedTime()}] ` + 'Error: ' + msg
     console.warn(message)
     new Pushes().send(message)
   }
@@ -47,7 +50,7 @@ class Console {
   success (msg) {
     if (!this.config.success)
       return false
-    let message = 'Success: ' + msg
+    let message = `[${this.time.getFormattedTime()}] ` + 'Success: ' + msg
     console.log(message)
     new Pushes().send(message)
   }
@@ -55,7 +58,7 @@ class Console {
   notify (msg) {
     if (!this.config.notifications)
       return false
-    let message = 'Notification: ' + msg
+    let message = `[${this.time.getFormattedTime()}] ` + 'Notification: ' + msg
     console.log(message)
     new Pushes().send(message)
   }

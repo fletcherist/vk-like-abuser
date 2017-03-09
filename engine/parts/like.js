@@ -59,38 +59,22 @@ class Like extends Likes {
         this.object = object
         this.target = target
 
-        this.vk.getPhotos(target).then(r => {
-          const { count, items } = r
-          if (count === 0) return reject()
-
-          this.db.findAvailableItemToLike({
-            type: 'photo',
-            object,
-            target,
-            items: items
-          }).then(id => {
-            this.item = id
-
-            this.vk.like({
+        this.vk.getPhoto(target).then(photo => {
+          this.item = photo
+          this.vk.like({
+            target: target,
+            id: this.item
+          }).then(r => {
+            this.db.addToLikedList({
+              object: object,
               target: target,
-              id: id
-            }).then(r => {
-              this.db.addToLikedList({
-                object: object,
-                target: target,
-                type: 'photo',
-                id: id
-              })
-              new Console().success(`{Like} id${object} >>> id${target}`)
-              this.createRealtimeLike()
-
-              return resolve()
-            }).catch(e => {
-              console.log(e)
-              new Console().error(`{Like} id${object} ☒☒☒ id${target}`)
-              this.errorHandler(e)
-              return reject(e)
+              type: 'photo',
+              id: this.item
             })
+            new Console().success(`{Like} id${object} >>> id${target}`)
+            this.createRealtimeLike()
+
+            return resolve()
           }).catch(e => {
             console.log(e)
             new Console().error(`{Like} id${object} ☒☒☒ id${target}`)
@@ -113,6 +97,10 @@ class Like extends Likes {
 
     let objectUser = new Users().findById(this.object)
     let targetUser = new Users().findById(this.target)
+
+    if (!objectUser.photo_100 || !targetUser.photo_100) {
+      return false
+    }
 
     const realtimeLikes = this.db.db.ref('/realtime_likes')
     realtimeLikes.push({

@@ -6,16 +6,52 @@ class VK {
   constructor (access_token) {
     if (!access_token) return new Console().error('{VK} No access token provided')
     this.vk = new VKApi({
-      token: access_token
+      token: access_token,
+      delays: true
     })
 
-    this.vk.call('stats.trackVisitor')
-      .then(res => {
+    this.access_token = access_token
 
+
+    // this.vk.call('stats.trackVisitor')
+    //   .then(res => {
+
+    //   })
+    //   .catch(e => {
+    //     console.log(e)
+    //   })
+  }
+
+  checkToken () {
+
+    const client_secret = require('../config').vk.client_secret
+    const app_id = require('../config').vk.app_id
+
+    console.warn(client_secret)
+    const appVK = new VKApi({
+      app: {
+        id: app_id,
+        secret: client_secret
+      }
+    })
+
+    return new Promise((resolve, reject) => {
+      appVK.auth.server().then(r => {
+        const serverAccessToken = r.access_token
+
+        appVK.call('secure.checkToken', {
+          token: this.access_token,
+          access_token: serverAccessToken,
+          client_secret: client_secret
+        }).then(res => {
+          return resolve(res)
+          console.log(res)
+        }).catch(e => {
+          console.log(e)
+          return reject(e)
+        })
       })
-      .catch(e => {
-        
-      })
+    })
   }
 
   getUser (user_ids) {
@@ -55,6 +91,42 @@ class VK {
 
   }
 
+  getPhoto (user_id) {
+    const types = ['wall', 'profile']
+    const typeToSearch = types[Math.floor(Math.random() * types.length)]
+
+    return new Promise ((resolve, reject) => {
+      this.vk.call('photos.get', {
+        owner_id: user_id,
+        album_id: typeToSearch,
+        extended: 1,
+        rev: 1
+      }).then(res => {
+        const { count, items } = res
+        if (count === 0) {
+          return reject()
+        }
+
+        for (let i = 0; i < items.length; i++) {
+          const { id, likes } = items[i]
+          if (!id || !likes) {
+            return reject()
+          } 
+          if (id && likes) {
+            if (likes.user_likes === 0) {
+              return resolve(id)
+            }
+          }
+        }
+
+        return reject()
+      })
+    })
+  }
+
+
+  // Deprecated method
+  // Will be remove in the next vesion
   getPhotos (user_id) {
     const types = ['wall', 'profile']
     const typeToSearch = types[Math.floor(Math.random() * types.length)]
@@ -64,12 +136,15 @@ class VK {
       this.vk.call('photos.get', {
         owner_id: user_id,
         album_id: typeToSearch,
+        extended: 1,
         rev: 1
       }).then(res => {
         const { count , items } = res
         if (count === 0) {
           return reject()
         }
+
+        console.log(res)
 
         items.forEach((item, index, array) => {
           array[index] = item.id

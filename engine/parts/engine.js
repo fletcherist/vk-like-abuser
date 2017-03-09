@@ -34,7 +34,7 @@ class Engine {
 
     this.users.initialize()
       .then(() => {
-        new Console().success('{Engine} is initialized')
+        new Console().success(`{Engine} is initialized for ${this.users.getUsers().length} people`)
         this.getTasks()
         this.start()
       })
