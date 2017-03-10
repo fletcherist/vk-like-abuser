@@ -29,10 +29,10 @@ let globalStats = db.ref('/global_stats')
 
 Vue.component('stats', {
   template: `
-    <div>
+    <div class='stats_common'>
       <h1>Общая статистика</h1>
       <div class='stats__item'>Пользователей: <b>{{globalStats.users.total}}</b></div>
-      <div class='stats__item'>Всего лайков поставлено: <b>{{globalStats.likes.all}}</b></div>
+      <div class='stats__item'>Лайков поставлено: <b>{{globalStats.likes.all}}</b></div>
     </div>
   `,
   firebase: {
