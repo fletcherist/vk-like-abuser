@@ -159,6 +159,10 @@ a:hover {
   padding: 2px;
 }
 
+.stats__item b {
+  color: #2a5885;
+}
+
 .disclaimer {
   text-align: center;
   margin: 0px auto;
@@ -170,9 +174,6 @@ a:hover {
   margin-top: 1rem;
 }
 
-.stats b {
-  color: #2a5885;
-}
 
 .help {
   display: flex;

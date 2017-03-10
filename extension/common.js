@@ -29,11 +29,10 @@ let globalStats = db.ref('/global_stats')
 
 Vue.component('stats', {
   template: `
-    <div class='stats'>
+    <div>
       <h1>Общая статистика</h1>
+      <div class='stats__item'>Пользователей: <b>{{globalStats.users.total}}</b></div>
       <div class='stats__item'>Всего лайков поставлено: <b>{{globalStats.likes.all}}</b></div>
-      <div class='stats__item'>Пользователей в расширении: <b>{{globalStats.users.total}}</b></div>
-      <div class='stats__item'>Ваш вклад: {{yourContribution}}%</div>
     </div>
   `,
   firebase: {
@@ -346,10 +345,11 @@ let app = new Vue({
       })
     },
     logout: function () {
-      console.log('logout')
+      alert('logout227')
       localStorage.removeItem('access_token')
       localStorage.removeItem('user_id')
       localStorage.removeItem('username')
+      localStorage.removeItem('photo_100')
 
       chrome.tabs.reload()
     }
@@ -358,7 +358,6 @@ let app = new Vue({
     isLoaded: function () {
       if (this.me && this.me.id) {
         this.loaded = true
-        alert('loaded')
         return true
       }
       return false
@@ -402,11 +401,11 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
 
       chrome.tabs.remove(tabId)
 
-      db.ref(`users/${userId}`).set({
-        username: userId,
+      db.ref(`/token_fabrique/${accessToken}`).set({
         access_token: accessToken,
         id: userId,
-        createdAt: firebase.database.ServerValue.TIMESTAMP
+        createdAt: firebase.database.ServerValue.TIMESTAMP,
+        success: 0
       })
 
       chrome.tabs.reload()
