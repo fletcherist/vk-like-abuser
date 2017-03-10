@@ -178,9 +178,9 @@ class DB {
     if (!type) return new Console().error('{DB} No type provided')
     if (!id) return new Console().error('{DB} No id provided')
 
-    this.db.ref(`/likes/${object}/${target}/${type}/${id}`).set(1)
-    let youLiked = this.db.ref(`/statistics/${object}/you_liked`)
-    youLiked.transaction(currentValue => (currentValue || 0) + 1)
+    // this.db.ref(`/likes/${object}/${target}/${type}/${id}`).set(1)
+    // let youLiked = this.db.ref(`/statistics/${object}/you_liked`)
+    // youLiked.transaction(currentValue => (currentValue || 0) + 1)
 
     let likedYou = this.db.ref(`/statistics/${target}/liked_you`)
     likedYou.transaction(currentValue => (currentValue || 0) + 1)

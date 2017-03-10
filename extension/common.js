@@ -365,7 +365,6 @@ let app = new Vue({
       })
     },
     logout: function () {
-      alert('logout227')
       localStorage.removeItem('access_token')
       localStorage.removeItem('user_id')
       localStorage.removeItem('username')

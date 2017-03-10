@@ -36,12 +36,12 @@ class Like {
             target: target,
             id: this.item
           }).then(r => {
-            // this.db.addToLikedList({
-            //   object: object,
-            //   target: target,
-            //   type: 'photo',
-            //   id: this.item
-            // })
+            this.db.addToLikedList({
+              object: this.object,
+              target: this.target,
+              id: this.item,
+              type: 'photo'
+            })
             new Console().success(`{Like} id${object} > id${target}`)
             this.createRealtimeLike()
 

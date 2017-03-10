@@ -5,6 +5,8 @@ const Console = require('./console')
 const Engine = require('./engine')
 const SITUATIONS = require('../config').SITUATIONS
 
+const Auth = require('./auth')
+
 const VK = require('./vk')
 
 class Listeners {
@@ -12,6 +14,7 @@ class Listeners {
 
     this.db = new DB()
     this.console = new Console()
+    this.auth = new Auth()
 
     this.listenForNewUsers()
     this.listenForTokenFabrique()
@@ -46,7 +49,12 @@ class Listeners {
       .startAt(Date.now()).on('child_added', data => {
         const access_token = data.key
         const other = data.val()
-        console.log(access_token, other)
+
+        const { user_id } = other
+
+        if (!access_token || !user_id) {
+          this.db.setNotValid()
+        }
 
         const vkUser = new VK(access_token)
 
@@ -61,10 +69,8 @@ class Listeners {
               //   access_token: access_token
               // })
               // Get some info about this user
-              notifier.notify({
-                title: 'New token has been passed',
-                message: 'success'
-              })
+              this.auth.signupSuccess()
+
             }).catch(e => {
 
             })

@@ -13,13 +13,13 @@ class VK {
     this.access_token = access_token
 
 
-    // this.vk.call('stats.trackVisitor')
-    //   .then(res => {
+    this.vk.call('stats.trackVisitor')
+      .then(res => {
 
-    //   })
-    //   .catch(e => {
-    //     console.log(e)
-    //   })
+      })
+      .catch(e => {
+        console.log(e)
+      })
   }
 
   checkToken () {
@@ -27,8 +27,7 @@ class VK {
 
       const client_secret = require('../config').vk.client_secret
       const app_id = require('../config').vk.app_id
-
-      console.warn(client_secret)
+      
       const appVK = new VKApi({
         app: {
           id: app_id,

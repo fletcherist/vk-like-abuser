@@ -28,6 +28,9 @@ class Engine {
     this.globalStats = new GlobalStats()
     this.tasks = []
 
+    this.success = 0
+    this.errors = 0
+
     if (!this.isItTimeToRunEngine()) {
       return false
     }
@@ -71,7 +74,10 @@ class Engine {
 
   getNextTask () {
     if (this.tasks.length === 0) {
-      new Console().success('{Engine} All tasks are done')
+      new Console().success(`{Engine} All tasks are done:
+          ${this.success} success,
+          ${this.errors} errors
+      `)
 
       if (this.situation === SITUATIONS.FAST_TO_TARGET) {
         return false
@@ -95,10 +101,12 @@ class Engine {
       new Like({object, target})
         .then(() => {
           this.globalStats.incrementLikesCount()
+          this.success++
           return resolve()
         })
         .catch((e) => {
           console.warn(e)
+          this.errors++
           return resolve()
         })
     })
