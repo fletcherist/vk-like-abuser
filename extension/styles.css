@@ -155,10 +155,6 @@ a:hover {
   text-align: center;
 }
 
-.stats_common {
-  padding-bottom: 1rem;
-}
-
 .stats__item {
   padding: 2px;
 }
@@ -182,6 +178,7 @@ a:hover {
 .help {
   display: flex;
   width: 100%;
+  margin-top: 1rem;
 }
 
 .help__messages {

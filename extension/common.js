@@ -29,10 +29,10 @@ let globalStats = db.ref('/global_stats')
 
 Vue.component('stats', {
   template: `
-    <div class='stats_common'>
+    <div>
       <h1>Общая статистика</h1>
-      <div class='stats__item'>Пользователей: <b>{{globalStats.users.total}}</b></div>
-      <div class='stats__item'>Лайков поставлено: <b>{{globalStats.likes.all}}</b></div>
+      <div class='stats__item'>Пользователей: <b>{{allUsers}}</b></div>
+      <div class='stats__item'>Лайков поставлено: <b>{{allLikes}}</b></div>
     </div>
   `,
   firebase: {
@@ -45,9 +45,29 @@ Vue.component('stats', {
   computed: {
     yourContribution: function () {
       return 23
+    },
+
+    allLikes: function () {
+      if (this.globalStats.likes &&
+          this.globalStats.likes.all) {
+        return formatNumber(this.globalStats.likes.all)
+      }
+      return 0
+    },
+
+    allUsers: function () {
+      if (this.globalStats.users &&
+          this.globalStats.users.total) {
+        return formatNumber(this.globalStats.users.total)
+      }
+      return 0
     }
   }
 })
+
+function formatNumber (num) {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")
+}
 
 new Vue({
   el: '#list-demo',
@@ -161,7 +181,7 @@ Vue.component('help', {
   template: `
     <div class='help'>
       <div>
-        <span class='text-grey'>v0.1.1</span>
+        <span class='text-grey'>v0.1.2</span>
       </div>
       <div class='help__group'>
         <a href='https://vk.com/vk_king_likes' target='_blank'>Группа ВКонтакте</a>
