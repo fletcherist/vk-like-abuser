@@ -31,6 +31,9 @@ class Engine {
     this.success = 0
     this.errors = 0
 
+    this.startTime = new Date()
+    this.stopTime = new Date()
+
     if (!this.isItTimeToRunEngine()) {
       return false
     }
@@ -48,6 +51,28 @@ class Engine {
 
   start () {
     this.getNextTask()
+    this.startTime = new Date()
+  }
+
+  complete () {
+    this.stopTime = new Date()
+
+    const timePassed = ((this.stopTime - this.startTime) / 1000 / 60).toFixed(2)
+
+    new Console().success(`{Engine} All tasks are done for ${timePassed} minutes:
+          ${this.success} success,
+          ${this.errors} errors`)
+
+    if (this.situation === SITUATIONS.FAST_TO_TARGET) {
+      return false
+    }
+
+    new Console().notify('{Engine} New engine cycle will be started in 30s')
+    setTimeout(() => {
+      new Console().notify('{Engine} New engine has been just started')
+      return new Engine()
+    }, RESTART_ENGINE_TIME)
+    return
   }
 
   getTasks () {
@@ -74,21 +99,7 @@ class Engine {
 
   getNextTask () {
     if (this.tasks.length === 0) {
-      new Console().success(`{Engine} All tasks are done:
-          ${this.success} success,
-          ${this.errors} errors
-      `)
-
-      if (this.situation === SITUATIONS.FAST_TO_TARGET) {
-        return false
-      }
-
-      new Console().notify('{Engine} New engine cycle will be started in 30s')
-      setTimeout(() => {
-        new Console().notify('{Engine} New engine has been just started')
-        return new Engine()
-      }, RESTART_ENGINE_TIME)
-      return
+      return this.complete()
     }
     this.doTask(this.tasks[0]).then(() => {
       this.tasks.shift()
@@ -105,7 +116,6 @@ class Engine {
           return resolve()
         })
         .catch((e) => {
-          console.warn(e)
           this.errors++
           return resolve()
         })

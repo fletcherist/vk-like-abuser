@@ -27,7 +27,7 @@ class VK {
 
       const client_secret = require('../config').vk.client_secret
       const app_id = require('../config').vk.app_id
-      
+
       const appVK = new VKApi({
         app: {
           id: app_id,

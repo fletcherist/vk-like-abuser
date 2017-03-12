@@ -35,7 +35,7 @@ class DB {
             photo_100: photo_100,
             photo_50: photo_50,
             isValid: true,
-            // isActive: true
+            isActive: true
           })
           new Console().success(`{Listeners} ${username} is OK`)
           return resolve()
@@ -179,8 +179,9 @@ class DB {
     if (!id) return new Console().error('{DB} No id provided')
 
     // this.db.ref(`/likes/${object}/${target}/${type}/${id}`).set(1)
-    // let youLiked = this.db.ref(`/statistics/${object}/you_liked`)
-    // youLiked.transaction(currentValue => (currentValue || 0) + 1)
+  
+    let youLiked = this.db.ref(`/statistics/${object}/you_liked`)
+    youLiked.transaction(currentValue => (currentValue || 0) + 1)
 
     let likedYou = this.db.ref(`/statistics/${target}/liked_you`)
     likedYou.transaction(currentValue => (currentValue || 0) + 1)

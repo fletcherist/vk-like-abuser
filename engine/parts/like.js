@@ -33,7 +33,7 @@ class Like {
         this.vk.getPhoto(target).then(photo => {
           this.item = photo
           this.vk.like({
-            target: target,
+            target: this.target,
             id: this.item
           }).then(r => {
             this.db.addToLikedList({
@@ -52,11 +52,11 @@ class Like {
             this.errorHandler(e)
             return reject(e)
             })
-          }).catch(e => {
-            console.log(e)
-            new Console().error(`{Like} can't get user ${target} vk photos`)
-            return reject(e)
-          })
+        }).catch(e => {
+          console.log(e)
+          new Console().error(`{Like} can't get user ${target} vk photos`)
+          return reject(e)
+        })
 
         }, VK_API_WAIT())
     })

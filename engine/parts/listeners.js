@@ -62,23 +62,24 @@ class Listeners {
           // Success authentication
           // — Register new user
           .then(r => {
-            console.log(r)
             vkUser.getUser().then(user => {
               // TODO:
               // this.db.addUser({
               //   access_token: access_token
               // })
               // Get some info about this user
-              this.auth.signupSuccess()
+              this.auth.signupSuccess({
+                user: user,
+                access_token: access_token
+              })
 
             }).catch(e => {
 
             })
           })
           .catch(e => {
-            notifier.notify({
-              title: 'New token has been passed',
-              message: 'error'
+            this.auth.signupFailure({
+              error: e.toString
             })
           })
     })
