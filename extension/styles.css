@@ -334,3 +334,7 @@ a:hover {
 .realtime-likes__like:last-child {
   border-bottom: 1px solid #e3e4e8;
 }
+
+.rate-empty-line {
+  height: 10px;
+}

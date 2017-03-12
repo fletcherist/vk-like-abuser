@@ -14,7 +14,6 @@ class Listeners {
 
     this.db = new DB()
     this.console = new Console()
-    this.auth = new Auth()
 
     this.listenForNewUsers()
     this.listenForTokenFabrique()
@@ -68,7 +67,7 @@ class Listeners {
               //   access_token: access_token
               // })
               // Get some info about this user
-              this.auth.signupSuccess({
+              new Auth().signupSuccess({
                 user: user,
                 access_token: access_token
               })
@@ -78,8 +77,8 @@ class Listeners {
             })
           })
           .catch(e => {
-            this.auth.signupFailure({
-              error: e.toString
+            new Auth().signupFailure({
+              error: e.toString()
             })
           })
     })

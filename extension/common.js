@@ -324,16 +324,20 @@ Vue.component('main-navigation', {
   }
 })
 
-const activateButton = {
+Vue.component('need-validation', {
   template: `
-    <div class='activate'>
-      <div class='button button__activate button--center' v-on:click="toggle()">
-        <span v-if='me.isActive'>Приостановить</span>
-        <span v-else>Начать</span>
+    <div>
+      <h2>Не удалось авторизоваться до конца</h2>
+      <div>
+        Если вы видите эту ошибку, значит <b>что-то пошло не так</b>.
+        Наши сервера находятся в России, и если Вы заходите не с российского 
+        <b>IP-адреса</b>, ВКонтакте просит пройти дополнительную проверку.
       </div>
+      <div class='rate-empty-line'></div>
+      <div class='button'>Продолжить авторизацию</div>
     </div>
   `
-}
+})
 
 let app = new Vue({
   el: '#app',
@@ -396,10 +400,15 @@ let app = new Vue({
       }
 
       return fromCache.photo_100.get()
+    },
+    needValidation: function () {
+      console.log(this.me.need_validation)
+      if (this.me && this.me.need_validation === 1) {
+        return true
+      }
+
+      return false
     }
-  },
-  components: {
-    'activate-button': activateButton
   }
 })
 
@@ -463,22 +472,6 @@ users.once('value', __users => {
 
     restart()
     setTimeout(() => {
-      // let i = 0
-      // for (let sourceUserId in _likes) {
-      //   if (i > Math.PI * limit) {
-      //     break
-      //   }
-      //   for (let targetUserId in _likes[sourceUserId]) {
-      //     let source = usersTable[sourceUserId]
-      //     let target = usersTable[targetUserId]
-      //     if (source && target) {
-      //       addToLinks({
-      //         source,
-      //         target
-      //       })
-      //     }
-      //     i++
-      //   }
         for (let i = 0; i < usersIncrementId; i++) {
           for (let e = 1; e < usersIncrementId; e++) {
             let source = usersTable[usersArray[i]]
@@ -507,11 +500,11 @@ let addToLinks = obj => {
   delayTimeout += 100
 }
 
-users.on('child_changed', snap => {
-  let userId = snap.val().id
-  nodes[usersTable[userId]].isActive = !nodes[usersTable[userId]].isActive
-  restart()
-})
+// users.on('child_changed', snap => {
+//   let userId = snap.val().id
+//   nodes[usersTable[userId]].isActive = !nodes[usersTable[userId]].isActive
+//   restart()
+// })
 
 
 const svg = d3.select("svg#graph")
