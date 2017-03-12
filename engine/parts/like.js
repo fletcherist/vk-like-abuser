@@ -47,13 +47,12 @@ class Like {
 
             return resolve()
           }).catch(e => {
-            console.log(e)
             new Console().error(`{Like} id${object} ☒ id${target}`)
             this.errorHandler(e)
             return reject(e)
             })
         }).catch(e => {
-          console.log(e)
+          this.errorHandler(e)
           new Console().error(`{Like} can't get user ${target} vk photos`)
           return reject(e)
         })

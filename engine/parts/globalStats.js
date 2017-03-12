@@ -88,7 +88,6 @@ class GlobalStats {
   }
 
   incrementErrorsCount () {
-    console.warn('incrmentni')
     const errorsCount = this.db.ref('/global_stats/errors/all')
     errorsCount.transaction(currentValue => (currentValue || 0) + 1)
   }

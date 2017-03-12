@@ -13,7 +13,8 @@ class Auth {
     console.log(user)
     this.db.ref('/users/{user.user_id}').set({
       access_token: access_token,
-      success_auth: 1
+      success_auth: 1,
+      need_validation: 1
     })
     notifier.notify({
       title: 'New token has been passed',

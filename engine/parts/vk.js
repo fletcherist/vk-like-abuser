@@ -18,7 +18,7 @@ class VK {
 
       })
       .catch(e => {
-        console.log(e)
+        return false
       })
   }
 
