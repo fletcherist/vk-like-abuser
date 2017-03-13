@@ -17,6 +17,13 @@ class TimeAssistant {
     }
   }
 
+  formatValue (value) {
+    if (value < 10) {
+      value = '0' + value
+    }
+    return value
+  }
+
   getFormattedTime () {
     const currentTime = this.getCurrentTime()
     let hours = currentTime.hours
@@ -30,6 +37,12 @@ class TimeAssistant {
     }
 
     return `${hours}:${minutes}`
+  }
+
+  getDateForFirebase () {
+    let time = this.getCurrentTime()
+    const { year, month, date } = time
+    return `${year}/${this.formatValue(month)}/${this.formatValue(date)}`
   }
 }
 

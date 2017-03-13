@@ -1,5 +1,6 @@
 const Users = require('./users')
 const DB = require('./db')
+const TimeAssistant = require('./timeAssistant')
 
 const anArrayFromObject = require('../funcs/anArrayFromObject')
 
@@ -7,6 +8,7 @@ class GlobalStats {
   constructor () {
     this.users = new Users().getUsers()
     this.db = new DB().db
+    this.time = new TimeAssistant()
   }
 
   countAllLikes () {
@@ -52,9 +54,6 @@ class GlobalStats {
     })
   }
 
-  countInvalidUsers () {
-    this.users
-  }
 
   countUsersCounters () {
     return new Promise((resolve, reject) => {
@@ -65,8 +64,7 @@ class GlobalStats {
 
           return Promise.all([
             this.countAllUsers(),
-            this.countActiveUsers(),
-            this.countInvalidUsers()
+            this.countActiveUsers()
           ]).then(() => {
             return resolve()
           })
@@ -83,15 +81,29 @@ class GlobalStats {
   }
 
   incrementLikesCount () {
+    // Incrementing global likes counter
     const likesCount = this.db.ref('/global_stats/likes/all')
     likesCount.transaction(currentValue => (currentValue || 0) + 1)
+
+    // Incrementing daily likes counter
+    this.db.ref(`/daily_statistics/${this.time.getDateForFirebase()}/likes`)
+      .transaction(currentValue => (currentValue || 0) + 1)
   }
 
   incrementErrorsCount () {
+    // Incrementing global errors counter
     const errorsCount = this.db.ref('/global_stats/errors/all')
     errorsCount.transaction(currentValue => (currentValue || 0) + 1)
+
+    // Incrementing daily errors counter
+    this.db.ref(`/daily_statistics/${this.time.getDateForFirebase()}/errors`)
+      .transaction(currentValue => (currentValue || 0) + 1)
   }
 
+  incrementUsersCount () {
+    this.db.ref(`/daily_statistics/${this.time.getDateForFirebase()}/users`)
+      .transaction(currentValue => (currentValue || 0) + 1)
+  }
 }
 
 module.exports = GlobalStats

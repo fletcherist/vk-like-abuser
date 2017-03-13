@@ -29,10 +29,12 @@ class ErrorResolver {
     this.db = new DB()
     this.globalStats = new GlobalStats()
 
+    console.warn(error)
+
     error = this.findError()
     
 
-    console.log(error)
+    console.warn(error)
     switch (error) {
       case ERRORS.FLOOD_CONTROL:
         this.db.setFloodControl(this.object)

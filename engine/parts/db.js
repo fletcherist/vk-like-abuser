@@ -42,7 +42,9 @@ class DB {
         } else {
           return reject()
         }
+
       }).catch(e => {
+        console.log(e)
         db.ref(`users/${id}`).update({
           isValid: false,
           isActive: false
@@ -60,14 +62,16 @@ class DB {
         const users = anArrayFromObject(data.val())
         const promises = []
 
+        let timeoutTime = 1000
+
         users.forEach(user => {
-          if (user.isValid !== false) {
+          // if (user.isValid !== false) {
             promises.push(new Promise((resolve, reject) => {
               this.updateUserInfo(user)
                 .then(r => resolve(r))
                 .catch(e => reject(e))
             }))
-          }
+          // }
         })
 
         return Promise.all(promises)

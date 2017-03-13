@@ -106,12 +106,14 @@ class Like {
   }
 
   errorHandler (e) {
-    return new ErrorResolver({
-      error: e,
-      object: this.object,
-      target: this.target,
-      item: this.item
-    })
+    if (e) {
+      return new ErrorResolver({
+        error: e,
+        object: this.object,
+        target: this.target,
+        item: this.item
+      })
+    }
   }
 }
 

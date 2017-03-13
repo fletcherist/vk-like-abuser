@@ -3,6 +3,9 @@ const notifier = require('node-notifier')
 const DB = require('./db')
 const Console = require('./console')
 const Engine = require('./engine')
+const GlobalStats = require('./globalStats')
+
+
 const SITUATIONS = require('../config').SITUATIONS
 
 const Auth = require('./auth')
@@ -33,9 +36,11 @@ class Listeners {
         target: user.id
       })
 
+      new GlobalStats().incrementUsersCount()
+
       notifier.notify({
         'title': 'New User',
-        'message': `${user.id} has just signed in. Start engine for him`
+        'message': `${user.username} has just signed in. Start engine for him`
       })
     })
   }
@@ -47,40 +52,15 @@ class Listeners {
       .orderByChild('createdAt')
       .startAt(Date.now()).on('child_added', data => {
         const access_token = data.key
-        const other = data.val()
+        const user = data.val()
 
-        const { user_id } = other
+        const { user_id } = user
 
         if (!access_token || !user_id) {
           this.db.setNotValid()
         }
 
-        const vkUser = new VK(access_token)
-
-        vkUser.checkToken()
-          // Success authentication
-          // — Register new user
-          .then(r => {
-            vkUser.getUser().then(user => {
-              // TODO:
-              // this.db.addUser({
-              //   access_token: access_token
-              // })
-              // Get some info about this user
-              new Auth().signupSuccess({
-                user: user,
-                access_token: access_token
-              })
-
-            }).catch(e => {
-
-            })
-          })
-          .catch(e => {
-            new Auth().signupFailure({
-              error: e.toString()
-            })
-          })
+        new Auth({access_token, user}).authenticate()
     })
   }
 }

@@ -78,7 +78,7 @@ class VK {
         owner_id: target,
         item_id: id
       }).then(res => {
-        return resolve()
+        return resolve(res)
       }).catch(e => {
         return reject(e)
       })

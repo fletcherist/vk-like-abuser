@@ -17,7 +17,7 @@ globalStats.countAllCounters()
 const algorithms = require('./algorithms')
 
 const listeners = new Listeners()
-// const engine = new Engine()
+const engine = new Engine()
 
 const SITUATIONS = require('./config').SITUATIONS
 
