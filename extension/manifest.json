@@ -1,7 +1,7 @@
 {
   "name": "VK Like Abuser",
   "description": "Автоматическая система накрутки лайков на вашу страницу ВКонтакте.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "manifest_version": 2,
   "icons": {
     "128": "icon.png"
