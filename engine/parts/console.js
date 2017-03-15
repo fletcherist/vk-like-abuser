@@ -1,6 +1,8 @@
 const DB = require('../app').DB
 const TimeAssistant = require('./timeAssistant')
 
+const fs = require('fs')
+
 let consoleInstance = null
 let pushesInstance = null
 
@@ -45,6 +47,7 @@ class Console {
     let message = `[${this.time.getFormattedTime()}] ` + 'Error: ' + msg
     console.warn(message)
     new Pushes().send(message)
+    this.writeToLogs(message)
   }
 
   success (msg) {
@@ -53,6 +56,7 @@ class Console {
     let message = `[${this.time.getFormattedTime()}] ` + 'Success: ' + msg
     console.log(message)
     new Pushes().send(message)
+    this.writeToLogs(message)
   }
 
   notify (msg) {
@@ -61,6 +65,16 @@ class Console {
     let message = `[${this.time.getFormattedTime()}] ` + 'Notification: ' + msg
     console.log(message)
     new Pushes().send(message)
+    this.writeToLogs(message)
+  }
+
+  writeToLogs (msg) {
+    const dirArr = __dirname.split('/')
+    dirArr.splice(dirArr.length - 1, 1)
+    const dir = dirArr.join('/')
+
+    fs.appendFile(`${dir}/logs/${this.time.getDateForLogs()}.txt`,
+      `${msg}\n`, () => {})
   }
 }
 

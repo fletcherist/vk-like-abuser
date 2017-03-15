@@ -44,6 +44,12 @@ class TimeAssistant {
     const { year, month, date } = time
     return `${year}/${this.formatValue(month)}/${this.formatValue(date)}`
   }
+
+  getDateForLogs () {
+    let time = this.getCurrentTime()
+    const { year, month, date } = time
+    return `${year}-${this.formatValue(month)}-${this.formatValue(date)}`
+  }
 }
 
 const time = new TimeAssistant()

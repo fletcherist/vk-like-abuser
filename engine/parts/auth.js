@@ -89,7 +89,7 @@ class Auth {
       access_token: this.access_token,
       success_auth: 0,
       need_validation: 1,
-      id: user.user_id,
+      id: this.user.user_id,
       username: 'Unauthorized',
       createdAt: firebase.database.ServerValue.TIMESTAMP
     })
