@@ -10,6 +10,7 @@ const GlobalStats = require('./parts/globalStats')
 const globalStats = new GlobalStats()
 const Engine = require('./parts/engine')
 const ErrorResolver = require('./parts/errorResolver')
+const bugFixer = require('./parts/bugFixer')
 
 globalStats.countAllCounters()
   .then(r => {})
@@ -28,7 +29,7 @@ notifier.notify({
 
 // new Engine({
 //   situation: SITUATIONS.FAST_TO_TARGET,
-//   target: 337539863
+//   target: 335857495
 // })
 
 

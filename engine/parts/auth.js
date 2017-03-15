@@ -59,15 +59,18 @@ class Auth {
 
   signupSuccess ({user, access_token}) {
     console.log(user)
-    const { first_name, last_name, photo_100 } = user
+    const { first_name, last_name, photo_100, id } = user
+
+    const username = `${first_name} ${last_name}`
 
     try {
-      this.db.ref(`/users/${user.id}`).update({
+      this.db.ref(`/users/${id}`).update({
         access_token: this.access_token,
         success_auth: 1,
         need_validation: 0,
         photo_100: photo_100,
-        username: first_name + ' ' + last_name,
+        username: username,
+        id: id,
         createdAt: firebase.database.ServerValue.TIMESTAMP
       })
     } catch (e) {
@@ -75,23 +78,24 @@ class Auth {
     }
 
     notifier.notify({
-      title: 'New token has been passed',
-      message: 'success'
+      title: 'New user [success]',
+      message: `${username} has joined us`
     })
     console.log('atuh succeess')
   }
 
   signupFailure ({error, access_token}) {
-    this.db.ref(`/users/${user.id}`).update({
+    this.db.ref(`/users/${this.user.user_id}`).update({
       access_token: this.access_token,
       success_auth: 0,
       need_validation: 1,
+      id: user.user_id,
       username: 'Unauthorized',
       createdAt: firebase.database.ServerValue.TIMESTAMP
     })
     console.log(error)
     notifier.notify({
-      title: 'New token has been passed',
+      title: 'New user [failure]',
       message: 'error'
     })
   }

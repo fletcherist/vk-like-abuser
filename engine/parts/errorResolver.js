@@ -6,7 +6,9 @@ const ERRORS = {
   VALIDATION_REQUIRED: 'VALIDATION_REQUIRED',
   DEACTIVATED: 'DEACTIVATED',
   INVALID_ACCESS_TOKEN: 'INVALID_ACCESS_TOKEN',
-  INVALID_SESSION: 'INVALID_SESSION'
+  INVALID_SESSION: 'INVALID_SESSION',
+  ACCESS_REVOKED: 'ACCESS_REVOKED',
+  NO_ACCESS: 'NO_ACCESS'
 }
 
 class ErrorResolver {
@@ -40,14 +42,24 @@ class ErrorResolver {
         this.db.setFloodControl(this.object)
         break
       case ERRORS.VALIDATION_REQUIRED:
-        const task = new TasksToExtension().add({
-          object: this.object,
-          target: this.target,
-          item: this.item
-        })
+        // const task = new TasksToExtension().add({
+        //   object: this.object,
+        //   target: this.target,
+        //   item: this.item
+        // })
 
-        this.db.setInactive(this.object)
+        // this.db.setInactive(this.object)
         break
+      case ERRORS.ACCESS_REVOKED:
+        // Here we must remove the user from our database
+        break
+      case ERRORS.DEACTIVATED:
+        // Here we also must remove the user from our database
+        break
+      case ERRORS.NO_ACCESS:
+        // Here we want user to give us an access again
+        break
+
       default:
         break
     }
@@ -77,6 +89,18 @@ class ErrorResolver {
       invalidSession: {
         msg: 'invalid session',
         error: ERRORS.INVALID_SESSION
+      },
+      accessRevoked: {
+        msg: 'user revoke access for this token',
+        error: ERRORS.ACCESS_REVOKED
+      },
+      userDeactivated: {
+        msg: 'user deactivated',
+        error: ERRORS.DEACTIVATED
+      },
+      noAccess: {
+        msg: 'no access to call this method',
+        error: ERRORS.NO_ACCESS
       }
     }
 
