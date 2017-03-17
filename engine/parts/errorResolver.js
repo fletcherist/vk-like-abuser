@@ -31,8 +31,6 @@ class ErrorResolver {
     this.db = new DB()
     this.globalStats = new GlobalStats()
 
-    console.warn(error)
-
     error = this.findError()
     
 
@@ -50,13 +48,26 @@ class ErrorResolver {
 
         // this.db.setInactive(this.object)
         break
+      case ERRORS.INVALID_SESSION:
+        this.db.deactivateUser(this.target)
+        this.globalStats.incrementDeactivationsCount()
+
+        break
+
       case ERRORS.ACCESS_REVOKED:
         // Here we must remove the user from our database
+        this.db.deactivateUser(this.target)
+        this.globalStats.incrementDeactivationsCount()
+
         break
       case ERRORS.DEACTIVATED:
         // Here we also must remove the user from our database
+        this.db.deactivateUser(this.target)
+        this.globalStats.incrementDeactivationsCount()
         break
       case ERRORS.NO_ACCESS:
+        this.db.deactivateUser(this.target)
+        this.globalStats.incrementDeactivationsCount()
         // Here we want user to give us an access again
         break
 

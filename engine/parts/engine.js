@@ -90,11 +90,21 @@ class Engine {
           })
         }
         break
+      case SITUATIONS.FAST_FROM_TARGET:
+        if (this.target) {
+          new Console().notify(`{Engine} Fast from target`)
+          this.tasks = new algorithms.FastFromTarget({
+            target: this.target
+          })
+          console.log(this.tasks)
+        }
+        break
       default:
         new Console().notify(`{Engine} Choosing Queue Algorithm`)
         this.tasks = new algorithms.Queue()
         break
     }
+    console.log(this.tasks)
   }
 
   getNextTask () {

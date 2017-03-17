@@ -18,6 +18,7 @@ globalStats.countAllCounters()
 const algorithms = require('./algorithms')
 
 const listeners = new Listeners()
+
 const engine = new Engine()
 
 const SITUATIONS = require('./config').SITUATIONS
@@ -30,6 +31,11 @@ notifier.notify({
 // new Engine({
 //   situation: SITUATIONS.FAST_TO_TARGET,
 //   target: 288448558
+// })
+
+// new Engine({
+//   situation: SITUATIONS.FAST_FROM_TARGET,
+//   target: 96170043
 // })
 
 

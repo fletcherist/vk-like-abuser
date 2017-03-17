@@ -1,4 +1,5 @@
 const firebase = require('firebase')
+const Promise = require('bluebird')
 const app = require('./app')
 
 const Console = require('./console')
@@ -25,33 +26,35 @@ class DB {
     return new Promise((resolve, reject) => {
       const { access_token, id } = user
 
-      let vk = new VK(access_token)
-      vk.getUser(id).then(_user => {
-        if (_user) {
-          const { first_name, last_name, photo_100, photo_50 } = _user
-          const username = `${first_name} ${last_name}`
-          db.ref(`users/${id}`).update({
-            username: username,
-            photo_100: photo_100,
-            photo_50: photo_50,
-            isValid: true,
-            isActive: true
-          })
-          new Console().success(`{Listeners} ${username} is OK`)
-          return resolve()
-        } else {
-          return reject()
-        }
+      setTimeout(() => {
+        let vk = new VK(access_token)
+        vk.getUser(id).then(_user => {
+          if (_user) {
+            const { first_name, last_name, photo_100, photo_50 } = _user
+            const username = `${first_name} ${last_name}`
+            db.ref(`users/${id}`).update({
+              username: username,
+              photo_100: photo_100,
+              photo_50: photo_50,
+              isValid: true,
+              isActive: true
+            })
+            new Console().success(`{Listeners} ${username} is OK`)
+            return resolve()
+          } else {
+            return reject()
+          }
 
-      }).catch(e => {
-        console.log(e)
-        db.ref(`users/${id}`).update({
-          isValid: false,
-          isActive: false
+        }).catch(e => {
+          console.log(e)
+          db.ref(`users/${id}`).update({
+            isValid: false,
+            isActive: false
+          })
+          new Console().error(`{Listeners} ${id} couldnt do authentication`)
+          return reject()
         })
-        new Console().error(`{Listeners} ${id} couldnt do authentication`)
-        return reject()
-      })
+      }, 3000)
     })
   }
 
@@ -66,22 +69,23 @@ class DB {
 
         users.forEach(user => {
           // if (user.isValid !== false) {
-            promises.push(new Promise((resolve, reject) => {
+            promises.push(() => new Promise((resolve, reject) => {
               this.updateUserInfo(user)
                 .then(r => resolve(r))
-                .catch(e => reject(e))
+                .catch(e => resolve(e))
             }))
           // }
         })
 
-        return Promise.all(promises)
-          .then(r => {
+
+        Promise.each(promises, promise => {
+          return promise()
+        }).then(r => {
             new Console().success('{DB} All users are fine')
             return resolve()
           })
           .catch(e => {
             new Console().success('{DB} NOT all the users are fine')
-            console.log(e)
             return reject()
           })
       })
@@ -172,8 +176,13 @@ class DB {
     })
   }
 
-  isInLikedList () {
-    return true
+  deactivateUser (id) {
+    if (!id) return new Console().error(`${DB} [deactivate user] no id`)
+
+    this.db.ref(`/users/${id}`).update({
+      isActive: false,
+      isValid: false
+    })
   }
 
   addToLikedList ({object, target, type, id}) {
@@ -181,6 +190,11 @@ class DB {
     if (!target) return new Console().error('{DB} No target user provided')
     if (!type) return new Console().error('{DB} No type provided')
     if (!id) return new Console().error('{DB} No id provided')
+
+    object = parseInt(object)
+    target = parseInt(target)
+    type = parseInt(type)
+    id = parseInt(id)
 
     // this.db.ref(`/likes/${object}/${target}/${type}/${id}`).set(1)
   

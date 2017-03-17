@@ -20,7 +20,7 @@ class Listeners {
 
     this.listenForNewUsers()
     this.listenForTokenFabrique()
-    // this.db.updateUsersInfo()
+    this.db.updateUsersInfo()
   }
 
   listenForNewUsers () {
@@ -58,9 +58,9 @@ class Listeners {
 
         if (!access_token || !user_id) {
           this.db.setNotValid()
+        } else {
+          new Auth({access_token, user}).authenticate()
         }
-
-        new Auth({access_token, user}).authenticate()
     })
   }
 }
