@@ -28,7 +28,6 @@ class Auth {
           //   access_token: access_token
           // })
           // Get some info about this user
-
           // Test like
           vkUser.like({target: 1, id: 376599151}).then(r => {
             // Auth success
@@ -71,6 +70,8 @@ class Auth {
         photo_100: photo_100,
         username: username,
         id: id,
+        isValid: true,
+        isActive: true,
         createdAt: firebase.database.ServerValue.TIMESTAMP
       })
     } catch (e) {
@@ -81,7 +82,6 @@ class Auth {
       title: 'New user [success]',
       message: `${username} has joined us`
     })
-    console.log('atuh succeess')
   }
 
   signupFailure ({error, access_token}) {

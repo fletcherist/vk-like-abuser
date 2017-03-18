@@ -53,9 +53,9 @@ class Listeners {
         const access_token = data.key
         const user = data.val()
 
-        const { user_id } = user
-
-        if (!access_token || !user_id) {
+        const { id } = user
+        console.log(user)
+        if (!access_token || !id) {
           this.db.setNotValid()
         } else {
           new Auth({access_token, user}).authenticate()
