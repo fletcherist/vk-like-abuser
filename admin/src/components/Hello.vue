@@ -24,33 +24,7 @@
         </div>
       </ui-tab>
       <ui-tab title="Пользователи">
-        <ui-textbox
-          icon="search"
-          placeholder="Начните вводить имя"
-          v-model="queryUsername">
-        </ui-textbox>
-        <div class='users'>
-          <div class='user' v-for='user in filteredUsers' ref='user'>
-            <!-- <div @click='removeUser(user.id)'>x</div> -->
-            <div class='user__avatar'>
-            <!-- target='_blank' :href="'http://vk.com/id' + user.id" -->
-            <a>
-              <img
-                class='avatar'
-                :src='user.photo_100'
-                :class="{ 
-                  'avatar--isNotActive' : user.isActive === false,
-                  'avatar--isActive': user.isActive === true
-                }"
-              />
-            </a>
-            </div>
-            <div class='user__stats'>
-              <b>{{user.you_liked}}</b>
-              <b>{{user.liked_you}}</b>
-            </div>
-          </div>
-        </div>
+        <users></users>
       </div>
       </ui-tab>
     </ui-tabs>
@@ -59,6 +33,7 @@
 
 <script>
 import Stats from './Stats'
+import Users from './Users'
 
 import { mapState } from 'vuex'
 
@@ -80,9 +55,7 @@ export default {
   },
   data () {
     return {
-      searchByUsername: '',
       sortedUsers: [],
-      queryUsername: '',
       global_stats: {
         users: {
           total: 0,
@@ -92,36 +65,7 @@ export default {
       }
     }
   },
-  firebase: {
-    // stats: {
-    //   source: stats,
-    //   asObject: true
-    // },
-    // stats: stats,
-    // global_stats: {
-      // source: db.ref('/global_stats'),
-      // asObject: true
-    // }
-  },
   methods: {
-    // loadData: function () {
-    //   return new Promise(resolve => {
-    //     db.ref('users').orderByChild('createdAt').once('value', snap => {
-    //       this.users = anArrayFromObject(snap.val())
-    //       db.ref('statistics').once('value', snap => {
-    //         const stats = snap.val()
-    //         this.users.map(user => {
-    //           if (stats[user.id]) {
-    //             user.you_liked = stats[user.id].you_liked
-    //             user.liked_you = stats[user.id].liked_you
-    //           }
-    //         })
-    //         this.stats = anArrayFromObject(snap.val())
-    //         return resolve()
-    //       })
-    //     })
-    //   })
-    // },
     getStats: function (id) {
       let you_liked = 0
       let liked_you = 0
@@ -182,21 +126,11 @@ export default {
         return this.users.length - this.isActive
       }
       return 'loading...'
-    },
-    filteredUsers: function () {
-      return this.users.filter(user => {
-        if (user && user.username) {
-          return user.username
-            .toLowerCase()
-            .indexOf(this.queryUsername.toLowerCase()) > -1
-        }
-
-        return false
-      })
     }
   },
   components: {
-    'stats': Stats
+    'stats': Stats,
+    'users': Users
   }
 }
 </script>
@@ -219,51 +153,6 @@ a {
     margin: 0rem auto;
   }
 }*/
-
-
-.users {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-.user {
-  width: 100px;
-  padding: .5rem;
-  /*border: 1px solid #cfd8dc;*/
-  margin-left: -1px;
-  margin-bottom: -1px;
-}
-
-.user:hover {
-  background-color: #dfe6ed;
-}
-
-.user__stats {
-  text-align: center;
-  font-size: .75rem;
-  color: #546e7a !important;
-}
-
-.user__avatar {
-  display: flex;
-  justify-content: center;
-}
-
-.avatar {
-  border-radius: 100%;
-  border: 2px solid white;
-  height: 50px;
-  width: 50px;
-}
-
-.avatar--isNotActive {
-  border-color: #ef5350;
-}
-
-.avatar--isActive {
-  border-color: #81d4fa;
-}
 
 .quick-stats {
   display: inline-block;
