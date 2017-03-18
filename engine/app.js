@@ -24,6 +24,7 @@ const engine = new Engine()
 const BugFixer = require('./parts/bugFixer')
 
 
+new BugFixer().validateUsers()
 setInterval(() => {
   new BugFixer().validateUsers()
   new BugFixer().fixUsersID()

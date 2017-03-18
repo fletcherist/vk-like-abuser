@@ -43,23 +43,12 @@
             {{globalStats.errors.all}}
           </div>
         </div>
-        <div class='stats__block'>
-          <div class='stats__value_desc'>
-            Like errors
-          </div>
-          <div class='stats__value'>
-            {{globalStats.errors.all}}
-          </div>
-        </div>
       </div>
       <div class='stats__container'>
         <div class='stats__block'>
           <div class='stats__value_desc'>
-            <ui-icon icon='favorite' class='stats__icon'></ui-icon>
+            <ui-icon icon='free_breakfast' class='stats__icon'></ui-icon>
             today
-          </div>
-          <div class='stats__value'>
-            {{globalStats.likes.all}}
           </div>
         </div>
         <div class='stats__block'>
@@ -67,7 +56,7 @@
             new sign ups
           </div>
           <div class='stats__value'>
-            {{globalStats.likes.all}}
+            {{todayStats.users || 0}}
           </div>
         </div>
         <div class='stats__block'>
@@ -75,7 +64,15 @@
             new likes
           </div>
           <div class='stats__value'>
-            {{globalStats.likes.all}}
+            {{todayStats.likes}}
+          </div>
+        </div>
+        <div class='stats__block'>
+          <div class='stats__value_desc'>
+            errors
+          </div>
+          <div class='stats__value'>
+            {{todayStats.errors}}
           </div>
         </div>
       </div>
@@ -117,29 +114,14 @@ import Recounters from './Recounters'
 import { mapGetters } from 'vuex'
 
 import { db } from '../firebase'
+import TimeAssistant from '../utils/timeAssistant'
 
+const time = new TimeAssistant()
+const todayStatsLink = `/daily_statistics/${time.getDateForFirebase()}`
 export default {
   name: 'stats',
-  // props: {
-  //   'globalStats': {
-  //     type: Object,
-  //     default: function () {
-  //       return {
-  //         users: {
-  //           total: 0,
-  //           active: 0,
-  //           inactive: 0
-  //         },
-  //         likes: {
-  //           all: 0
-  //         }
-  //       }
-  //     }
-  //   },
-  //   'message': String
-  // },
   computed: {
-    ...mapGetters(['globalStats']),
+    ...mapGetters(['globalStats', 'todayStats']),
     successLikes () {
       return (this.globalStats.likes.all / (this.globalStats.errors.all + this.globalStats.likes.all)).toFixed(2) * 100
     },
@@ -151,12 +133,17 @@ export default {
     globalStats: {
       source: db.ref('/global_stats'),
       asObject: true
+    },
+    todayStats: {
+      source: db.ref(todayStatsLink),
+      asObject: true
     }
   },
   components: {
     'recounters': Recounters
   }
 }
+
 </script>
 <style scoped>
 

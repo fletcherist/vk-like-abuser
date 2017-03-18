@@ -54,7 +54,7 @@ class DB {
           new Console().error(`{Listeners} ${id} couldnt do authentication`)
           return reject()
         })
-      }, 3000)
+      }, 1000)
     })
   }
 
