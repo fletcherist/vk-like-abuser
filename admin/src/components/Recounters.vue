@@ -1,5 +1,6 @@
 <template>
   <div class='stats__actions'>
+    <ui-button @click='loadData()'>Load data</ui-button>
     <ui-button
       @click='recountLikes()'
       :loading="recountingLikes.loading"

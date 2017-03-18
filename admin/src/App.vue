@@ -13,15 +13,13 @@ export default {
 
 <style>
 
-body {
-  background-color: #424242 !important;
-}
-
 #app {
-  font-family: 'Helvetica Neue';
+  font-family: "Roboto Mono",serif;
 }
 
-.ui-tabs__body {
-  background-color: rgb(54, 57, 62) !important;
+body {
+  padding: 0px;
+  margin: 0px;
 }
+
 </style>

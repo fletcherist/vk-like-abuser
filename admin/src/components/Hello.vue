@@ -12,6 +12,7 @@
           icon="refresh"
           size="large"
           type="secondary"
+          @click='loadData()'
         ></ui-icon-button>
       </div>
     </ui-toolbar>
@@ -23,13 +24,11 @@
         </div>
       </ui-tab>
       <ui-tab title="Пользователи">
-        <div class='search__box'>
-          <ui-textbox
-            icon="search"
-            placeholder="Начните вводить имя"
-            v-model="queryUsername">
-          </ui-textbox>
-        </div>
+        <ui-textbox
+          icon="search"
+          placeholder="Начните вводить имя"
+          v-model="queryUsername">
+        </ui-textbox>
         <div class='users'>
           <div class='user' v-for='user in filteredUsers' ref='user'>
             <!-- <div @click='removeUser(user.id)'>x</div> -->
@@ -47,9 +46,8 @@
             </a>
             </div>
             <div class='user__stats'>
-              <b>{{getStats(user.id).you_liked || 0}}</b>
-              /
-              <b>{{getStats(user.id).liked_you || 0}}</b>
+              <b>{{user.you_liked}}</b>
+              <b>{{user.liked_you}}</b>
             </div>
           </div>
         </div>
@@ -74,21 +72,26 @@ firebase.initializeApp(config)
 
 let db = firebase.database()
 
-let users = db.ref('users').orderByChild('createdAt')
 // let me = db.ref(`users/${MY_ID}`)
-let stats = db.ref(`statistics`)
-let pushes = db.ref('pushes')
-let likes = db.ref('likes')
+// let stats = db.ref(`statistics`)
+
+function anArrayFromObject (obj) {
+  const arr = []
+  for (let val in obj) {
+    arr.push(obj[val])
+  }
+  return arr
+}
 
 export default {
   name: 'hello',
   mounted: function () {
-    console.log('hello!')
+    this.loadData()
   },
   data () {
     return {
       searchByUsername: '',
-      users: this.users,
+      users: [],
       sortedUsers: [],
       queryUsername: '',
       global_stats: {
@@ -101,20 +104,35 @@ export default {
     }
   },
   firebase: {
-    users: users,
     // stats: {
     //   source: stats,
     //   asObject: true
     // },
-    stats: stats,
-    pushes: pushes,
-    likes: likes,
+    // stats: stats,
     global_stats: {
       source: db.ref('/global_stats'),
       asObject: true
     }
   },
   methods: {
+    loadData: function () {
+      return new Promise(resolve => {
+        db.ref('users').orderByChild('createdAt').once('value', snap => {
+          this.users = anArrayFromObject(snap.val())
+          db.ref('statistics').once('value', snap => {
+            const stats = snap.val()
+            this.users.map(user => {
+              if (stats[user.id]) {
+                user.you_liked = stats[user.id].you_liked
+                user.liked_you = stats[user.id].liked_you
+              }
+            })
+            this.stats = anArrayFromObject(snap.val())
+            return resolve()
+          })
+        })
+      })
+    },
     getStats: function (id) {
       let you_liked = 0
       let liked_you = 0
@@ -135,8 +153,8 @@ export default {
             you_liked = this.stats[i].you_liked
             liked_you = this.stats[i].liked_you
 
-            // this.users[id].you_liked = you_liked
-            // this.users[id].liked_you = liked_you
+            this.users[id].you_liked = you_liked
+            this.users[id].liked_you = liked_you
 
             break
           }
@@ -198,17 +216,17 @@ a {
   color: black;
 }
 
-.wrapper {
+/*.wrapper {
   max-width: 80vw;
   margin: 4rem auto;
-}
+}*/
 
-@media (max-width: 500px) {
+/*@media (max-width: 500px) {
   .wrapper {
     max-width: 100vw;
     margin: 0rem auto;
   }
-}
+}*/
 
 
 .users {
@@ -253,11 +271,6 @@ a {
 
 .avatar--isActive {
   border-color: #81d4fa;
-}
-
-.search__box {
-  max-width: 40vw;
-  margin: 0px auto;
 }
 
 .quick-stats {

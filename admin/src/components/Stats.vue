@@ -3,45 +3,63 @@
     <!-- <div class='stats__active'>{{globalStats.users.active}} active</div>
     <div class='stats__not-active'>{{globalStats.users.inactive}} not active</div> -->
     <recounters></recounters>
-    <div v-if="globalStats.users">
+    <div v-if="globalStats.users" class='container'>
       <div class='stats__container'>
         <div class='stats__block'>
-          <ui-icon icon='favorite' class='stats__icon'></ui-icon>
+          <div class='stats__value_desc'>
+            <ui-icon icon='perm_identity' class='stats__icon'></ui-icon>
+            All users 
+          </div>
           <div class='stats__value'>
-            {{globalStats.likes.all}}
-            <div class='stats__value_desc'>likes</div>
+            {{globalStats.users.total}}
+          </div>
+        </div>
+        <div class='stats__block'>
+          <div class='stats__value_desc'>Active users </div>
+          <div class='stats__value'>{{globalStats.users.active}}</div>
+        </div>
+        <div class='stats__block'>
+          <div class='stats__value_desc'>Inactive users </div>
+          <div class='stats__value'>
+            {{globalStats.users.inactive}}
           </div>
         </div>
       </div>
-      <h1>users</h1>
       <div class='stats__container'>
         <div class='stats__block'>
-          <!-- <ui-icon
-            icon='mood'
-            class='stats__icon'
-          ></ui-icon> -->
+          <div class='stats__value_desc'>
+            <ui-icon icon='favorite' class='stats__icon'></ui-icon>
+            Likes count
+          </div>
           <div class='stats__value'>
-            {{globalStats.users.active}}
-            <span class='stats__value_desc'>active</span>
+            {{globalStats.likes.all}}
           </div>
         </div>
-        <div class='stats__operators'>+</div>
+      </div>
+      <div class='stats__container'>
         <div class='stats__block'>
-          <!-- <ui-icon
-            icon='mood_bad'
-            class='stats__icon'>
-          </ui-icon> -->
+          <div class='stats__value_desc'>
+            <ui-icon icon='favorite' class='stats__icon'></ui-icon>
+            today
+          </div>
           <div class='stats__value'>
-            {{globalStats.users.inactive}}
-            <span class='stats__value_desc'>passive</span>
+            {{globalStats.likes.all}}
           </div>
         </div>
-        <div class='stats__operators'>=</div>
         <div class='stats__block'>
-          <!-- <ui-icon icon='perm_identity' class='stats__icon'></ui-icon> -->
+          <div class='stats__value_desc'>
+            new sign ups
+          </div>
           <div class='stats__value'>
-            {{globalStats.users.total}}
-            <span class='stats__value_desc'>current</span>
+            {{globalStats.likes.all}}
+          </div>
+        </div>
+        <div class='stats__block'>
+          <div class='stats__value_desc'>
+            new likes
+          </div>
+          <div class='stats__value'>
+            {{globalStats.likes.all}}
           </div>
         </div>
       </div>
@@ -82,42 +100,52 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
+
+.container {
+  display: flex;
+}
+
+@media (max-width: 500px) {
+  .container {
+    flex-direction: row;
+  }
+}
   
 .stats {
 }
 
 .stats__container {
   display: flex;
-  align-items: center;
-  background-color: rgb(54, 57, 62);
+  flex-direction: column;
+  max-width: 50%;
 }
 
+
+
 .stats__block {
-  color: #546e7a;
-  text-align: center;
-  width: 30%;
+  color: black;
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  width: 300px;
 }
 
 .stats__icon {
-  font-size: 3rem !important;
+  font-size: 2rem !important;
   color: #eee;
 }
 
 .stats__value {
-  font-size: 2rem;
-  font-weight: lighter;
+  align-self: center;
 }
 
 .stats__value_desc {
-  font-size: 1.25rem;
-  font-weight: normal;
-}
-
-.stats__operators {
-  font-size: 3rem;
-  font-weight: bold;
-  color: #424242;
+  font-size: 1rem;
+  font-weight: lighter;
+  text-transform: uppercase;
+  /*align-self: flex-start;*/
+  width: 60%;
 }
 
 .stats__active {
