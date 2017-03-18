@@ -20,7 +20,7 @@
       raised>
       <ui-tab title="Сей час">
         <div v-if="global_stats">
-          <stats :globalStats="global_stats"></stats>
+          <!-- <stats :globalStats="global_stats"></stats> -->
         </div>
       </ui-tab>
       <ui-tab title="Пользователи">
@@ -58,40 +58,29 @@
 </template>
 
 <script>
-import firebase from 'firebase'
 import Stats from './Stats'
 
-var config = {
-  apiKey: 'AIzaSyB1IjoxSLvx-C_hpyQ2irgzB01Tf3bts3I',
-  authDomain: 'vk-free-likes.firebaseapp.com',
-  databaseURL: 'https://vk-free-likes.firebaseio.com',
-  storageBucket: 'vk-free-likes.appspot.com',
-  messagingSenderId: '19336089245'
-}
-firebase.initializeApp(config)
-
-let db = firebase.database()
+import { mapState } from 'vuex'
 
 // let me = db.ref(`users/${MY_ID}`)
 // let stats = db.ref(`statistics`)
 
-function anArrayFromObject (obj) {
-  const arr = []
-  for (let val in obj) {
-    arr.push(obj[val])
-  }
-  return arr
-}
+// function anArrayFromObject (obj) {
+//   const arr = []
+//   for (let val in obj) {
+//     arr.push(obj[val])
+//   }
+//   return arr
+// }
 
 export default {
   name: 'hello',
   mounted: function () {
-    this.loadData()
+    // this.loadData()
   },
   data () {
     return {
       searchByUsername: '',
-      users: [],
       sortedUsers: [],
       queryUsername: '',
       global_stats: {
@@ -109,30 +98,30 @@ export default {
     //   asObject: true
     // },
     // stats: stats,
-    global_stats: {
-      source: db.ref('/global_stats'),
-      asObject: true
-    }
+    // global_stats: {
+      // source: db.ref('/global_stats'),
+      // asObject: true
+    // }
   },
   methods: {
-    loadData: function () {
-      return new Promise(resolve => {
-        db.ref('users').orderByChild('createdAt').once('value', snap => {
-          this.users = anArrayFromObject(snap.val())
-          db.ref('statistics').once('value', snap => {
-            const stats = snap.val()
-            this.users.map(user => {
-              if (stats[user.id]) {
-                user.you_liked = stats[user.id].you_liked
-                user.liked_you = stats[user.id].liked_you
-              }
-            })
-            this.stats = anArrayFromObject(snap.val())
-            return resolve()
-          })
-        })
-      })
-    },
+    // loadData: function () {
+    //   return new Promise(resolve => {
+    //     db.ref('users').orderByChild('createdAt').once('value', snap => {
+    //       this.users = anArrayFromObject(snap.val())
+    //       db.ref('statistics').once('value', snap => {
+    //         const stats = snap.val()
+    //         this.users.map(user => {
+    //           if (stats[user.id]) {
+    //             user.you_liked = stats[user.id].you_liked
+    //             user.liked_you = stats[user.id].liked_you
+    //           }
+    //         })
+    //         this.stats = anArrayFromObject(snap.val())
+    //         return resolve()
+    //       })
+    //     })
+    //   })
+    // },
     getStats: function (id) {
       let you_liked = 0
       let liked_you = 0
@@ -173,6 +162,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      users: state => state.users
+    }),
     isActive: function () {
       if (this.users && this.users.length) {
         let isActiveCount = 0

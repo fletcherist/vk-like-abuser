@@ -6,13 +6,6 @@
 
 <script>
 
-import store from './store'
-console.log(store)
-
-store.commit('increment')
-
-console.log(store.state.count)
-
 export default {
   name: 'app'
 }

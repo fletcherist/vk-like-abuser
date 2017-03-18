@@ -12,14 +12,59 @@ import '../node_modules/keen-ui/dist/keen-ui.css'
 import VueFire from 'vuefire'
 import Vuex from 'vuex'
 
+import { db } from './firebase'
+
 Vue.use(Vuex)
 Vue.use(VueFire)
 Vue.use(KeenUI)
+
+function anArrayFromObject (obj) {
+  const arr = []
+  for (let val in obj) {
+    arr.push(obj[val])
+  }
+  return arr
+}
+
+export const store = new Vuex.Store({
+  state: {
+    count: 0,
+    users: []
+  },
+  mutations: {
+    increment (state) {
+      state.count++
+    },
+    loadUsers (state, users) {
+      state.users = users
+    }
+  },
+  actions: {
+    loadUsers ({commit}) {
+      db.ref('users').orderByChild('createdAt').once('value', snap => {
+        commit('loadUsers', anArrayFromObject(snap.val()))
+        db.ref('statistics').once('value', snap => {
+          // const stats = snap.val()
+          // this.users.map(user => {
+          //   if (stats[user.id]) {
+          //     user.you_liked = stats[user.id].you_liked
+          //     user.liked_you = stats[user.id].liked_you
+          //   }
+          // })
+          // this.stats = anArrayFromObject(snap.val())
+        })
+      })
+    }
+  }
+})
+
+store.dispatch('loadUsers')
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
+  store,
   template: '<App/>',
   components: { App }
 })
