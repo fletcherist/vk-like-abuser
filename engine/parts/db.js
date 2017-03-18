@@ -58,40 +58,6 @@ class DB {
     })
   }
 
-  updateUsersInfo () {
-    return new Promise((resolve, reject) => {
-      let users = this.db.ref('users')
-      users.once('value', data => {
-        const users = anArrayFromObject(data.val())
-        const promises = []
-
-        let timeoutTime = 1000
-
-        users.forEach(user => {
-          // if (user.isValid !== false) {
-            promises.push(() => new Promise((resolve, reject) => {
-              this.updateUserInfo(user)
-                .then(r => resolve(r))
-                .catch(e => resolve(e))
-            }))
-          // }
-        })
-
-
-        Promise.each(promises, promise => {
-          return promise()
-        }).then(r => {
-            new Console().success('{DB} All users are fine')
-            return resolve()
-          })
-          .catch(e => {
-            new Console().success('{DB} NOT all the users are fine')
-            return reject()
-          })
-      })
-    })
-  }
-
   getUsers () {
     return new Promise ((resolve, reject) => {
       this.db.ref('/users').once('value')
@@ -196,7 +162,7 @@ class DB {
     type = parseInt(type)
     id = parseInt(id)
 
-    // this.db.ref(`/likes/${object}/${target}/${type}/${id}`).set(1)
+    this.db.ref(`/likes/${object}/${target}/${type}/${id}`).set(1)
   
     let youLiked = this.db.ref(`/statistics/${object}/you_liked`)
     youLiked.transaction(currentValue => (currentValue || 0) + 1)
