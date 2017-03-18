@@ -35,6 +35,22 @@
             {{globalStats.likes.all}}
           </div>
         </div>
+        <div class='stats__block'>
+          <div class='stats__value_desc'>
+            Like errors
+          </div>
+          <div class='stats__value'>
+            {{globalStats.errors.all}}
+          </div>
+        </div>
+        <div class='stats__block'>
+          <div class='stats__value_desc'>
+            Like errors
+          </div>
+          <div class='stats__value'>
+            {{globalStats.errors.all}}
+          </div>
+        </div>
       </div>
       <div class='stats__container'>
         <div class='stats__block'>
@@ -63,6 +79,30 @@
           </div>
         </div>
       </div>
+      <div class='stats__container'>
+        <div class='stats__block'>
+          <div class='stats__value_desc'>
+            <ui-icon icon='show_chart' class='stats__icon'></ui-icon>
+            percents
+          </div>
+        </div>
+        <div class='stats__block'>
+          <div class='stats__value_desc'>
+            success likes
+          </div>
+          <div class='stats__value'>
+            {{successLikes}}%
+          </div>
+        </div>
+        <div class='stats__block'>
+          <div class='stats__value_desc'>
+            error likes
+          </div>
+          <div class='stats__value'>
+            {{errorLikes}}%
+          </div>
+        </div>
+      </div>
     </div>
     <div v-else>
       <ui-progress-circular
@@ -74,26 +114,44 @@
 </template>
 <script>
 import Recounters from './Recounters'
+import { mapGetters } from 'vuex'
+
+import { db } from '../firebase'
 
 export default {
   name: 'stats',
-  props: {
-    'globalStats': {
-      type: Object,
-      default: function () {
-        return {
-          users: {
-            total: 0,
-            active: 0,
-            inactive: 0
-          },
-          likes: {
-            all: 0
-          }
-        }
-      }
+  // props: {
+  //   'globalStats': {
+  //     type: Object,
+  //     default: function () {
+  //       return {
+  //         users: {
+  //           total: 0,
+  //           active: 0,
+  //           inactive: 0
+  //         },
+  //         likes: {
+  //           all: 0
+  //         }
+  //       }
+  //     }
+  //   },
+  //   'message': String
+  // },
+  computed: {
+    ...mapGetters(['globalStats']),
+    successLikes () {
+      return (this.globalStats.likes.all / (this.globalStats.errors.all + this.globalStats.likes.all)).toFixed(2) * 100
     },
-    'message': String
+    errorLikes () {
+      return (this.globalStats.errors.all / (this.globalStats.errors.all + this.globalStats.likes.all)).toFixed(2) * 100
+    }
+  },
+  firebase: {
+    globalStats: {
+      source: db.ref('/global_stats'),
+      asObject: true
+    }
   },
   components: {
     'recounters': Recounters

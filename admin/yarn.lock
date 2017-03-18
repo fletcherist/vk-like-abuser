@@ -5859,6 +5859,10 @@ vuex:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/vuex/-/vuex-2.2.1.tgz#a42d0ce18cb0e0359258f84bfd76835ed468c185"
 
+vuexfire:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/vuexfire/-/vuexfire-0.4.0.tgz#67b4bf3f34c8f6913261155e5385431460d3864d"
+
 watchpack@^1.2.0:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/watchpack/-/watchpack-1.2.1.tgz#01efa80c5c29e5c56ba55d6f5470a35b6402f0b2"

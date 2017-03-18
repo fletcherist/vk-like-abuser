@@ -20,7 +20,7 @@
       raised>
       <ui-tab title="Сей час">
         <div v-if="global_stats">
-          <!-- <stats :globalStats="global_stats"></stats> -->
+          <stats></stats>
         </div>
       </ui-tab>
       <ui-tab title="Пользователи">
