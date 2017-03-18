@@ -109,7 +109,7 @@ class GlobalStats {
     this.db.ref(`/global_stats/users/deactivated`)
       .transaction(currentValue => (currentValue || 0) + 1)
 
-    this.db.ref(`/daily_statistics/${this.time.getDateForFirebase()}/`)
+    this.db.ref(`/daily_statistics/${this.time.getDateForFirebase()}/deactivated`)
       .transaction(currentValue => (currentValue || 0) + 1)
   }
 }
