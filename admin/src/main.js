@@ -10,7 +10,9 @@ import router from './router'
 import '../node_modules/keen-ui/dist/keen-ui.css'
 
 import VueFire from 'vuefire'
+import Vuex from 'vuex'
 
+Vue.use(Vuex)
 Vue.use(VueFire)
 Vue.use(KeenUI)
 
