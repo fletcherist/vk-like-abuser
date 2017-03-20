@@ -9,15 +9,15 @@
       <div class='user' v-for='user in filteredUsers' ref='user'>
         <!-- <div @click='removeUser(user.id)'>x</div> -->
         <div class='user__avatar'>
-        <!-- target='_blank' :href="'http://vk.com/id' + user.id" -->
-        <a>
+        <a target='_blank' :href="'http://vk.com/id' + user.id">
+          <div class='avatar__status' :class="{ 
+              'avatar--isNotActive' : user.isActive === false,
+              'avatar--isActive': user.isActive === true
+            }">
+          </div>
           <img
             class='avatar'
             :src='user.photo_100'
-            :class="{ 
-              'avatar--isNotActive' : user.isActive === false,
-              'avatar--isActive': user.isActive === true
-            }"
           />
         </a>
         </div>
@@ -70,7 +70,6 @@ export default {
 .user__stats {
   text-align: center;
   font-size: .75rem;
-  color: #546e7a !important;
 }
 
 .users {
@@ -82,6 +81,7 @@ export default {
 .user__avatar {
   display: flex;
   justify-content: center;
+  position: relative;
 }
 
 .avatar {
@@ -90,12 +90,21 @@ export default {
   width: 80px;
 }
 
+.avatar__status {
+  height: 10px;
+  width: 10px;
+  background-color: black;
+  position: absolute;
+  margin: 5px;
+  border-radius: 100%;
+}
+
 .avatar--isNotActive {
-  border-color: #ef5350;
+  background-color: #ef5350;
 }
 
 .avatar--isActive {
-  border-color: #81d4fa;
+  background-color: #8bc34a;
 }
 
 </style>

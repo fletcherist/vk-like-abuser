@@ -2,7 +2,7 @@
   <div class='stats'>
     <!-- <div class='stats__active'>{{globalStats.users.active}} active</div>
     <div class='stats__not-active'>{{globalStats.users.inactive}} not active</div> -->
-    <recounters></recounters>
+    <!-- <recounters></recounters> -->
     <div v-if="globalStats.users" class='container'>
       <div class='stats__container'>
         <div class='stats__block'>
@@ -99,6 +99,14 @@
             {{errorLikes}}%
           </div>
         </div>
+        <div class='stats__block'>
+          <div class='stats__value_desc'>
+            active users
+          </div>
+          <div class='stats__value'>
+            {{activeUsers}}%
+          </div>
+        </div>
       </div>
     </div>
     <div v-else>
@@ -127,6 +135,10 @@ export default {
     },
     errorLikes () {
       return (this.globalStats.errors.all / (this.globalStats.errors.all + this.globalStats.likes.all)).toFixed(2) * 100
+    },
+    activeUsers () {
+      return (this.globalStats.users.active / this.globalStats.users.total)
+        .toFixed(2) * 100
     }
   },
   firebase: {
@@ -149,12 +161,9 @@ export default {
 
 .container {
   display: flex;
-}
-
-@media (max-width: 500px) {
-  .container {
-    flex-direction: row;
-  }
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 5vh 10vw 10vh;
 }
   
 .stats {
@@ -164,6 +173,7 @@ export default {
   display: flex;
   flex-direction: column;
   max-width: 50%;
+  padding: 20px;
 }
 
 
