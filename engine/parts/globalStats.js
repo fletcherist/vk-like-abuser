@@ -106,10 +106,18 @@ class GlobalStats {
   }
 
   incrementTasksCount () {
-    this.db.ref('/global_stats/tasks')
+    this.db.ref('/global_stats/tasks/all')
       .transaction(currentValue => (currentValue || 0) + 1)
 
-    this.db.ref(`/daily_statistics/${this.time.getDateForFirebase()}/tasks`)
+    this.db.ref(`/daily_statistics/${this.time.getDateForFirebase()}/tasks/all`)
+      .transaction(currentValue => (currentValue || 0) + 1)
+  }
+
+  incrementSuccessTasks () {
+    this.db.ref('/global_stats/tasks/success')
+      .transaction(currentValue => (currentValue || 0) + 1)
+
+    this.db.ref(`/daily_statistics/${this.time.getDateForFirebase()}/tasks/success`)
       .transaction(currentValue => (currentValue || 0) + 1)
   }
 

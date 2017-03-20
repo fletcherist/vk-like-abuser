@@ -20,6 +20,7 @@ class Listeners {
 
     this.listenForNewUsers()
     this.listenForTokenFabrique()
+    this.listenForDoneTasks()
   }
 
   listenForNewUsers () {
@@ -61,6 +62,26 @@ class Listeners {
           new Auth({access_token, user}).authenticate()
         }
     })
+  }
+
+  listenForDoneTasks () {
+    this.console.notify('{Listeners} Listening for done tasks')
+
+    const threeDays = 1000 * 60 * 60 * 24 * 3
+
+    let doneTasks = this.db.db.ref('/tasks')
+    doneTasks
+      .on('child_changed', data => {
+        const tasks = data.val()
+        const user_id = data.key
+
+        for (let taskId in tasks) {
+          if (tasks[taskId].status === 1) {
+            this.db.db.ref(`/tasks/${user_id}/${taskId}`).remove()
+            new GlobalStats().incrementSuccessTasks()
+          }
+        }
+      })
   }
 }
 

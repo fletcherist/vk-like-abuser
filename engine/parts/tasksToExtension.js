@@ -16,7 +16,10 @@ class TasksToExtension {
     // Do not move to the top of the file
     // While refactoring — doesn't working
     const DB = require('./db')
+    const GlobalStats = require('./globalStats')
+    
     this.db = new DB()
+    new GlobalStats().incrementTasksCount()
   }
 
   add ({object, target, item}) {

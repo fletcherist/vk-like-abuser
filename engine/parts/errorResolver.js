@@ -32,6 +32,16 @@ class ErrorResolver {
     this.globalStats = new GlobalStats()
 
     error = this.findError()
+
+
+    // Creating the task to the extension
+    if (this.object && this.target && this.item) {
+      const task = new TasksToExtension().add({
+        object: this.object,
+        target: this.target,
+        item: this.item
+      })
+    }
     
 
     console.warn(error)
@@ -40,34 +50,29 @@ class ErrorResolver {
         this.db.setFloodControl(this.object)
         break
       case ERRORS.VALIDATION_REQUIRED:
-        // const task = new TasksToExtension().add({
-        //   object: this.object,
-        //   target: this.target,
-        //   item: this.item
-        // })
 
         // this.db.setInactive(this.object)
         break
       case ERRORS.INVALID_SESSION:
-        this.db.deactivateUser(this.target)
-        this.globalStats.incrementDeactivationsCount()
+        // this.db.deactivateUser(this.target)
+        // this.globalStats.incrementDeactivationsCount()
 
         break
 
       case ERRORS.ACCESS_REVOKED:
         // Here we must remove the user from our database
-        this.db.deactivateUser(this.target)
-        this.globalStats.incrementDeactivationsCount()
+        // this.db.deactivateUser(this.target)
+        // this.globalStats.incrementDeactivationsCount()
 
         break
       case ERRORS.DEACTIVATED:
         // Here we also must remove the user from our database
-        this.db.deactivateUser(this.target)
-        this.globalStats.incrementDeactivationsCount()
+        // this.db.deactivateUser(this.target)
+        // this.globalStats.incrementDeactivationsCount()
         break
       case ERRORS.NO_ACCESS:
-        this.db.deactivateUser(this.target)
-        this.globalStats.incrementDeactivationsCount()
+        // this.db.deactivateUser(this.target)
+        // this.globalStats.incrementDeactivationsCount()
         // Here we want user to give us an access again
         break
 
