@@ -14,7 +14,7 @@
     "server": "node server.js"
   },
   "dependencies": {
-    "firebase": "^3.6.10",
+    "firebase": "^3.7.2",
     "keen-ui": "^1.0.0",
     "vue": "^2.1.10",
     "vue-router": "^2.2.0",

@@ -8,12 +8,11 @@ import KeenUI from 'keen-ui'
 import router from './router'
 
 import '../node_modules/keen-ui/dist/keen-ui.css'
+import { db } from './firebase'
 
 import VueFire from 'vuefire'
 import VuexFire from 'vuexfire'
 import Vuex from 'vuex'
-
-import { db } from './firebase'
 
 Vue.use(Vuex)
 Vue.use(VueFire)
