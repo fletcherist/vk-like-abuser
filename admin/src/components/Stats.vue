@@ -163,7 +163,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  padding: 5vh 10vw 10vh;
+  padding: 2rem 10% 10rem;
 }
   
 .stats {
@@ -172,8 +172,9 @@ export default {
 .stats__container {
   display: flex;
   flex-direction: column;
-  max-width: 50%;
-  padding: 20px;
+  padding: 30px;
+  box-shadow: 2px 1px 10px rgba(0, 0, 0, .1);
+  margin: 5px;
 }
 
 

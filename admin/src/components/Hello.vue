@@ -2,28 +2,14 @@
   <div class='wrapper'>
     <!-- <ui-button @click='sortUsers()'>Sort Users</ui-button> -->
     <!-- <ui-button @click='sortUsers()'>Sort Users By Likes</ui-button> -->
-    <ui-toolbar
-      title='VK Like Abuser Reactor'
-    >
-      <div slot="actions">
-        <!-- <div class='quick-stats'>228/54</div> -->
-        <ui-icon-button
-          color="black"
-          icon="refresh"
-          size="large"
-          type="secondary"
-          @click='loadData()'
-        ></ui-icon-button>
-      </div>
-    </ui-toolbar>
     <ui-tabs
       raised>
-      <ui-tab title="Сей час">
+      <ui-tab title="Now">
         <div v-if="global_stats">
           <stats></stats>
         </div>
       </ui-tab>
-      <ui-tab title="Пользователи">
+      <ui-tab title="Users">
         <users></users>
       </div>
       </ui-tab>
