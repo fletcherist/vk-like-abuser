@@ -1,4 +1,3 @@
-console.log('asdasdasds')
 const nodes = []
 const links = []
 const usersTable = {}

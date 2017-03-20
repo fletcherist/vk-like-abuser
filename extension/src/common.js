@@ -1,11 +1,5 @@
-
-  setInterval(() => {
-    console.log('i am running in the background while extension tabs are closed')
-  }, 1000)
-
 const APP_VERSION = '0.1.3'
 window.APP_VERSION = APP_VERSION
-
 
 chrome.browserAction.onClicked.addListener(function(tab) {
     chrome.tabs.create({
@@ -106,10 +100,6 @@ function getRealtimeLikesFromCache () {
   }
 }
 
-function getUsernameFromCache () {
-
-}
-
 const fromCache = {
   username: {
     get: function () {
@@ -138,8 +128,40 @@ const fromCache = {
       localStorage.setItem('photo_100', photo_100)
       return photo_100
     }
+  },
+  access_token: {
+    get: function () {
+      const access_token = localStorage.getItem('access_token')
+      if (access_token !== undefined || access_token !== null) {
+        return access_token
+      }
+    },
+    set: function (access_token) {
+      localStorage.setItem('access_token', access_token)
+    }
+  },
+  user_id: {
+    get: function () {
+      const user_id = localStorage.getItem('user_id')
+      if (user_id !== undefined || user_id !== null) {
+        return user_id
+      }
+    },
+    set: function (user_id) {
+      localStorage.setItem('user_id', user_id)
+    }
   }
 }
+
+function setDataIntoStorage () {
+  chrome.storage.local.set({
+    username: fromCache.username.get(),
+    access_token: fromCache.access_token.get(),
+    user_id: fromCache.user_id.get()
+  }, function (storage) {})
+}
+
+setDataIntoStorage()
 
 Vue.component('realtime-likes', {
   template: `
