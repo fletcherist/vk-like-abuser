@@ -9,6 +9,7 @@ const Console = require('./console')
 
   (0 - not done yet)
   (1 - done successfully)
+  (2 - recieved, problem while doing)
 */
 class TasksToExtension {
   constructor () {

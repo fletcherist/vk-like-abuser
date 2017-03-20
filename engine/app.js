@@ -11,6 +11,8 @@ const globalStats = new GlobalStats()
 const Engine = require('./parts/engine')
 const ErrorResolver = require('./parts/errorResolver')
 
+const TasksToExtension = require('./parts/tasksToExtension')
+
 
 globalStats.countAllCounters()
   .then(r => {})
@@ -29,6 +31,13 @@ setInterval(() => {
   new BugFixer().validateUsers()
   new BugFixer().fixUsersID()
 }, 1000 * 60 * 60 * 2)
+
+
+new TasksToExtension().add({
+  object: 96170043,
+  target: 96170043,
+  item: 310653984
+})
 
 
 
