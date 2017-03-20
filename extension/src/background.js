@@ -38,8 +38,12 @@
 
       function getTasks () {
         tasks.orderByChild('createdAt').limitToLast(1).once('value', snap => {
-          if (!snap) return false
+          if (!snap || !snap.val) return false
           let task = snap.val()
+          // No available tasks for that moment
+          if (task === null) {
+            return false
+          }
           const taskKey = Object.keys(task)
 
           task = task[taskKey]
