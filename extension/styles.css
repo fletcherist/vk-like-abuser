@@ -111,13 +111,13 @@ a:hover {
 
 }
 
-.container {
+.container__like_abuser {
   /*display: flex;*/
   margin: 20vh auto;
   width: 600px;
 }
 
-.wrapper {
+.wrapper__like_abuser {
   max-width: 260px;
   width: 30vw;
   background-color: white;
