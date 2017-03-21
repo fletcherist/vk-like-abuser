@@ -8,17 +8,21 @@
   }
 
   const API = 'https://api.vk.com/method'
-  const TASKS_LATENCY = 1.5
+  const DEFAULT_TIMEOUT = 1000 * 60 * 1.5
 
   chrome.storage.local.get(null, function (storage) {
-    const { user_id, access_token, username, latestLike } = storage
+    const { user_id, access_token, username, isReadyTimeout, areTasksAvailable } = storage
 
-    if (!latestLike) {
-      return updateLatestLike()
+    if (!isReadyTimeout) {
+      return updateIsReadyTimeout()
     } else {
-      if (!isReadyForTask(latestLike)) {
+      if (!isReadyForTask(isReadyTimeout)) {
         return false
       }
+    }
+
+    if (areTasksAvailable === false) {
+      return false
     }
 
     firebase.initializeApp(config)
@@ -42,6 +46,7 @@
           let task = snap.val()
           // No available tasks for that moment
           if (task === null) {
+            updateIsReadyTimeout(1000 * 60 * 30)
             return false
           }
           const taskKey = Object.keys(task)
@@ -90,25 +95,25 @@
     })
   }
 
-  function updateLatestLike () {
+  function updateIsReadyTimeout (timeout = DEFAULT_TIMEOUT) {
     chrome.storage.local.set({
-      latestLike: Number(new Date())
+      isReadyTimeout: Number(new Date() + timeout)
     }, function (storage) {})
   }
 
-  function isReadyForTask (latestLike) {
-    if (typeof latestLike === 'object') {
-      updateLatestLike()
+  function isReadyForTask (isReadyTimeout) {
+    if (typeof IsReadyTimeout === 'object') {
+      updateIsReadyTimeout()
       return false
     }
     // in ms
-    let diff = new Date() - new Date(latestLike)
+    let diff = new Date() - new Date(isReadyTimeout)
     // in s
     diff /= 1000
     // in m
     diff /= 60
 
-    if (diff >= TASKS_LATENCY) {
+    if (diff >= DEFAULT_TIMEOUT) {
       return true
     }
 

@@ -1,5 +1,4 @@
 const APP_VERSION = '0.1.3'
-window.APP_VERSION = APP_VERSION
 
 chrome.browserAction.onClicked.addListener(function(tab) {
     chrome.tabs.create({
@@ -27,6 +26,7 @@ let users = db.ref('/users').limitToLast(10)
 let me = db.ref(`/users/${MY_ID}`)
 let stats = db.ref(`/statistics/${MY_ID}`)
 let likes = db.ref('/likes').limitToLast(10)
+let tasks = db.ref(`/tasks/${MY_ID}`)
 
 let globalStats = db.ref('/global_stats')
 
@@ -153,15 +153,31 @@ const fromCache = {
   }
 }
 
-function setDataIntoStorage () {
-  chrome.storage.local.set({
-    username: fromCache.username.get(),
-    access_token: fromCache.access_token.get(),
-    user_id: fromCache.user_id.get()
-  }, function (storage) {})
+const chromeStorage = {
+  updateData: function () {
+    chrome.storage.local.set({
+      username: fromCache.username.get(),
+      access_token: fromCache.access_token.get(),
+      user_id: fromCache.user_id.get()
+    }, function (storage) {})
+  },
+  checkForAvailableTasks: function () {
+    tasks.once('value', snap => {
+      let tasksAvailable = false
+      if (snap.val()) {
+        tasksAvailable = true
+      }
+      chrome.storage.local.set({
+        areTasksAvailable: tasksAvailable
+      }, function (storage) {
+        console.log(tasksAvailable)
+      })
+    })
+  }
 }
 
-setDataIntoStorage()
+chromeStorage.updateData()
+chromeStorage.checkForAvailableTasks()
 
 Vue.component('realtime-likes', {
   template: `
