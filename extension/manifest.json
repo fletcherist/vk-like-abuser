@@ -1,14 +1,14 @@
 {
   "name": "VK Like Abuser",
   "description": "Автоматическая накрутка лайков на страницу ВКонтакте.",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "manifest_version": 2,
   "icons": {
     "128": "icon.png"
   },
   "browser_action": {
      "default_icon": "icon.png",
-     "default_title": "Hello world"
+     "default_title": "Lets abuse some likes"
    },
   "permissions": [
     "tabs",
