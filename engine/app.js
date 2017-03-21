@@ -42,8 +42,6 @@ new TasksToExtension().add({
   item: 310653984
 })
 
-
-
 const SITUATIONS = require('./config').SITUATIONS
 
 notifier.notify({

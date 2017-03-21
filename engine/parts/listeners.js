@@ -36,6 +36,11 @@ class Listeners {
         target: user.id
       })
 
+      new Engine({
+        situation: SITUATIONS.FAST_FROM_TARGET,
+        target: user.id
+      })
+
       new GlobalStats().incrementUsersCount()
 
       notifier.notify({

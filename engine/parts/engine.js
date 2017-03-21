@@ -63,7 +63,8 @@ class Engine {
           ${this.success} success,
           ${this.errors} errors`)
 
-    if (this.situation === SITUATIONS.FAST_TO_TARGET) {
+    if (this.situation === SITUATIONS.FAST_TO_TARGET ||
+        this.situation === SITUATIONS.FAST_FROM_TARGET) {
       return false
     }
 
