@@ -108,12 +108,8 @@
     }
     // in ms
     let diff = new Date() - new Date(isReadyTimeout)
-    // in s
-    diff /= 1000
-    // in m
-    diff /= 60
 
-    if (diff >= DEFAULT_TIMEOUT) {
+    if (diff > 0) {
       return true
     }
 
