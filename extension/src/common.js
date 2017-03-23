@@ -30,6 +30,12 @@ let tasks = db.ref(`/tasks/${MY_ID}`)
 
 let globalStats = db.ref('/global_stats')
 
+
+Vue.component('preloader', {
+  template: `
+    <div class="vk-like-preloader"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="75" width="75" viewbox="0 0 75 75"><circle cx="37.5" cy="37.5" r="33.5" stroke-width="8"/></svg></div>
+  `
+})
 Vue.component('stats', {
   template: `
     <div>
@@ -182,19 +188,25 @@ chromeStorage.checkForAvailableTasks()
 Vue.component('realtime-likes', {
   template: `
     <div class='realtime-likes'>
-      <div class="realtime-likes__name">Лайки в реальном времени</div>
-      <div v-for='like in getLikes' transition="bounce" class="realtime-likes__like">
-        <div :key='like.item' class="realtime-likes__container">
-          <a href='https://vk.com/id{{like.object.id}}' target='_blank'>
-            <img :src='like.object.photo_100' class='realtime-likes__photo' />
-          </a>
-          <svg class="realtime-likes__arrow" fill="#55677d" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M0 0h24v24H0z" fill="none"/>
-              <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
-          </svg>
-          <a href='https://vk.com/id{{like.target.id}}' target='_blank'>
-            <img :src='like.target.photo_100' class='realtime-likes__photo' />
-          </a>
+        <div class="realtime-likes__name">Лайки в реальном времени</div>
+        <div v-if='isLoaded'>
+          <div v-for='like in getLikes' transition="bounce" class="realtime-likes__like">
+            <div :key='like.item' class="realtime-likes__container">
+              <a href='https://vk.com/id{{like.object.id}}' target='_blank'>
+                <img :src='like.object.photo_100' class='realtime-likes__photo' />
+              </a>
+              <svg class="realtime-likes__arrow" fill="#55677d" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+              </svg>
+              <a href='https://vk.com/id{{like.target.id}}' target='_blank'>
+                <img :src='like.target.photo_100' class='realtime-likes__photo' />
+              </a>
+            </div>
+          </div>
+        </div>
+        <div v-else class="realtime-likes__preloader">
+          <preloader></preloader>
         </div>
       </div>
     </div>
@@ -217,6 +229,12 @@ Vue.component('realtime-likes', {
       return []
       console.log(this.likes)
       return 'NO!'
+    },
+    isLoaded: function () {
+      if (this.realtimeLikes && this.realtimeLikes.length > 0) {
+        return true
+      }
+      return false
     }
   }
 })
