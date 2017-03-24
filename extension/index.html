@@ -14,7 +14,8 @@
 <body>
   <svg id='graph'></svg>
   <div id="app" class='container__like_abuser'>
-    <div
+    <div style='float: left'>
+      <div
       class='wrapper__like_abuser'
       v-bind:class="{'wrapper--wide': !authorized}">
       <div class='foo'>
@@ -61,15 +62,23 @@
         </div>
         <help></help>
       </div>
-      <div v-else class='disclaimer'>
-        Чтобы начать пользоваться приложением, необходимо авторизоваться. Напоминаем, что накрутка лайков <b>нарушает</b> правила ВКонтакте.
-        <div class='disclaimer__agree'>
-          <input
-            type='checkbox'
-            v-model='agreedWithTerms'
-          />
-          <a href='https://vk.com/terms' target='_blank'>Я нарушаю правила ВКонтакте</a>
+      <div v-else>
+        <div class='disclaimer'>
+          Чтобы начать пользоваться приложением, необходимо авторизоваться. Напоминаем, что накрутка лайков <b>нарушает</b> правила ВКонтакте.
+          <div class='disclaimer__agree'>
+            <input
+              type='checkbox'
+              v-model='agreedWithTerms'
+            />
+            <a href='https://vk.com/terms' target='_blank'>Я нарушаю правила ВКонтакте</a>
+          </div>
         </div>
+      </div>
+      </div>
+      <div v-if='!authorized'
+        class='wrapper__like_abuser wrapper--next'
+        v-bind:class="{'wrapper--wide': !authorized}">
+        <global-stats></global-stats>
       </div>
     </div>
     <div class='wrapper wrapper__right'>

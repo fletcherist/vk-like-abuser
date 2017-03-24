@@ -3,44 +3,42 @@ const links = []
 const usersTable = {}
 
 users.once('value', __users => {
-  likes.once('value', __likes => {
-    const _users = __users.val()
-    const _likes = __likes.val()
+  const _users = __users.val()
 
-    const usersArray = Object.keys(_users)
+  const usersArray = Object.keys(_users)
 
-    let usersIncrementId = 0
-    let limit = 10
+  let usersIncrementId = 0
+  let limit = 10
 
-    for (let user in _users) {
-      if (usersIncrementId > limit) {
-        break
-      }
-      if (_users[user].id) {
-        nodes.push(_users[user])
-        usersTable[user] = usersIncrementId
-        usersIncrementId++
-      }
+  for (let user in _users) {
+    if (usersIncrementId > limit) {
+      break
     }
+    if (_users[user].id && _users[user].photo_50) {
+      nodes.push(_users[user])
+      usersTable[user] = usersIncrementId
+      usersIncrementId++
+    }
+  }
 
-    restart()
-    setTimeout(() => {
-        for (let i = 0; i < usersIncrementId; i++) {
-          for (let e = 1; e < usersIncrementId; e++) {
-            let source = usersTable[usersArray[i]]
-            let target = usersTable[usersArray[e]]
+  restart()
+  setTimeout(() => {
+      for (let i = 0; i < usersIncrementId; i++) {
+        for (let e = 1; e < usersIncrementId; e++) {
+          let source = usersTable[usersArray[i]]
+          let target = usersTable[usersArray[e]]
 
-            if (source && target) {
-              addToLinks({source, target})
-            }
+          let chance = Math.random() > 0.5
+
+          if (source && target && chance) {
+            addToLinks({source, target})
           }
         }
-    }, 500)
-      
-  })
+      }
+  }, 500)
 })
 
-let delayTimeout = 200
+let delayTimeout = 800
 let addToLinks = obj => {
   setTimeout(() => {
     const { source, target } = obj
@@ -50,15 +48,8 @@ let addToLinks = obj => {
     links.push(obj)
     restart()
   }, delayTimeout)
-  delayTimeout += 100
+  delayTimeout += 500
 }
-
-// users.on('child_changed', snap => {
-//   let userId = snap.val().id
-//   nodes[usersTable[userId]].isActive = !nodes[usersTable[userId]].isActive
-//   restart()
-// })
-
 
 const svg = d3.select("svg#graph")
 
@@ -72,7 +63,7 @@ svg
 
 var simulation = d3.forceSimulation(nodes)
     .force('charge', d3.forceManyBody().strength(-3000))
-    .force('link', d3.forceLink(links).distance(width/Math.PI))
+    .force('link', d3.forceLink(links).distance(width/Math.PI + 100))
     .force('x', d3.forceX())
     .force('y', d3.forceY())
     .alphaTarget(1)

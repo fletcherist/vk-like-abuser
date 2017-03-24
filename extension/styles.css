@@ -125,7 +125,6 @@ a:hover {
   padding: .7rem;
   margin-bottom: 0rem;
   border-radius: 2px;
-  float: left;
 }
 
 .wrapper__right {
@@ -148,7 +147,7 @@ a:hover {
 }
 
 .wrapper--next {
-  margin: 2vh auto;
+  margin: 3vh auto;
 }
 
 .stats {
@@ -344,6 +343,35 @@ a:hover {
   border: 1px solid #e3e4e8;
   border-top: 0px;
   height: 150px;
+}
+
+.global-stats {
+  display: flex;
+}
+
+.global-stats__stat {
+  min-width: 30%;
+  padding: 0 .5rem 0 1rem;
+  border-right: 1px solid #e3e4e8;
+}
+
+.global-stats__stat:first-child {
+  padding-left: 0px;
+}
+
+.global-stats__stat:last-child {
+  border-right: 0;
+}
+
+.stat__desc {
+  text-align: center;
+}
+
+.stat__value {
+  text-align: center;
+  padding: 1rem 1rem 0.5rem;
+  font-size: 1.3rem;
+  color: #2a5885;
 }
 
 .rate-empty-line {

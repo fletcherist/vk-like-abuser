@@ -1,4 +1,5 @@
 const DB = require('./db')
+const Console = require('./console')
 const anArrayFromObject = require('../funcs/anArrayFromObject')
 const Promise = require('bluebird')
 

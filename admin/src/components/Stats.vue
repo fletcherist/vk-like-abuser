@@ -75,6 +75,22 @@
             {{todayStats.errors}}
           </div>
         </div>
+        <div class='stats__block'>
+          <div class='stats__value_desc'>
+            tasks set
+          </div>
+          <div class='stats__value'>
+            {{todayTasks.all}}
+          </div>
+        </div>
+        <div class='stats__block'>
+          <div class='stats__value_desc'>
+            tasks completed
+          </div>
+          <div class='stats__value'>
+            {{todayTasks.success}}
+          </div>
+        </div>
       </div>
       <div class='stats__container'>
         <div class='stats__block'>
@@ -105,6 +121,33 @@
           </div>
           <div class='stats__value'>
             {{activeUsers}}%
+          </div>
+        </div>
+      </div>
+      <div class='stats__container'>
+        <div class='stats__block'>
+          <div class='stats__value_desc'>
+            <ui-icon icon='extension' class='stats__icon'></ui-icon>
+            Tasks 
+          </div>
+          <div class='stats__value'>
+            {{globalStats.tasks.all}}
+          </div>
+        </div>
+        <div class='stats__block'>
+          <div class='stats__value_desc'>
+            completed tasks
+          </div>
+          <div class='stats__value'>
+            {{globalStats.tasks.success}}
+          </div>
+        </div>
+        <div class='stats__block'>
+          <div class='stats__value_desc'>
+            waiting tasks
+          </div>
+          <div class='stats__value'>
+            {{globalStats.tasks.all - globalStats.tasks.success}}
           </div>
         </div>
       </div>
@@ -139,6 +182,22 @@ export default {
     activeUsers () {
       return (this.globalStats.users.active / this.globalStats.users.total)
         .toFixed(2) * 100
+    },
+    todayAllTasks () {
+      if (this.todayStats && this.todayStats.tasks) {
+        return this.todayStats.tasks.all
+      }
+      return 0
+    },
+    todayTasks () {
+      if (this.todayStats && this.todayStats.tasks) {
+        return this.todayStats.tasks
+      }
+
+      return {
+        all: 0,
+        success: 0
+      }
     }
   },
   firebase: {
@@ -185,6 +244,7 @@ export default {
   align-items: center;
   font-size: 1.5rem;
   width: 300px;
+  text-align: left;
 }
 
 .stats__icon {
@@ -201,7 +261,7 @@ export default {
   font-weight: lighter;
   text-transform: uppercase;
   /*align-self: flex-start;*/
-  width: 60%;
+  width: 70%;
 }
 
 .stats__active {

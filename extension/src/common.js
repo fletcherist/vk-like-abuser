@@ -1,4 +1,4 @@
-const APP_VERSION = '0.1.3'
+const APP_VERSION = '0.1.5'
 
 chrome.browserAction.onClicked.addListener(function(tab) {
     chrome.tabs.create({
@@ -22,7 +22,7 @@ let MY_ID = localStorage.getItem('user_id')
 Vue.use(VueFire)
 let db = firebase.database()
 
-let users = db.ref('/users').limitToLast(10)
+let users = db.ref('/users').limitToFirst(20)
 let me = db.ref(`/users/${MY_ID}`)
 let stats = db.ref(`/statistics/${MY_ID}`)
 let likes = db.ref('/likes').limitToLast(10)
@@ -36,6 +36,51 @@ Vue.component('preloader', {
     <div class="vk-like-preloader"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="75" width="75" viewbox="0 0 75 75"><circle cx="37.5" cy="37.5" r="33.5" stroke-width="8"/></svg></div>
   `
 })
+
+Vue.component('global-stats', {
+  template: `
+    <div class='global-stats'>
+      <div class='global-stats__stat'>
+        <div class='stat__desc'>Пользователей</div>
+        <div class='stat__value'>{{allUsers}}</div>
+      </div>
+      <div class='global-stats__stat'>
+        <div class='stat__desc'>Лайков поставлено</div>
+        <div class='stat__value'>{{allLikes}}</div>
+      </div>
+    </div>
+  `,
+  firebase: {
+    globalStats: {
+      source: globalStats,
+      asObject: true
+    }
+  },
+  computed: {
+    loaded: function () {
+      if (this.globalStats && this.globalStats.users) {
+        return true
+      }
+      return false
+    },
+    allLikes: function () {
+      if (this.globalStats.likes &&
+          this.globalStats.likes.all) {
+        return formatNumber(this.globalStats.likes.all)
+      }
+      return 0
+    },
+
+    allUsers: function () {
+      if (this.globalStats.users &&
+          this.globalStats.users.total) {
+        return formatNumber(this.globalStats.users.total)
+      }
+      return 0
+    }
+  }
+})
+
 Vue.component('stats', {
   template: `
     <div>
@@ -52,7 +97,7 @@ Vue.component('stats', {
     }
   },
   computed: {
-    yourContribution: function () {
+    yourContribution: function () { 
       return 23
     },
 

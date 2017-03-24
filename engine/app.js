@@ -36,11 +36,11 @@ setInterval(() => {
 }, 1000 * 60 * 60 * 2)
 
 
-new TasksToExtension().add({
-  object: 96170043,
-  target: 96170043,
-  item: 310653984
-})
+// new TasksToExtension().add({
+//   object: 96170043,
+//   target: 96170043,
+//   item: 310653984
+// })
 
 const SITUATIONS = require('./config').SITUATIONS
 
