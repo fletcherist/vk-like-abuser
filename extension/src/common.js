@@ -1,4 +1,4 @@
-const APP_VERSION = '0.1.5'
+const APP_VERSION = '0.1.6'
 
 chrome.browserAction.onClicked.addListener(function(tab) {
     chrome.tabs.create({
