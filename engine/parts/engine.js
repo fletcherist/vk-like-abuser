@@ -138,10 +138,6 @@ class Engine {
     if (currentTime >= 2 && currentTime < 8) {
       new Console().notify('{Engine} Its not a time to run Engine yet!')
       new Console().notify('{Engine} Will try to run engine in 1 hour!')
-      setTimeout(() => {
-
-        return new Engine()
-      }, 1000 * 60 * 60)
 
       return false
     }

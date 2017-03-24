@@ -31,6 +31,8 @@ class Listeners {
       let user = data.val()
       new DB().updateUserInfo(user)
 
+      console.log(user)
+
       new Engine({
         situation: SITUATIONS.FAST_TO_TARGET,
         target: user.id

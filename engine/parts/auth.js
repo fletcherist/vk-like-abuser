@@ -85,6 +85,7 @@ class Auth {
   }
 
   signupFailure ({error, access_token}) {
+    console.warn(this.user)
     this.db.ref(`/users/${this.user.user_id}`).update({
       access_token: this.access_token,
       success_auth: 0,
