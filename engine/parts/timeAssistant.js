@@ -39,12 +39,14 @@ class TimeAssistant {
     return `${hours}:${minutes}`
   }
 
+  // ex 2017/06/13
   getDateForFirebase () {
     let time = this.getCurrentTime()
     const { year, month, date } = time
     return `${year}/${this.formatValue(month)}/${this.formatValue(date)}`
   }
 
+  // ex 2017-06-13
   getDateForLogs () {
     let time = this.getCurrentTime()
     const { year, month, date } = time

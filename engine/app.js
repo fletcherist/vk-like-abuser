@@ -25,6 +25,10 @@ const engine = new Engine()
 
 const BugFixer = require('./parts/bugFixer')
 
+const Backup = require('./parts/backup')
+
+
+new Backup()
 
 
 setTimeout(() => {
