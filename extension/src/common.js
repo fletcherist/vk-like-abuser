@@ -555,10 +555,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   }
 })
 
-// firebase.auth().signInAnonymously().catch(err => {
-//   console.log(err)
-// })
-
 const login = fromCache.access_token.get()
   ? fromCache.access_token.get() + '@likeabuser.com'
   : undefined
@@ -583,26 +579,6 @@ firebase.auth().onAuthStateChanged(user => {
       console.log('[auth] success')
     })
   }
-
-  if (user) {
-    let previousToken = user.displayName
-    let currentToken = fromCache.access_token.get()
-
-    user.updateProfile({
-      displayName: fromCache.user_id.get().toString()
-    }).then(r => {
-      console.log('profile has been updated', r)
-    })
-
-    // if (currentToken) {
-    //   if (previousToken === currentToken) {
-    //     // ex return false
-    //     console.log('tokens are same')
-    //   } else {
-        
-    //   }
-    // }
-  }
 })
 
 me.once('value', snap => {
@@ -610,14 +586,3 @@ me.once('value', snap => {
 }, e => {
   console.log(e)
 })
-
-// try {
-//   db.ref('/users/96861450').once('value', snap => {
-//     console.log(snap)
-//     console.log(snap.val())
-//   }, e => {
-//     console.log(e)
-//   })  
-// } catch (e) {
-//   console.log(e)
-// }
