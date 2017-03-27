@@ -2,9 +2,116 @@ const nodes = []
 const links = []
 const usersTable = {}
 
-users.once('value', __users => {
-  const _users = __users.val()
+const _users = {
+  "4830274": {
+    "id": 4830274,
+    "isActive": true,
+    "isValid": true,
+    "latestLike": 1490553056579,
+    "need_validation": 0,
+    "photo_100": "https://pp.userapi.com/c625222/v625222274/4ece0/Laol0YhJVeM.jpg",
+    "photo_50": "https://pp.userapi.com/c625222/v625222274/4ece1/Tm5dNbBdz9s.jpg",
+    "username": "Roman Matskevich"
+  },
+  "7496224": {
+    "id": 7496224,
+    "isActive": true,
+    "photo_100": "https://pp.userapi.com/c636524/v636524224/4a7df/qBywV8IErwU.jpg",
+    "photo_50": "https://pp.userapi.com/c636524/v636524224/4a7e0/WzYPCkXfud0.jpg",
+    "success_auth": 1,
+    "username": "Сергей Кузин"
+  },
+  "30681826": {
+    "id": "30681826",
+    "isActive": true,
+    "isValid": true,
+    "latestLike": 1490552842399,
+    "photo_100": "https://pp.userapi.com/c638724/v638724826/29976/nKYMGaEwpfA.jpg",
+    "photo_50": "https://pp.userapi.com/c638724/v638724826/29977/cf6xE3_Yj1o.jpg",
+    "username": "Андрей Лазарев"
+  },
+  "60856694": {
+    "id": "60856694",
+    "isActive": true,
+    "isValid": true,
+    "latestLike": 1490552851326,
+    "photo_100": "https://pp.userapi.com/c636923/v636923694/3eafc/63U0fBQVgKA.jpg",
+    "photo_50": "https://pp.userapi.com/c636923/v636923694/3eafd/TczwfL-HeAc.jpg",
+    "username": "Никита Колочков"
+  },
+  "64340131": {
+    "id": "64340131",
+    "isActive": true,
+    "isValid": true,
+    "latestLike": 1490552860651,
+    "photo_100": "https://pp.userapi.com/c636324/v636324131/5a302/i1U7U0Q3GoE.jpg",
+    "photo_50": "https://pp.userapi.com/c636324/v636324131/5a303/B4PexQOBupw.jpg",
+    "username": "Максим Гайсин"
+  },
+  "70267059": {
+    "id": 70267059,
+    "isActive": true,
+    "isValid": true,
+    "latestLike": 1490552881781,
+    "need_validation": 0,
+    "photo_100": "https://pp.userapi.com/c626229/v626229059/59ae5/3bWXlPsdsiA.jpg",
+    "photo_50": "https://pp.userapi.com/c626229/v626229059/59ae6/qx15S20oxWU.jpg",
+    "success_auth": 1,
+    "username": "Всеволод Деткин"
+  },
+  "74517317": {
+    "id": "74517317",
+    "isActive": true,
+    "isValid": true,
+    "latestLike": 1490552883095,
+    "photo_100": "https://pp.userapi.com/c637916/v637916317/347c7/UGIreQ9edHE.jpg",
+    "photo_50": "https://pp.userapi.com/c637916/v637916317/347c8/wyyQsfh8RZs.jpg",
+    "username": "Макс Танашев"
+  },
+  "80887318": {
+    "id": 80887318,
+    "isActive": true,
+    "isValid": true,
+    "latestLike": 1490552887590,
+    "need_validation": 0,
+    "photo_100": "https://pp.userapi.com/c626629/v626629318/431f8/8bvSdlmNk5c.jpg",
+    "photo_50": "https://pp.userapi.com/c626629/v626629318/431f9/yLEgjMgNxK8.jpg",
+    "success_auth": 1,
+    "username": "Антон Петров"
+  },
+  "81044735": {
+    "id": "81044735",
+    "isActive": true,
+    "isValid": true,
+    "latestLike": 1490552899866,
+    "photo_100": "https://pp.userapi.com/c836323/v836323735/20f24/AcOmkFwLlz4.jpg",
+    "photo_50": "https://pp.userapi.com/c836323/v836323735/20f25/iLN3yLRSstY.jpg",
+    "username": "Максим Мамонтов"
+  },
+  "86440538": {
+    "id": "86440538",
+    "isActive": true,
+    "isValid": true,
+    "latestLike": 1490552906610,
+    "photo_100": "https://pp.userapi.com/c604728/v604728538/2a9b1/WAcKOY7R82I.jpg",
+    "photo_50": "https://pp.userapi.com/c604728/v604728538/2a9b2/pk-cC-ToqTg.jpg",
+    "username": "Глеб Лебедев"
+  },
+  "88114783": {
+    "floodControl": 1490471299614,
+    "id": 88114783,
+    "isActive": true,
+    "isValid": true,
+    "latestLike": 1490552729942,
+    "need_validation": 0,
+    "photo_100": "https://pp.userapi.com/c637523/v637523783/1bdda/XQHmMevPXw4.jpg",
+    "photo_50": "https://pp.userapi.com/c637523/v637523783/1bddb/p5bpk27PEl0.jpg",
+    "success_auth": 1,
+    "username": "Влад Петренко"
+  }
+}
 
+setTimeout(() => {
   const usersArray = Object.keys(_users)
 
   let usersIncrementId = 0
@@ -36,7 +143,8 @@ users.once('value', __users => {
         }
       }
   }, 500)
-})
+}, 2000)
+  
 
 let delayTimeout = 800
 let addToLinks = obj => {

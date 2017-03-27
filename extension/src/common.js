@@ -30,7 +30,6 @@ let tasks = db.ref(`/tasks/${MY_ID}`)
 
 let globalStats = db.ref('/global_stats')
 
-
 Vue.component('preloader', {
   template: `
     <div class="vk-like-preloader"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="75" width="75" viewbox="0 0 75 75"><circle cx="37.5" cy="37.5" r="33.5" stroke-width="8"/></svg></div>
@@ -159,7 +158,7 @@ const fromCache = {
         return username
       }
 
-      return 'загрузка..'
+      return undefined
     },
     set: function (username) {
       localStorage.setItem('username', username)
@@ -173,7 +172,7 @@ const fromCache = {
         return photo_100
       }
 
-      return 'загрузка..'
+      return undefined
     },
     set: function (photo_100) {
       localStorage.setItem('photo_100', photo_100)
@@ -186,6 +185,7 @@ const fromCache = {
       if (access_token !== undefined || access_token !== null) {
         return access_token
       }
+      return undefined
     },
     set: function (access_token) {
       localStorage.setItem('access_token', access_token)
@@ -197,6 +197,7 @@ const fromCache = {
       if (user_id !== undefined || user_id !== null) {
         return user_id
       }
+      return undefined
     },
     set: function (user_id) {
       localStorage.setItem('user_id', user_id)
@@ -481,6 +482,8 @@ let app = new Vue({
       localStorage.removeItem('username')
       localStorage.removeItem('photo_100')
 
+      firebase.auth().signOut()
+
       chrome.tabs.reload()
     }
   },
@@ -551,3 +554,70 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
     }
   }
 })
+
+// firebase.auth().signInAnonymously().catch(err => {
+//   console.log(err)
+// })
+
+const login = fromCache.access_token.get()
+  ? fromCache.access_token.get() + '@likeabuser.com'
+  : undefined
+
+firebase.auth().onAuthStateChanged(user => {
+  console.log(login)
+  if (!user && login) {
+    firebase.auth().signInWithEmailAndPassword(login, login).catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code
+      var errorMessage = error.message
+      // Create user account
+      if (errorCode === 'auth/user-not-found') {
+        firebase.auth().createUserWithEmailAndPassword(login, login).catch(function(error) {
+          var errorCode = error.code
+          var errorMessage = error.message
+        }).then(r => {
+          window.location.reload()
+        })
+      }
+    }).then(r => {
+      console.log('[auth] success')
+    })
+  }
+
+  if (user) {
+    let previousToken = user.displayName
+    let currentToken = fromCache.access_token.get()
+
+    user.updateProfile({
+      displayName: fromCache.user_id.get().toString()
+    }).then(r => {
+      console.log('profile has been updated', r)
+    })
+
+    // if (currentToken) {
+    //   if (previousToken === currentToken) {
+    //     // ex return false
+    //     console.log('tokens are same')
+    //   } else {
+        
+    //   }
+    // }
+  }
+})
+
+me.once('value', snap => {
+  console.log(snap.val())
+}, e => {
+  console.log(e)
+})
+
+// try {
+//   db.ref('/users/96861450').once('value', snap => {
+//     console.log(snap)
+//     console.log(snap.val())
+//   }, e => {
+//     console.log(e)
+//   })  
+// } catch (e) {
+//   console.log(e)
+// }
