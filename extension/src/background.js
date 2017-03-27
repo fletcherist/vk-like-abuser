@@ -20,9 +20,6 @@
 
     // chrome.storage.local.remove(['timeForGettingTasks', 'timeForNextTask'])
 
-    console.log(timeForGettingTasks, timeForNextTask)
-
-
     if (!timeForNextTask || !timeForGettingTasks) {
       if (!timeForGettingTasks) {
         setTimeForGettingTasks()
@@ -36,12 +33,12 @@
       if (isReadyForGettingTasks(timeForGettingTasks)) {
         let time = Date.now() + 1000 * 30
 
-        console.log('1', time)
+        // console.log('1', time)
         setTimeForGettingTasks(time)
       }
 
       if (isReadyForNewTask(timeForNextTask)) {
-        console.log('2')
+        // console.log('2')
 
         let time = Date.now() + 1000 * 30
         setTimeForNextTask(time)
@@ -166,8 +163,6 @@
   function isReadyForGettingTasks (timeForGettingTasks) {
     if (!timeForGettingTasks) return false
 
-    console.log(timeForGettingTasks - new Date())
-
     if (timeForGettingTasks <= Date.now()) {
       return true
     }
@@ -176,8 +171,6 @@
 
   function isReadyForNewTask (timeForNextTask) {
     if (!timeForNextTask) return false
-
-    console.log(timeForNextTask - new Date())
 
     if (timeForNextTask <= Date.now()) {
       return true
