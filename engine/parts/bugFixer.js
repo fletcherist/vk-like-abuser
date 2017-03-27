@@ -17,7 +17,9 @@ class BugFixer  {
       for (let userId in users) {
         const user = users[userId]
         const { id, access_token } = user
-        if (!id) {
+
+
+        if (!id && userId !== 'undefined') {
           console.log(userId)
           db.ref(`/users/${userId}/id`)
             .transaction(currentValue => parseInt(userId))

@@ -27,13 +27,15 @@ const BugFixer = require('./parts/bugFixer')
 
 const Backup = require('./parts/backup')
 
-
-new Backup()
-
+// Every 12 hours
+setInterval(() => {
+  new Backup()
+}, 1000 * 60 * 60 * 12)
 
 setTimeout(() => {
   new BugFixer().validateUsers()
 }, 1000 * 60 * 15)
+
 setInterval(() => {
   new BugFixer().validateUsers()
   new BugFixer().fixUsersID()

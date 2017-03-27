@@ -47,7 +47,6 @@ class Backup {
   }
 
   saveData (type, data) {
-    console.log(type, data)
     const dirArr = __dirname.split('/')
     dirArr.splice(dirArr.length - 1, 1)
     const dir = dirArr.join('/')

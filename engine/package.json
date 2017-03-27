@@ -19,6 +19,7 @@
   "homepage": "https://github.com/fletcherist/vk-free-likes#readme",
   "dependencies": {
     "firebase": "^3.6.9",
+    "firebase-admin": "^4.1.3",
     "node-fetch": "^1.6.3",
     "node-notifier": "^5.0.2",
     "node-vkapi": "^2.1.0"
