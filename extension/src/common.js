@@ -212,24 +212,10 @@ const chromeStorage = {
       access_token: fromCache.access_token.get(),
       user_id: fromCache.user_id.get()
     }, function (storage) {})
-  },
-  checkForAvailableTasks: function () {
-    tasks.once('value', snap => {
-      let tasksAvailable = false
-      if (snap.val()) {
-        tasksAvailable = true
-      }
-      chrome.storage.local.set({
-        areTasksAvailable: tasksAvailable
-      }, function (storage) {
-        console.log(tasksAvailable)
-      })
-    })
   }
 }
 
 chromeStorage.updateData()
-chromeStorage.checkForAvailableTasks()
 
 Vue.component('realtime-likes', {
   template: `

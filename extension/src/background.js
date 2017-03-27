@@ -11,19 +11,49 @@
   const DEFAULT_TIMEOUT = 1000 * 60 * 1.5
 
   chrome.storage.local.get(null, function (storage) {
-    const { user_id, access_token, username, isReadyTimeout, areTasksAvailable } = storage
-    console.log('hello')
-    // if (!isReadyTimeout) {
-    //   return updateIsReadyTimeout()
-    // } else {
-    //   if (!isReadyForTask(isReadyTimeout)) {
-    //     return false
-    //   }
+    const { user_id, access_token, username,
+
+      timeForGettingTasks,
+      timeForNextTask
+
+    } = storage
+
+    // chrome.storage.local.remove(['timeForGettingTasks', 'timeForNextTask'])
+
+    console.log(timeForGettingTasks, timeForNextTask)
+
+
+    if (!timeForNextTask || !timeForGettingTasks) {
+      if (!timeForGettingTasks) {
+        setTimeForGettingTasks()
+      }
+
+      if (!timeForNextTask) {
+        setTimeForNextTask()
+      }
+    } else {
+      // Everything is ok
+      if (isReadyForGettingTasks(timeForGettingTasks)) {
+        let time = Date.now() + 1000 * 30
+
+        console.log('1', time)
+        setTimeForGettingTasks(time)
+      }
+
+      if (isReadyForNewTask(timeForNextTask)) {
+        console.log('2')
+
+        let time = Date.now() + 1000 * 30
+        setTimeForNextTask(time)
+      }
+
+    }
+
+    // if (!timeForNextTask) {
+    //   return 
     // }
 
-    // if (areTasksAvailable === false) {
-    //   return false
-    // }
+    return false
 
     firebase.initializeApp(config)
     const db = firebase.database()
@@ -90,7 +120,6 @@
     }
   })
 
-
   function like (options) {
     return new Promise((resolve, reject) => {
       const {
@@ -116,24 +145,43 @@
     })
   }
 
-  function updateIsReadyTimeout (timeout = DEFAULT_TIMEOUT) {
+  function setTimeForGettingTasks (time) {
+    if (!time) time = Date.now()
+    time = Number(time)
+
     chrome.storage.local.set({
-      isReadyTimeout: Number(new Date() + timeout)
-    }, function (storage) {})
+      timeForGettingTasks: time
+    })
   }
 
-  function isReadyForTask (isReadyTimeout) {
-    if (typeof IsReadyTimeout === 'object') {
-      updateIsReadyTimeout()
-      return false
-    }
-    // in ms
-    let diff = new Date() - new Date(isReadyTimeout)
+  function setTimeForNextTask (time) {
+    if (!time) time = Date.now()
+    time = Number(time)
 
-    if (diff > 0) {
+    chrome.storage.local.set({
+      timeForNextTask: time
+    })
+  }
+
+  function isReadyForGettingTasks (timeForGettingTasks) {
+    if (!timeForGettingTasks) return false
+
+    console.log(timeForGettingTasks - new Date())
+
+    if (timeForGettingTasks <= Date.now()) {
       return true
     }
+    return false
+  }
 
+  function isReadyForNewTask (timeForNextTask) {
+    if (!timeForNextTask) return false
+
+    console.log(timeForNextTask - new Date())
+
+    if (timeForNextTask <= Date.now()) {
+      return true
+    }
     return false
   }
 })()
