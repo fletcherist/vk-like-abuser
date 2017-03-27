@@ -32,10 +32,6 @@ setInterval(() => {
   new Backup()
 }, 1000 * 60 * 60 * 12)
 
-setTimeout(() => {
-  new BugFixer().validateUsers()
-}, 1000 * 60 * 15)
-
 setInterval(() => {
   new BugFixer().validateUsers()
   new BugFixer().fixUsersID()

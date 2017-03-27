@@ -12,25 +12,25 @@
 
   chrome.storage.local.get(null, function (storage) {
     const { user_id, access_token, username, isReadyTimeout, areTasksAvailable } = storage
+    console.log('hello')
+    // if (!isReadyTimeout) {
+    //   return updateIsReadyTimeout()
+    // } else {
+    //   if (!isReadyForTask(isReadyTimeout)) {
+    //     return false
+    //   }
+    // }
 
-    if (!isReadyTimeout) {
-      return updateIsReadyTimeout()
-    } else {
-      if (!isReadyForTask(isReadyTimeout)) {
-        return false
-      }
-    }
-
-    if (areTasksAvailable === false) {
-      return false
-    }
+    // if (areTasksAvailable === false) {
+    //   return false
+    // }
 
     firebase.initializeApp(config)
     const db = firebase.database()
 
     if (access_token && user_id) {
       const tasksLink = `/tasks/${user_id}`
-      const tasks = db.ref(tasksLink)
+      const tasksRef = db.ref(tasksLink)
 
       // like({access_token: access_token})
       getTasks()
@@ -41,36 +41,50 @@
       // (2 - recieved, failure while processing)
 
       function getTasks () {
-        tasks.orderByChild('createdAt').limitToLast(1).once('value', snap => {
+        tasksRef.orderByChild('createdAt').limitToLast(100).once('value', snap => {
           if (!snap || !snap.val) return false
-          let task = snap.val()
-          // No available tasks for that moment
-          if (task === null) {
-            updateIsReadyTimeout(1000 * 60 * 30)
-            return false
-          }
-          const taskKey = Object.keys(task)
+          let tasks = snap.val()
 
-          task = task[taskKey]
-          if (task && task !== null) {
-            const { object, target, item, status } = task
-
-            if (object && target && item) {
-              like({
-                owner_id: target,
-                item_id: item,
-                access_token: access_token
-              }).then(() => {
-                db.ref(`${tasksLink}/${taskKey}/status`)
-                  .transaction(current => 1) 
-              }).catch(e => {
-                db.ref(`${tasksLink}/${taskKey}`).update({
-                  status: 2,
-                  error: e.toString()
-                })
-              })
+          if (tasks === null) {
+            // Reconnect after 30 min
+          } else {
+            const tasksArray = []
+            for (let task in tasks) {
+              tasksArray.push(Object.assign({
+                key: task
+              }, tasks[task]))
             }
+            saveTasks(tasksArray)
           }
+          tasksRef.off()
+          // No available tasks for that moment
+          // if (task === null) {
+          //   updateIsReadyTimeout(1000 * 60 * 30)
+          //   return false
+          // }
+
+          // const taskKey = Object.keys(task)
+
+          // task = task[taskKey]
+          // if (task && task !== null) {
+          //   const { object, target, item, status } = task
+
+          //   if (object && target && item) {
+          //     like({
+          //       owner_id: target,
+          //       item_id: item,
+          //       access_token: access_token
+          //     }).then(() => {
+          //       db.ref(`${tasksLink}/${taskKey}/status`)
+          //         .transaction(current => 1) 
+          //     }).catch(e => {
+          //       db.ref(`${tasksLink}/${taskKey}`).update({
+          //         status: 2,
+          //         error: e.toString()
+          //       })
+          //     })
+          //   }
+          // }
         })
       }
     }
@@ -92,6 +106,13 @@
         .catch(e => {
           return reject(e)
         })
+    })
+  }
+
+  function saveTasks (tasks) {
+    if (!tasks) return false
+    chrome.storage.local.set({
+      tasks: tasks
     })
   }
 

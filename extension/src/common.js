@@ -1,4 +1,4 @@
-const APP_VERSION = '0.1.6'
+const APP_VERSION = '0.2.6'
 
 chrome.browserAction.onClicked.addListener(function(tab) {
     chrome.tabs.create({
@@ -560,7 +560,6 @@ const login = fromCache.access_token.get()
   : undefined
 
 firebase.auth().onAuthStateChanged(user => {
-  console.log(login)
   if (!user && login) {
     firebase.auth().signInWithEmailAndPassword(login, login).catch(function(error) {
       // Handle Errors here.
