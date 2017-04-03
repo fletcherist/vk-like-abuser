@@ -119,7 +119,7 @@ class Like {
 
 
 function VK_API_WAIT () {
-  const generated = randomFromInterval(1000, 10000)
+  const generated = randomFromInterval(1000, 7000)
   return generated
 }
 
