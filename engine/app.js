@@ -12,19 +12,12 @@ const Engine = require('./parts/engine')
 const ErrorResolver = require('./parts/errorResolver')
 
 const TasksToExtension = require('./parts/tasksToExtension')
-
-
-globalStats.countAllCounters()
-  .then(r => {})
-
 const algorithms = require('./algorithms')
 
 const listeners = new Listeners()
-
 const engine = new Engine()
 
 const BugFixer = require('./parts/bugFixer')
-
 const Backup = require('./parts/backup')
 
 // Every 12 hours
@@ -37,6 +30,11 @@ setInterval(() => {
   new BugFixer().fixUsersID()
 }, 1000 * 60 * 60 * 2)
 
+setInterval(() => {
+  globalStats.countAllCounters().then(r => {})
+}, 1000 * 60 * 2)
+
+globalStats.countAllCounters().then(r => {})
 
 // new TasksToExtension().add({
 //   object: 96170043,

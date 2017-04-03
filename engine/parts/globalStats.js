@@ -101,6 +101,9 @@ class GlobalStats {
   }
 
   incrementUsersCount () {
+    this.db.ref('/global_stats/users/total')
+      .transaction(currentValue => (currentValue || 0) + 1)
+
     this.db.ref(`/daily_statistics/${this.time.getDateForFirebase()}/users`)
       .transaction(currentValue => (currentValue || 0) + 1)
   }

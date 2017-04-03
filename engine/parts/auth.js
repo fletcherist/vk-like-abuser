@@ -24,9 +24,6 @@ class Auth {
       .then(r => {
         vkUser.getUser().then(user => {
           // TODO:
-          // this.db.addUser({
-          //   access_token: access_token
-          // })
           // Get some info about this user
           // Test like
           vkUser.like({target: 1, id: 376599151}).then(r => {

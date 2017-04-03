@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "devtool --watch app.js"
+    "start": "devtool --watch app.js",
+    "deploy": "./deploy.sh"
   },
   "repository": {
     "type": "git",
