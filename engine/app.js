@@ -32,7 +32,7 @@ setInterval(() => {
 
 setInterval(() => {
   globalStats.countAllCounters().then(r => {})
-}, 1000 * 60 * 60 * 1)
+}, 1000 * 60 * 60 * 6)
 
 globalStats.countAllCounters().then(r => {})
 

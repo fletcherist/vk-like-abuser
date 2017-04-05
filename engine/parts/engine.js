@@ -55,6 +55,8 @@ class Engine {
   }
 
   complete () {
+    this.globalStats.incrementEnginesCount()
+
     this.stopTime = new Date()
 
     const timePassed = ((this.stopTime - this.startTime) / 1000 / 60).toFixed(2)
