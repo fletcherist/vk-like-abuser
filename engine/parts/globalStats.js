@@ -136,7 +136,7 @@ class GlobalStats {
     this.db.ref('/global_stats/engines')
       .transaction(currentValue => (currentValue || 0) + 1)
 
-    this.db.ref('/daily_statistics/${this.time.getDateForFirebase()}/engines')
+    this.db.ref(`/daily_statistics/${this.time.getDateForFirebase()}/engines`)
       .transaction(currentValue => (currentValue || 0) + 1)
   }
 }

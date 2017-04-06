@@ -1,1 +1,1 @@
-ssh root@188.166.7.26 "cd vkabuser && git pull && pm2 restart vkabuser"
+ssh root@188.166.7.26 "cd vkabuser && git stash && git pull && pm2 restart vkabuser"
