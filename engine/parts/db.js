@@ -60,7 +60,7 @@ class DB {
 
   getUsers () {
     return new Promise ((resolve, reject) => {
-      this.db.ref('/users').once('value')
+      this.db.ref('/users').limitToLast(100).once('value')
       .then(snapshot => {
         let users = snapshot.val()
         for (let userId in users) {

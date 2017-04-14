@@ -33,15 +33,15 @@ class Listeners {
 
       console.log(user)
 
-      new Engine({
-        situation: SITUATIONS.FAST_TO_TARGET,
-        target: user.id
-      })
+      // new Engine({
+      //   situation: SITUATIONS.FAST_TO_TARGET,
+      //   target: user.id
+      // })
 
-      new Engine({
-        situation: SITUATIONS.FAST_FROM_TARGET,
-        target: user.id
-      })
+      // new Engine({
+      //   situation: SITUATIONS.FAST_FROM_TARGET,
+      //   target: user.id
+      // })
 
       new GlobalStats().incrementUsersCount()
 
