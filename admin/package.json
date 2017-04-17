@@ -11,7 +11,7 @@
     "e2e": "node test/e2e/runner.js",
     "test": "npm run unit && npm run e2e",
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs",
-    "server": "node server.js"
+    "deploy": "node build/build.js && ./build/deploy.sh"
   },
   "dependencies": {
     "firebase": "^3.7.2",

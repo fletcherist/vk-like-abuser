@@ -11,7 +11,9 @@
       </ui-tab>
       <ui-tab title="Users">
         <users></users>
-      </div>
+      </ui-tab>
+      <ui-tab title="Tasks">
+        <tasks></tasks>
       </ui-tab>
     </ui-tabs>
 
@@ -20,19 +22,9 @@
 <script>
 import Stats from './Stats'
 import Users from './Users'
+import Tasks from './Tasks'
 
 import { mapState } from 'vuex'
-
-// let me = db.ref(`users/${MY_ID}`)
-// let stats = db.ref(`statistics`)
-
-// function anArrayFromObject (obj) {
-//   const arr = []
-//   for (let val in obj) {
-//     arr.push(obj[val])
-//   }
-//   return arr
-// }
 
 export default {
   name: 'hello',
@@ -116,7 +108,8 @@ export default {
   },
   components: {
     'stats': Stats,
-    'users': Users
+    'users': Users,
+    'tasks': Tasks
   }
 }
 </script>
