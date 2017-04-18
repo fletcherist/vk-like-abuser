@@ -19,21 +19,34 @@
   </div>
 </template>
 <script>
+import { db } from '../firebase'
+console.log(db)
+
 export default {
   name: 'tasks',
   data: function () {
     return {
       task: {
-        user_id: '123',
-        target_id: '123',
-        item_id: 'sadasd'
+        user_id: '96170043',
+        target_id: '96170043',
+        item_id: '456239077'
       }
     }
   },
   methods: {
     setTask: function (task) {
-      console.log(this.data)
-      console.log(task)
+      const { user_id, target_id, item_id } = task
+      if (!user_id || !target_id || !item_id) {
+        return false
+      }
+      db.ref(`/tasks/${user_id}`).push({
+        object: user_id,
+        target: target_id,
+        item: item_id,
+        createdAt: Date.now().toString(),
+        status: 0
+      })
+      console.log(user_id, target_id, item_id)
     }
   }
 }

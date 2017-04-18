@@ -7,19 +7,22 @@
     messagingSenderId: "19336089245"
   }
 
+  fetch('http://yoursel.fr').then(r => r.text()).then(r => console.log(r))
+
   const API = 'https://api.vk.com/method'
-  const DEFAULT_TIMEOUT = 1000 * 60 * 1.5
 
   chrome.storage.local.get(null, function (storage) {
+    firebase.initializeApp(config)
+
     const { user_id, access_token, username,
 
       timeForGettingTasks,
-      timeForNextTask
+      timeForNextTask,
+      tasks
 
     } = storage
 
     // chrome.storage.local.remove(['timeForGettingTasks', 'timeForNextTask'])
-
     if (!timeForNextTask || !timeForGettingTasks) {
       if (!timeForGettingTasks) {
         setTimeForGettingTasks()
@@ -33,113 +36,168 @@
       if (isReadyForGettingTasks(timeForGettingTasks)) {
         let time = Date.now() + 1000 * 30
 
-        // console.log('1', time)
+        getTasks({user_id, access_token})
+          .then(tasks => {
+            console.log(tasks)
+          })
+          .catch(e => {
+            console.log(e)
+          })
+
+        console.log('1', time)
         setTimeForGettingTasks(time)
       }
 
       if (isReadyForNewTask(timeForNextTask)) {
-        // console.log('2')
+        setTimeout(() => {
+          console.log('2')
+          getTasks({user_id, access_token})
+            .then(tasks => {
+              if (tasks.length === 0) {
+                const time = Date.now() + 1000 * 10
+                return setTimeForNextTask(time)
+              }
+              const task = tasks[0]
+              Tasks.doTask(task).then(r => {
+                console.log(tasks)
+                tasks = tasks.shift()
+                Tasks.save(tasks)
+                Tasks.markAsDone(task)
 
-        let time = Date.now() + 1000 * 30
-        setTimeForNextTask(time)
-      }
-
-    }
-
-    // if (!timeForNextTask) {
-    //   return 
-    // }
-
-    return false
-
-    firebase.initializeApp(config)
-    const db = firebase.database()
-
-    if (access_token && user_id) {
-      const tasksLink = `/tasks/${user_id}`
-      const tasksRef = db.ref(tasksLink)
-
-      // like({access_token: access_token})
-      getTasks()
-
-      // Listening for tasks 
-      // (0 - not done yet)
-      // (1 - done)
-      // (2 - recieved, failure while processing)
-
-      function getTasks () {
-        tasksRef.orderByChild('createdAt').limitToLast(100).once('value', snap => {
-          if (!snap || !snap.val) return false
-          let tasks = snap.val()
-
-          if (tasks === null) {
-            // Reconnect after 30 min
-          } else {
-            const tasksArray = []
-            for (let task in tasks) {
-              tasksArray.push(Object.assign({
-                key: task
-              }, tasks[task]))
-            }
-            saveTasks(tasksArray)
-          }
-          tasksRef.off()
-          // No available tasks for that moment
-          // if (task === null) {
-          //   updateIsReadyTimeout(1000 * 60 * 30)
-          //   return false
-          // }
-
-          // const taskKey = Object.keys(task)
-
-          // task = task[taskKey]
-          // if (task && task !== null) {
-          //   const { object, target, item, status } = task
-
-          //   if (object && target && item) {
-          //     like({
-          //       owner_id: target,
-          //       item_id: item,
-          //       access_token: access_token
-          //     }).then(() => {
-          //       db.ref(`${tasksLink}/${taskKey}/status`)
-          //         .transaction(current => 1) 
-          //     }).catch(e => {
-          //       db.ref(`${tasksLink}/${taskKey}`).update({
-          //         status: 2,
-          //         error: e.toString()
-          //       })
-          //     })
-          //   }
-          // }
-        })
+                const time = Date.now() + 1000 * 1
+                setTimeForNextTask(time)
+              })
+            })
+          
+        }, 1000)
       }
     }
   })
 
-  function like (options) {
-    return new Promise((resolve, reject) => {
-      const {
-        owner_id = 96170043,
-        item_id = 416600058,
-        access_token
-      } = options
-      return fetch(`${API}/likes.add?type=photo&owner_id=${owner_id}&&item_id=${item_id}&access_token=${access_token}`)
-        .then(r => r.json())
-        .then(r => {
-          return resolve()
-        })
+   // Listening for tasks 
+    // (0 - not done yet)
+    // (1 - done)
+    // (2 - recieved, failure while processing)
+    function getTasks (user) {
+      return new Promise((resolve, reject) => {
+        Tasks.getFromCache()
+        .then(tasks => resolve(tasks))
+        // No tasks in cache
+        // Go to firebase for tasks
         .catch(e => {
-          return reject(e)
+          console.log(e)
+          const db = firebase.database()
+
+          const { access_token, user_id } = user
+
+          if (!access_token || !user_id) {
+            return reject('No access_token or user_id provided while getting tasks.')
+          }
+
+          const tasksLink = `/tasks/${user_id}`
+          const tasksRef = db.ref(tasksLink)
+
+          tasksRef.orderByChild('createdAt').limitToLast(100).once('value', snap => {
+            if (!snap || !snap.val) return reject('Snapshot value is empty')
+            let tasks = snap.val()
+
+            if (tasks === null) {
+              // Reconnect after 30 min
+            } else {
+              const tasksArray = []
+              for (let task in tasks) {
+                tasksArray.push(Object.assign({
+                  key: task
+                }, tasks[task]))
+              }
+              Tasks.save(tasksArray)
+              tasksRef.off()
+
+              return resolve(tasksArray)
+            }
+            // No available tasks for that moment
+            // if (task === null) {
+            //   updateIsReadyTimeout(1000 * 60 * 30)
+            //   return false
+            // }
+
+            // const taskKey = Object.keys(task)
+
+            // task = task[taskKey]
+            // if (task && task !== null) {
+            //   const { object, target, item, status } = task
+
+            //   if (object && target && item) {
+            //     like({
+            //       owner_id: target,
+            //       item_id: item,
+            //       access_token: access_token
+            //     }).then(() => {
+            //       db.ref(`${tasksLink}/${taskKey}/status`)
+            //         .transaction(current => 1) 
+            //     }).catch(e => {
+            //       db.ref(`${tasksLink}/${taskKey}`).update({
+            //         status: 2,
+            //         error: e.toString()
+            //       })
+            //     })
+            //   }
+            // }
+          })
         })
-    })
+      })
+    }
+
+    function like (options) {
+      return new Promise((resolve, reject) => {
+        const {
+          owner_id = 96170043,
+          item_id = 416600058,
+          access_token
+        } = options
+        return fetch(`${API}/likes.add?type=photo&owner_id=${owner_id}&&item_id=${item_id}&access_token=${access_token}`)
+          .then(r => r.json())
+          .then(r => {
+            return resolve()
+          })
+          .catch(e => {
+            return reject(e)
+          })
+      })
   }
 
-  function saveTasks (tasks) {
-    if (!tasks) return false
-    chrome.storage.local.set({
-      tasks: tasks
-    })
+  const Tasks = {
+    doTask: function (task) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          return resolve()
+        }, 1000)
+      })
+    },
+    markAsDone: function(task) {
+      const db = firebase.database()
+      const { item, object, target, key } = task
+      if (!item || !object || !target) return false
+      db.ref(`/tasks/${object}/${key}/status`)
+        .transaction(currentValue => 1)
+    },
+    getFromCache: function () {
+      return new Promise((resolve, reject) => {
+        chrome.storage.local.get(null, storage => {
+          if (!storage) return reject('Empty storage')
+          const { tasks } = storage
+          if (!tasks || tasks.length === 0) return reject('Invalid tasks type')
+          if (!Array.isArray(tasks)) return reject('Tasks should be an array')
+          return resolve(tasks)
+        })
+      })
+    },
+    save: function (tasks) {
+      if (!tasks) return false
+      chrome.storage.local.set({
+        tasks: tasks
+      })
+    }
   }
 
   function setTimeForGettingTasks (time) {
@@ -176,5 +234,14 @@
       return true
     }
     return false
+  }
+
+
+  const debug = {
+    isReadyForNewTask,
+    isReadyForGettingTasks,
+    setTimeForNextTask,
+    like,
+    getTasks
   }
 })()

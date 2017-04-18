@@ -28,9 +28,6 @@ import { mapState } from 'vuex'
 
 export default {
   name: 'hello',
-  mounted: function () {
-    // this.loadData()
-  },
   data () {
     return {
       sortedUsers: [],
@@ -114,24 +111,11 @@ export default {
 }
 </script>
 
-<!-- Add 'scoped' attribute to limit CSS to this component only -->
 <style scoped>
 a {
   text-decoration: none;
   color: black;
 }
-
-/*.wrapper {
-  max-width: 80vw;
-  margin: 4rem auto;
-}*/
-
-/*@media (max-width: 500px) {
-  .wrapper {
-    max-width: 100vw;
-    margin: 0rem auto;
-  }
-}*/
 
 .quick-stats {
   display: inline-block;

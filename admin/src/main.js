@@ -1,10 +1,7 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
 
 import KeenUI from 'keen-ui'
-
 import router from './router'
 
 import '../node_modules/keen-ui/dist/keen-ui.css'
@@ -14,18 +11,12 @@ import VueFire from 'vuefire'
 import VuexFire from 'vuexfire'
 import Vuex from 'vuex'
 
+import anArrayFromObject from './utils/anArrayFromObject'
+
 Vue.use(Vuex)
 Vue.use(VueFire)
 Vue.use(VuexFire)
 Vue.use(KeenUI)
-
-function anArrayFromObject (obj) {
-  const arr = []
-  for (let val in obj) {
-    arr.push(obj[val])
-  }
-  return arr
-}
 
 export const store = new Vuex.Store({
   state: {

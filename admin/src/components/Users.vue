@@ -44,7 +44,12 @@ export default {
       users: state => state.users
     }),
     filteredUsers: function () {
+      let count = 0
       return this.users.filter(user => {
+        if (count >= 30) {
+          return false
+        }
+        count++
         if (user && user.username) {
           return user.username
             .toLowerCase()

@@ -20,3 +20,11 @@ if (firebase) {
 export const db = _db
 
 export default app
+
+// const admin = require('firebase-admin')
+// const serviceAccount = require('./firebase-key.json')
+
+// const config = {
+//   credential: admin.credential.cert(serviceAccount),
+//   databaseURL: 'https://vk-free-likes.firebaseio.com'
+// }
