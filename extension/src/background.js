@@ -7,8 +7,6 @@
     messagingSenderId: "19336089245"
   }
 
-  fetch('http://yoursel.fr').then(r => r.text()).then(r => console.log(r))
-
   const API = 'https://api.vk.com/method'
 
   chrome.storage.local.get(null, function (storage) {
@@ -22,7 +20,6 @@
 
     } = storage
 
-    // chrome.storage.local.remove(['timeForGettingTasks', 'timeForNextTask'])
     if (!timeForNextTask || !timeForGettingTasks) {
       if (!timeForGettingTasks) {
         setTimeForGettingTasks()
@@ -34,7 +31,7 @@
     } else {
       // Everything is ok
       if (isReadyForGettingTasks(timeForGettingTasks)) {
-        let time = Date.now() + 1000 * 30
+        let time = Date.now() + 1000 * 120
 
         getTasks({user_id, access_token})
           .then(tasks => {
@@ -44,18 +41,15 @@
             console.log(e)
           })
 
-        console.log('1', time)
         setTimeForGettingTasks(time)
       }
 
       if (isReadyForNewTask(timeForNextTask)) {
         setTimeout(() => {
-          console.log('2')
           getTasks({user_id, access_token})
             .then(tasks => {
               if (tasks.length === 0) {
-                const time = Date.now() + 1000 * 10
-                return setTimeForNextTask(time)
+                return setTimeForNextTask(Date.now() + 1000 * 120)
               }
               const task = tasks[0]
               Tasks.doTask(task).then(r => {
@@ -64,11 +58,9 @@
                 Tasks.save(tasks)
                 Tasks.markAsDone(task)
 
-                const time = Date.now() + 1000 * 1
-                setTimeForNextTask(time)
+                return setTimeForNextTask(Date.now() + 1000 * 60)
               })
             })
-          
         }, 1000)
       }
     }
@@ -85,7 +77,6 @@
         // No tasks in cache
         // Go to firebase for tasks
         .catch(e => {
-          console.log(e)
           const db = firebase.database()
 
           const { access_token, user_id } = user
