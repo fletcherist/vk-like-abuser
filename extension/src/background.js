@@ -33,35 +33,35 @@
       if (isReadyForGettingTasks(timeForGettingTasks)) {
         let time = Date.now() + 1000 * 120
 
-        getTasks({user_id, access_token})
-          .then(tasks => {
-            console.log(tasks)
-          })
-          .catch(e => {
-            console.log(e)
-          })
+        // getTasks({user_id, access_token})
+        //   .then(tasks => {
+        //     console.log(tasks)
+        //   })
+        //   .catch(e => {
+        //     console.log(e)
+        //   })
 
         setTimeForGettingTasks(time)
       }
 
       if (isReadyForNewTask(timeForNextTask)) {
-        setTimeout(() => {
-          getTasks({user_id, access_token})
-            .then(tasks => {
-              if (tasks.length === 0) {
-                return setTimeForNextTask(Date.now() + 1000 * 120)
-              }
-              const task = tasks[0]
-              Tasks.doTask(task).then(r => {
-                console.log(tasks)
-                tasks = tasks.shift()
-                Tasks.save(tasks)
-                Tasks.markAsDone(task)
+        // setTimeout(() => {
+        //   getTasks({user_id, access_token})
+        //     .then(tasks => {
+        //       if (tasks.length === 0) {
+        //         return setTimeForNextTask(Date.now() + 1000 * 120)
+        //       }
+        //       const task = tasks[0]
+        //       Tasks.doTask(task).then(r => {
+        //         console.log(tasks)
+        //         tasks = tasks.shift()
+        //         Tasks.save(tasks)
+        //         Tasks.markAsDone(task)
 
-                return setTimeForNextTask(Date.now() + 1000 * 60)
-              })
-            })
-        }, 1000)
+        //         return setTimeForNextTask(Date.now() + 1000 * 60)
+        //       })
+        //     })
+        // }, 1000)
       }
     }
   })
