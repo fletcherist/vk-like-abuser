@@ -1,18 +1,21 @@
-const express = require('express')
-const fs = require('fs')
+const app = require('express')()
+const server = require('http').Server(app)
+const io = require('socket.io')(server)
 
-var http = require('http')
-var https = require('https')
-var privateKey  = fs.readFileSync('sslcert/server.key', 'utf8')
-var certificate = fs.readFileSync('sslcert/server.crt', 'utf8')
+server.listen(8080);
 
-var credentials = {key: privateKey, cert: certificate}
-var express = require('express')
-var app = express()
+const api = require('./api')
 
-var httpServer = http.createServer(app)
-var httpsServer = https.createServer(credentials, app)
+app.get('/', function (req, res) {
+  res.send('hello world')
+})
 
-httpServer.listen(8080)
-httpsServer.listen(8443)
-
+io.on('connection', function (socket) {
+  console.log(socket.id)
+  console.log('connected')
+  socket.emit('news', { hello: 'world' })
+  socket.on('path', function (data, fn) {
+    console.log(data)
+    fn('your tasks')
+  })
+})

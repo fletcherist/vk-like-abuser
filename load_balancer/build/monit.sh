@@ -1,0 +1,1 @@
+ssh root@89.223.31.14 "cd vkabuser/load_balancer && git stash && git pull && pm2 monit vkabuser"-
