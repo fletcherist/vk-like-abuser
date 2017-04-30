@@ -17,7 +17,7 @@ module.exports = {
   deploy : {
     production : {
       user : 'node',
-      host : '212.83.163.1',
+      host : '89.223.31.14',
       ref  : 'origin/master',
       repo : 'git@github.com:fletcherist/vk-like-abuser.git',
       path : '/root/vkabuser/load_balancer',

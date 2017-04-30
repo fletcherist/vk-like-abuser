@@ -1,1 +1,1 @@
-ssh root@89.223.31.14 "/root/vkabuser/load_balancer/build/monit_o.sh"
+ssh root@89.223.31.14  "PATH=/root/.nvm/versions/node/v7.9.0/bin:/root/opt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/root/opt/bin && cd vkabuser/load_balancer && git stash && git pull && pm2 startOrRestart load_balancer.js"
