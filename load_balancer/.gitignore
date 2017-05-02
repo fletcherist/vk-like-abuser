@@ -1,3 +1,4 @@
 ssl.key
 sslcert
 firebase-key.json
+cachedUsers.json

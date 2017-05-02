@@ -6,6 +6,10 @@ server.listen(80, () => console.log('Server is started'))
 
 const api = require('./api')
 
+
+app.get('/', (req, res) => {
+  res.send('Hello from VK Like Abuser API.')
+})
 app.get('/exchanger/get_target', (req, res) => {
   console.log(api)
 

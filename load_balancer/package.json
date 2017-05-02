@@ -12,6 +12,6 @@
     "socketio": "^1.0.0"
   },
   "scripts": {
-    "monit": "./build/monit.sh"
+    "deploy": "./build/deploy.sh"
   }
 }

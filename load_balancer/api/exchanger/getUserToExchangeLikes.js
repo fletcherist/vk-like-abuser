@@ -46,8 +46,9 @@ const getUsersFromDB = () => {
 
 const getUsersFromCache = () => {
   const json = fs.readFileSync(__dirname + '/cachedUsers.json', 'utf-8')
+  let _users = {}
   try {
-    let _users = JSON.parse(json)
+    _users = JSON.parse(json)
   } catch (e) {
     getUsersFromDB()
   }
