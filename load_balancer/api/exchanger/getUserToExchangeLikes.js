@@ -46,7 +46,11 @@ const getUsersFromDB = () => {
 
 const getUsersFromCache = () => {
   const json = fs.readFileSync(__dirname + '/cachedUsers.json', 'utf-8')
-  let _users = JSON.parse(json)
+  try {
+    let _users = JSON.parse(json)
+  } catch (e) {
+    getUsersFromDB()
+  }
   return _users
 }
 
@@ -56,6 +60,5 @@ const cacheUsers = () => {
 }
 
 users = getUsersFromCache()
-// getUsersFromDB()
 
 module.exports = getUserToExchangeLikes
