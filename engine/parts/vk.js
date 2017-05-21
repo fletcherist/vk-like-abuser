@@ -12,14 +12,9 @@ class VK {
 
     this.access_token = access_token
 
-
     this.vk.call('stats.trackVisitor')
-      .then(res => {
-
-      })
-      .catch(e => {
-        return false
-      })
+      .then(res => {})
+      .catch(e => false)
   }
 
   checkToken () {
@@ -119,43 +114,6 @@ class VK {
 
         return reject()
       }).catch(e => {
-        return reject(e)
-      })
-    })
-  }
-
-
-  // Deprecated method
-  // Will be remove in the next vesion
-  getPhotos (user_id) {
-    const types = ['wall', 'profile']
-    const typeToSearch = types[Math.floor(Math.random() * types.length)]
-
-    return new Promise ((resolve, reject) => {
-      if (!user_id) return reject('No user id provided')
-      this.vk.call('photos.get', {
-        owner_id: user_id,
-        album_id: typeToSearch,
-        extended: 1,
-        rev: 1
-      }).then(res => {
-        const { count , items } = res
-        if (count === 0) {
-          return reject()
-        }
-
-        console.log(res)
-
-        items.forEach((item, index, array) => {
-          array[index] = item.id
-        })
-        return resolve(res)
-      })
-      .catch(e => {
-        new ErrorResolver({
-          error: e,
-          object: user_id
-        })
         return reject(e)
       })
     })

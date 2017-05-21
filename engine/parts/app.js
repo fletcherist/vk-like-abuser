@@ -1,7 +1,6 @@
-const firebase = require('firebase')
-const firebaseConfig = require('../config').firebase
-
 const admin = require('firebase-admin')
+
+const firebaseConfig = require('../config').firebase
 const serviceAccount = require('../firebase-key.json')
 
 const app = admin.initializeApp({
