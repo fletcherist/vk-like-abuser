@@ -3,20 +3,36 @@ const Console = require('./console')
 const ErrorResolver = require('./errorResolver')
 
 class VK {
+  /*
+    Constructor recieves VK Access Token
+    and initialize VK Api Session, using this token
+  */
   constructor (access_token) {
     if (!access_token) return new Console().error('{VK} No access token provided')
+    /* 
+      Token - VK Access Token
+      Delays - 300ms delay between each vk request
+    */
     this.vk = new VKApi({
       token: access_token,
       delays: true
     })
 
     this.access_token = access_token
-
+    /*
+      User requests tracking
+      This need for the statistics purposes
+    */
     this.vk.call('stats.trackVisitor')
       .then(res => {})
       .catch(e => false)
   }
 
+  /*
+    Validate VK Access Token
+    Returns Promise with reject status, if token is not valid
+    Returns Promise with resolve status otherwise
+  */
   checkToken () {
     return new Promise((resolve, reject) => {
 
@@ -48,6 +64,10 @@ class VK {
     })
   }
 
+  /*
+    VK method
+    Returns user's id, and 50px, 100px photos
+  */
   getUser (user_ids) {
     return new Promise((resolve, reject) => {
       this.vk.call('users.get', {
@@ -63,6 +83,10 @@ class VK {
     })
   }
 
+  /*
+    Add like to any type of wallpost
+    Ex. photo, wall, avatar etc.
+  */
   like ({target, id, type}) {
     if (!target) return new Console().error('{VK} no target')
     if (!id) return new Console().error('{VK} no id')
@@ -78,10 +102,6 @@ class VK {
         return reject(e)
       })
     })
-  }
-
-  getWall (user_id) {
-
   }
 
   getPhoto (user_id) {
