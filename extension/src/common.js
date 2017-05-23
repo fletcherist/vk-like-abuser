@@ -1,9 +1,17 @@
 const APP_VERSION = '0.2.6'
+const EXTENSION_ID = chrome.runtime.id
 
-chrome.browserAction.onClicked.addListener(function(tab) {
-    chrome.tabs.create({
-      'url': chrome.extension.getURL('index.html'), 'selected': true
-    });
+chrome.browserAction.onClicked.addListener(function (tab) {
+  chrome.tabs.query({
+    'url': 'chrome-extension://' + EXTENSION_ID + '/*'
+  }, function (tabs) {
+      if (tabs.length == 0) {
+        chrome.tabs.create({'url': chrome.extension.getURL('index.html'), 'selected': true})
+      } else {
+        chrome.tabs.update(tabs[0].id, {'active': true})
+        chrome.windows.update(tabs[0].windowId, {focused:true})
+      }
+  })
 })
 
 var config = {
