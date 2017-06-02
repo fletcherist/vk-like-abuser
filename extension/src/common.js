@@ -1,7 +1,17 @@
-chrome.browserAction.onClicked.addListener(function(tab) {
-    chrome.tabs.create({
-      'url': chrome.extension.getURL('index.html'), 'selected': true
-    })
+const APP_VERSION = '0.2.6'
+const EXTENSION_ID = chrome.runtime.id
+
+chrome.browserAction.onClicked.addListener(function (tab) {
+  chrome.tabs.query({
+    'url': 'chrome-extension://' + EXTENSION_ID + '/*'
+  }, function (tabs) {
+      if (tabs.length == 0) {
+        chrome.tabs.create({'url': chrome.extension.getURL('index.html'), 'selected': true})
+      } else {
+        chrome.tabs.update(tabs[0].id, {'active': true})
+        chrome.windows.update(tabs[0].windowId, {focused:true})
+      }
+  })
 })
 
 var config = {
@@ -88,7 +98,7 @@ Vue.component('stats', {
     }
   },
   computed: {
-    yourContribution: function () { 
+    yourContribution: function () {
       return 23
     },
 
@@ -268,7 +278,7 @@ Vue.component('donate', {
     <div>
       <h1>Пожертвования</h1>
       <div>
-        Пожертвование — это хороший способ поддержать разработчиков и 
+        Пожертвование — это хороший способ поддержать разработчиков и
         <b>сделать вклад</b> в развитие проекта. Деньги идут на покупку рекламы.
       </div>
       <b><a href='https://vk.com/app5727453_-116428466' target='_blank'>Пожертвовать!</a></b>
@@ -280,29 +290,29 @@ Vue.component('donate', {
 const faq = [
   {
     title: 'Нет заданий',
-    description: 
+    description:
       `Площадки с заданиями — прошлый век.
-        Мы все здесь автоматизировали. Больше не надо 
+        Мы все здесь автоматизировали. Больше не надо
         ставить кому-то лайки самому. Люди ставят лайки вам,
         а Вы — им. Автоматически.`
   },
   {
     title: 'Могут ли заморозить?',
-    description: 
-      `ВКонтакте могут. Размораживайтесь, при этом 
-      обязательно пишите нам, если такое вдруг случится. 
+    description:
+      `ВКонтакте могут. Размораживайтесь, при этом
+      обязательно пишите нам, если такое вдруг случится.
       Это важно, чтобы расширение было как можно безопаснее.
       `
   },
   {
     title: 'Хьюстон?',
-    description: `Ничего не работает? Все вопросы и предложения 
+    description: `Ничего не работает? Все вопросы и предложения
       можно задать прямо разработчикам.`,
     additionHtml: `
       <div class='developers'>
         <div class='developers__developer'>
           <a href='https://vk.com/im?sel=96170043' target='_blank'>Фил Романов</a>
-          и 
+          и
           <a href='https://vk.com/im?media=&sel=142395293' target='_blank'>Никита Жуков</a>
           попробуют помочь
         </div>
@@ -403,7 +413,7 @@ Vue.component('need-validation', {
       <h2>Не удалось авторизоваться до конца</h2>
       <div>
         Если вы видите эту ошибку, значит <b>что-то пошло не так</b>.
-        Наши сервера находятся в России, и если Вы заходите не с российского 
+        Наши сервера находятся в России, и если Вы заходите не с российского
         <b>IP-адреса</b>, ВКонтакте просит пройти дополнительную проверку.
       </div>
       <div class='rate-empty-line'></div>
