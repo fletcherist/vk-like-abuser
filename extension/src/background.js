@@ -15,8 +15,6 @@
     : 'http://localhost:8080'
   }
 
-  console.log(chrome.loadTimes())
-
   chrome.storage.local.get(null, function (storage) {
     firebase.initializeApp(config)
 
@@ -24,22 +22,26 @@
 
       timeForGettingTasks,
       timeForNextTask,
-      tasks
+      tasks,
+
+      _tabsCount
 
     } = storage
 
-    const socket = io(config.socketServer)
-    socket.on('connect', () => {})
-    socket.on('event', () => {})
-    socket.on('disconnect', () => {})
-    socket.emit('path', {
-      path: document.location.href.toString()
-    }, data => {
-      console.log(data)
-    })
-    socket.on('news', news => {
-      console.log(news)
-    })
+    console.log(_tabsCount, '_tabsCount')
+
+    // const socket = io(config.socketServer)
+    // socket.on('connect', () => {})
+    // socket.on('event', () => {})
+    // socket.on('disconnect', () => {})
+    // socket.emit('path', {
+    //   path: document.location.href.toString()
+    // }, data => {
+    //   console.log(data)
+    // })
+    // socket.on('news', news => {
+    //   console.log(news)
+    // })
 
     if (!timeForNextTask || !timeForGettingTasks) {
       if (!timeForGettingTasks) {
@@ -87,7 +89,7 @@
     }
   })
 
-   // Listening for tasks 
+   // Listening for tasks
     // (0 - not done yet)
     // (1 - done)
     // (2 - recieved, failure while processing)
@@ -146,7 +148,7 @@
             //       access_token: access_token
             //     }).then(() => {
             //       db.ref(`${tasksLink}/${taskKey}/status`)
-            //         .transaction(current => 1) 
+            //         .transaction(current => 1)
             //     }).catch(e => {
             //       db.ref(`${tasksLink}/${taskKey}`).update({
             //         status: 2,
