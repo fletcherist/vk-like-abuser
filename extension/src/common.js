@@ -4,7 +4,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
   chrome.tabs.query({
     'url': 'chrome-extension://' + EXTENSION_ID + '/*'
   }, function (tabs) {
-      if (tabs.length == 0) {
+      if (tabs.length === 0) {
         chrome.tabs.create({'url': chrome.extension.getURL('index.html'), 'selected': true})
       } else {
         chrome.tabs.update(tabs[0].id, {'active': true})
@@ -26,16 +26,20 @@ firebase.initializeApp(config)
 let ACCESS_TOKEN = localStorage.getItem('access_token')
 let MY_ID = localStorage.getItem('user_id')
 
+/*
+  VueFire is a firebase module for Vue
+  that is responsible for 2-way data binding
+*/
 Vue.use(VueFire)
-let db = firebase.database()
 
-let users = db.ref('/users').limitToFirst(20)
-let me = db.ref(`/users/${MY_ID}`)
-let stats = db.ref(`/statistics/${MY_ID}`)
-let likes = db.ref('/likes').limitToLast(10)
-let tasks = db.ref(`/tasks/${MY_ID}`)
+const db = firebase.database()
 
-let globalStats = db.ref('/global_stats')
+const users = db.ref('/users').limitToFirst(20)
+const me = db.ref(`/users/${MY_ID}`)
+const stats = db.ref(`/statistics/${MY_ID}`)
+const likes = db.ref('/likes').limitToLast(10)
+const tasks = db.ref(`/tasks/${MY_ID}`)
+const globalStats = db.ref('/global_stats')
 
 Vue.component('global-stats', {
   template: `
@@ -97,10 +101,6 @@ Vue.component('stats', {
     }
   },
   computed: {
-    yourContribution: function () {
-      return 23
-    },
-
     allLikes: function () {
       if (this.globalStats.likes &&
           this.globalStats.likes.all) {
@@ -119,28 +119,14 @@ Vue.component('stats', {
   }
 })
 
+
+/*
+  Ex. 1994293 → 1 994 293
+      431943 → 431 943 etc.
+*/
 function formatNumber (num) {
     return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")
 }
-
-new Vue({
-  el: '#list-demo',
-  data: {
-    items: [1,2,3,4,5,6,7,8,9],
-    nextNum: 10
-  },
-  methods: {
-    randomIndex: function () {
-      return Math.floor(Math.random() * this.items.length)
-    },
-    add: function () {
-      this.items.splice(this.randomIndex(), 0, this.nextNum++)
-    },
-    remove: function () {
-      this.items.splice(this.randomIndex(), 1)
-    },
-  }
-})
 
 function getRealtimeLikesFromCache () {
   try {
@@ -486,7 +472,6 @@ let app = new Vue({
       return fromCache.photo_100.get()
     },
     needValidation: function () {
-      console.log(this.me.need_validation)
       if (this.me && this.me.need_validation === 1) {
         return true
       }
@@ -496,6 +481,30 @@ let app = new Vue({
   }
 })
 
+/*
+  onCreated listener is responsible
+  for counting all pages in the browser and save
+  the value to the Storage with the idea
+  of use it to keep `background.js` process as a singletone
+*/
+chrome.tabs.onCreated.addListener(() => {
+  // Getting all tabs
+  chrome.tabs.query({}, tabs => {
+    // Count all opened tabs
+    let tabsCount = 0
+    tabs.forEach(tab => tabsCount++)
+
+    // Place tabsCount to the Chrome Storage
+    chrome.storage.local.set({
+      _tabsCount: tabsCount
+    }, storage => {})
+  })
+})
+
+/*
+  onUpdated listener is responsible for getting
+  an access_token value while authorization via VK
+*/
 chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   if (ACCESS_TOKEN) {
     return false
@@ -554,8 +563,8 @@ firebase.auth().onAuthStateChanged(user => {
   }
 })
 
-me.once('value', snap => {
-  console.log(snap.val())
-}, e => {
-  console.log(e)
-})
+// me.once('value', snap => {
+//   console.log(snap.val())
+// }, e => {
+//   console.log(e)
+// })
