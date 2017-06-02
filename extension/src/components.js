@@ -1,0 +1,128 @@
+const APP_VERSION = '0.2.6'
+const ENV = 'debug'
+const VKABUSER_SERVER = 'https://vkabuser.fletcherist.com'
+// const ENV = 'production'
+
+
+Vue.component('preloader', {
+  template: `
+    <div class="vk-like-preloader"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="75" width="75" viewbox="0 0 75 75"><circle cx="37.5" cy="37.5" r="33.5" stroke-width="8"/></svg></div>
+  `
+})
+
+Vue.component('ok-svg', {
+  template: `
+    <svg width="45px" height="45px" viewBox="0 0 45 45" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <g id="1492806668_Check_Circle" fill="#7BCD7F">
+                <g id="Group">
+                    <g id="TabBar-Icons">
+                        <g id="Check-Circle">
+                            <path d="M22.5,45 C34.9264069,45 45,34.9264069 45,22.5 C45,10.0735931 34.9264069,0 22.5,0 C10.0735931,0 0,10.0735931 0,22.5 C0,34.9264069 10.0735931,45 22.5,45 L22.5,45 L22.5,45 Z M22.5,43.2 C33.9322943,43.2 43.2,33.9322943 43.2,22.5 C43.2,11.0677057 33.9322943,1.8 22.5,1.8 C11.0677057,1.8 1.8,11.0677057 1.8,22.5 C1.8,33.9322943 11.0677057,43.2 22.5,43.2 L22.5,43.2 Z M17.1014155,30.2257922 L9.68162339,22.8060002 L8.40883118,24.0787924 L17.3183766,32.9883377 L18.5911688,31.7155455 L18.3742078,31.4985845 L36.2823376,13.5904546 L35.0095455,12.3176624 L17.1014155,30.2257922 L17.1014155,30.2257922 Z" id="Shape"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </svg>
+  `
+})
+
+Vue.component('not-ok-svg', {
+  template: `
+    <svg width="45px" height="45px" viewBox="0 0 45 45">
+        <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <g id="1492806668_Check_Circle-Copy">
+                <g id="Group">
+                    <g id="TabBar-Icons">
+                        <g id="Check-Circle" fill="#CBCBCB">
+                            <path d="M22.5,45 C34.9264069,45 45,34.9264069 45,22.5 C45,10.0735931 34.9264069,0 22.5,0 C10.0735931,0 0,10.0735931 0,22.5 C0,34.9264069 10.0735931,45 22.5,45 L22.5,45 L22.5,45 Z M22.5,43.2 C33.9322943,43.2 43.2,33.9322943 43.2,22.5 C43.2,11.0677057 33.9322943,1.8 22.5,1.8 C11.0677057,1.8 1.8,11.0677057 1.8,22.5 C1.8,33.9322943 11.0677057,43.2 22.5,43.2 L22.5,43.2 Z" id="Shape"></path>
+                        </g>
+                        <g id="remove" transform="translate(12.000000, 12.000000)" fill="#C8C8C8">
+                            <g id="Capa_1">
+                                <polygon id="Shape" points="20.4238571 0 10.802 9.69492857 1.10628571 0.0722857143 0.000785714286 1.188 9.69571429 10.8098571 0.0722857143 20.5055714 1.188 21.6126429 10.8106429 11.9177143 20.5055714 21.5403571 21.6126429 20.4246429 11.9177143 10.8027857 21.5403571 1.10707143"></polygon>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </svg>
+  `
+})
+
+Vue.component('help', {
+  template: `
+    <div class='help'>
+      <div>
+        <span class='text-grey'>v${APP_VERSION}</span>
+      </div>
+      <div class='help__group'>
+        <a href='https://vk.com/vk_king_likes' target='_blank'>Группа ВКонтакте</a>
+      </div>
+    </div>
+  `
+})
+
+Vue.component('like-exchanger', {
+  template: `
+    <div class="wrapper__like_abuser like-exchanger">
+      <div>Быстрый обмен лайками</div>
+      <div class="">Хотите обменяться лайками?</div>
+      <div class="like-exchanger__container">
+        <div class="like-exchanger__icon"
+          @click="selectOK()"
+          v-show='isStarted && !isSearching'>
+          <ok-svg></ok-svg>
+        </div>
+        <div class="like-exchanger__search"
+          @click='startSearching()'
+          v-show='!isSearching'>
+          <div class="like-exchanger__search_title">Поиск</div>
+        </div>
+        <div v-show='isSearching' class="like-exchanger__preloader">
+          <preloader></preloader>
+        </div>
+        <div class="like-exchanger__icon"
+          @click="selectNotOK()"
+          v-show='isStarted && !isSearching'>
+          <not-ok-svg></not-ok-svg>
+        </div>
+      </div>
+    </div>
+  `,
+  data: function () {
+    return {
+      isStarted: false,
+      isSearching: false
+    }
+  },
+  methods: {
+    startSearching: function () {
+      this.isStarted = !this.isStarted
+      this.isSearching = !this.isSearching
+
+      fetch(`${VKABUSER_SERVER}/exchanger/get_target`)
+        .then(r => r.text())
+        .then(r => {
+          console.log(r)
+        })
+
+      setTimeout(() => {
+        this.isStarted = true
+        this.isSearching = false
+      }, 2000)
+    },
+    selectOK: function () {
+      alert('ok selected')
+    },
+    selectNotOK: function () {
+      alert('not ok selected')
+    }
+  },
+  computed: {
+    isLoading: function () {
+      return this.isStarted && !this.isSearching
+    }
+  }
+})

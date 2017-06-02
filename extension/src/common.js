@@ -1,9 +1,7 @@
-const APP_VERSION = '0.2.6'
-
 chrome.browserAction.onClicked.addListener(function(tab) {
     chrome.tabs.create({
       'url': chrome.extension.getURL('index.html'), 'selected': true
-    });
+    })
 })
 
 var config = {
@@ -29,12 +27,6 @@ let likes = db.ref('/likes').limitToLast(10)
 let tasks = db.ref(`/tasks/${MY_ID}`)
 
 let globalStats = db.ref('/global_stats')
-
-Vue.component('preloader', {
-  template: `
-    <div class="vk-like-preloader"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="75" width="75" viewbox="0 0 75 75"><circle cx="37.5" cy="37.5" r="33.5" stroke-width="8"/></svg></div>
-  `
-})
 
 Vue.component('global-stats', {
   template: `
@@ -269,19 +261,6 @@ Vue.component('realtime-likes', {
       return false
     }
   }
-})
-
-Vue.component('help', {
-  template: `
-    <div class='help'>
-      <div>
-        <span class='text-grey'>v${APP_VERSION}</span>
-      </div>
-      <div class='help__group'>
-        <a href='https://vk.com/vk_king_likes' target='_blank'>Группа ВКонтакте</a>
-      </div>
-    </div>
-  `
 })
 
 Vue.component('donate', {

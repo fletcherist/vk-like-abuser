@@ -23,7 +23,7 @@
     {
       "matches": ["<all_urls>"],
       "css": ["styles.css"],
-      "js": ["vue.js", "scripts/firebase.js", "scripts/vuefire.js", "scripts/d3.v4.min.js", "scripts/options.js", "src/background.js"]
+      "js": ["vue.js", "scripts/firebase.js", "scripts/socket.io.js", "scripts/vuefire.js", "scripts/d3.v4.min.js", "scripts/options.js", "src/background.js"]
     }
   ],
   "content_security_policy": "script-src 'self' https://www.google-analytics.com https://cdn.firebase.com https://*.firebaseio.com; object-src 'self'"

@@ -80,13 +80,16 @@
         v-bind:class="{'wrapper--wide': !authorized}">
         <global-stats></global-stats>
       </div>
+      <div>
+        <like-exchanger></like-exchanger>
+      </div>
     </div>
     <div class='wrapper wrapper__right'>
       <realtime-likes></realtime-likes>
     </div>
   </div>
-  <script src='src/common.js'></script>
   <script src='src/components.js'></script>
+  <script src='src/common.js'></script>
   <script src='src/graph.js'></script>
 </body>
 </html>
