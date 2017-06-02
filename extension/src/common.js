@@ -1,4 +1,3 @@
-const APP_VERSION = '0.2.6'
 const EXTENSION_ID = chrome.runtime.id
 
 chrome.browserAction.onClicked.addListener(function (tab) {
