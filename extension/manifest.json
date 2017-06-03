@@ -8,7 +8,7 @@
   },
   "browser_action": {
      "default_icon": "icon.png",
-     "default_title": "Lets abuse some likes"
+     "default_title": "Lets abuse VK likes"
    },
   "permissions": [
     "tabs",
@@ -16,18 +16,18 @@
     "https://api.vk.com/*"
   ],
   "background": {
-    "scripts": ["src/common.js", "src/graph.js", "scripts/options.js"],
+    "scripts": ["scripts/socket.io.js", "bg.js"],
     "persistent": false
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["scripts/firebase.js", "scripts/socket.io.js", "src/background.js"]
+      "js": ["src/vkbutton.js"]
     },
     {
       "matches": ["*://*/index.html"],
       "css": ["styles.css"],
-      "js": ["scripts/d3.v4.min.js", "scripts/vue.js", "scripts/vuefire.js"]
+      "js": ["scripts/d3.v4.min.js", "scripts/vue.js", "scripts/firebase.js", "scripts/vuefire.js"]
     }
   ],
   "content_security_policy": "script-src 'self' https://www.google-analytics.com https://cdn.firebase.com https://*.firebaseio.com; object-src 'self'"

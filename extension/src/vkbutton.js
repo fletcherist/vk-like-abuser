@@ -3,7 +3,7 @@
   const env = 'DEBUG'
   // const env = 'PRODUCTION'
 
-  var config = {
+  const config = {
     apiKey: "AIzaSyB1IjoxSLvx-C_hpyQ2irgzB01Tf3bts3I",
     authDomain: "vk-free-likes.firebaseapp.com",
     databaseURL: "https://vk-free-likes.firebaseio.com",

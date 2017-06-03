@@ -1,19 +1,4 @@
-const EXTENSION_ID = chrome.runtime.id
-
-chrome.browserAction.onClicked.addListener(function (tab) {
-  chrome.tabs.query({
-    'url': 'chrome-extension://' + EXTENSION_ID + '/*'
-  }, function (tabs) {
-      if (tabs.length === 0) {
-        chrome.tabs.create({'url': chrome.extension.getURL('index.html'), 'selected': true})
-      } else {
-        chrome.tabs.update(tabs[0].id, {'active': true})
-        chrome.windows.update(tabs[0].windowId, {focused:true})
-      }
-  })
-})
-
-var config = {
+const config = {
   apiKey: 'AIzaSyB1IjoxSLvx-C_hpyQ2irgzB01Tf3bts3I',
   authDomain: 'vk-free-likes.firebaseapp.com',
   databaseURL: 'https://vk-free-likes.firebaseio.com',
@@ -398,7 +383,7 @@ Vue.component('need-validation', {
   `
 })
 
-let app = new Vue({
+const app = new Vue({
   el: '#app',
   data: () => {
     return {
