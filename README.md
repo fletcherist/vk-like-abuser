@@ -2,5 +2,4 @@
 
 VK Like Abuser — Chrome Extension for VK.com, that provide user interface & autolike infrastructure for social network.
 
-
-![Acrhitecture model](https://pp.userapi.com/c837323/v837323043/46942/ZGtVTZxzsIE.jpg)
+<img src='https://pp.userapi.com/c837323/v837323043/46942/ZGtVTZxzsIE.jpg' height=400 />
