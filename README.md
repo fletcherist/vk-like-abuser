@@ -1,6 +1,6 @@
-# VK Like Abuser
+# VK Like Abuser [![Build Status](https://travis-ci.org/fletcherist/vk-like-abuser.svg?branch=master)](https://travis-ci.org/fletcherist/vk-like-abuser)
 
 VK Like Abuser — Chrome Extension for VK.com, that provide user interface & autolike infrastructure for social network.
 
 
-https://pp.userapi.com/c837323/v837323043/46942/ZGtVTZxzsIE.jpg
+![Acrhitecture model](https://pp.userapi.com/c837323/v837323043/46942/ZGtVTZxzsIE.jpg)
