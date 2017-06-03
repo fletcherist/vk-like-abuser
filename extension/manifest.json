@@ -1,7 +1,7 @@
 {
   "name": "VK Like Abuser",
   "description": "Автоматическая накрутка лайков на страницу ВКонтакте.",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "manifest_version": 2,
   "icons": {
     "128": "icon.png"
@@ -16,14 +16,18 @@
     "https://api.vk.com/*"
   ],
   "background": {
-    "scripts": ["src/common.js", "src/graph.js"],
+    "scripts": ["src/common.js", "src/graph.js", "scripts/options.js"],
     "persistent": false
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
+      "js": ["scripts/firebase.js", "scripts/socket.io.js", "src/background.js"]
+    },
+    {
+      "matches": ["*://*/index.html"],
       "css": ["styles.css"],
-      "js": ["scripts/vue.js", "scripts/firebase.js", "scripts/socket.io.js", "scripts/vuefire.js", "scripts/d3.v4.min.js", "scripts/options.js", "src/background.js"]
+      "js": ["scripts/d3.v4.min.js", "scripts/vue.js", "scripts/vuefire.js"]
     }
   ],
   "content_security_policy": "script-src 'self' https://www.google-analytics.com https://cdn.firebase.com https://*.firebaseio.com; object-src 'self'"

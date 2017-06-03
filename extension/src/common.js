@@ -14,11 +14,11 @@ chrome.browserAction.onClicked.addListener(function (tab) {
 })
 
 var config = {
-  apiKey: "AIzaSyB1IjoxSLvx-C_hpyQ2irgzB01Tf3bts3I",
-  authDomain: "vk-free-likes.firebaseapp.com",
-  databaseURL: "https://vk-free-likes.firebaseio.com",
-  storageBucket: "vk-free-likes.appspot.com",
-  messagingSenderId: "19336089245"
+  apiKey: 'AIzaSyB1IjoxSLvx-C_hpyQ2irgzB01Tf3bts3I',
+  authDomain: 'vk-free-likes.firebaseapp.com',
+  databaseURL: 'https://vk-free-likes.firebaseio.com',
+  storageBucket: 'vk-free-likes.appspot.com',
+  messagingSenderId: '19336089245'
 }
 
 firebase.initializeApp(config)
@@ -67,6 +67,7 @@ Vue.component('global-stats', {
       }
       return false
     },
+
     allLikes: function () {
       if (this.globalStats.likes &&
           this.globalStats.likes.all) {
@@ -141,7 +142,7 @@ const fromCache = {
   username: {
     get: function () {
       const username = localStorage.getItem('username')
-      if (username !== undefined || username !== null) {
+      if (username) {
         return username
       }
 
@@ -155,7 +156,7 @@ const fromCache = {
   photo_100: {
     get: function () {
       const photo_100 = localStorage.getItem('photo_100')
-      if (photo_100 !== undefined || photo_100 !== null) {
+      if (photo_100) {
         return photo_100
       }
 
@@ -169,7 +170,7 @@ const fromCache = {
   access_token: {
     get: function () {
       const access_token = localStorage.getItem('access_token')
-      if (access_token !== undefined || access_token !== null) {
+      if (access_token) {
         return access_token
       }
       return undefined
@@ -181,7 +182,7 @@ const fromCache = {
   user_id: {
     get: function () {
       const user_id = localStorage.getItem('user_id')
-      if (user_id !== undefined || user_id !== null) {
+      if (user_id) {
         return user_id
       }
       return undefined
@@ -228,8 +229,7 @@ Vue.component('realtime-likes', {
           <preloader></preloader>
         </div>
       </div>
-    </div>
-  `,
+    </div>`,
   data: function () {
     return {
       realtimeLikes: getRealtimeLikesFromCache
@@ -244,16 +244,10 @@ Vue.component('realtime-likes', {
         let likes = this.realtimeLikes.slice(this.realtimeLikes.length - 5).reverse()
         return likes
       }
-
       return []
-      console.log(this.likes)
-      return 'NO!'
     },
     isLoaded: function () {
-      if (this.realtimeLikes && this.realtimeLikes.length > 0) {
-        return true
-      }
-      return false
+      return (this.realtimeLikes && this.realtimeLikes.length > 0)
     }
   }
 })
@@ -267,8 +261,7 @@ Vue.component('donate', {
         <b>сделать вклад</b> в развитие проекта. Деньги идут на покупку рекламы.
       </div>
       <b><a href='https://vk.com/app5727453_-116428466' target='_blank'>Пожертвовать!</a></b>
-    </div>
-  `
+    </div>`
 })
 
 
@@ -286,8 +279,7 @@ const faq = [
     description:
       `ВКонтакте могут. Размораживайтесь, при этом
       обязательно пишите нам, если такое вдруг случится.
-      Это важно, чтобы расширение было как можно безопаснее.
-      `
+      Это важно, чтобы расширение было как можно безопаснее.`
   },
   {
     title: 'Хьюстон?',
@@ -301,8 +293,7 @@ const faq = [
           <a href='https://vk.com/im?media=&sel=142395293' target='_blank'>Никита Жуков</a>
           попробуют помочь
         </div>
-      </div>
-    `
+      </div>`
   }
 ]
 
@@ -366,7 +357,7 @@ Vue.component('main-navigation', {
         <donate></donate>
       </div>
       <div v-if='this.currentPage === 3'>
-        <stats :users='123' :likes='3223'></stats>
+        <stats></stats>
       </div>
     </div>
   `,
@@ -411,7 +402,6 @@ let app = new Vue({
   el: '#app',
   data: () => {
     return {
-      message: 'Hey',
       authorized: MY_ID ? true : false,
       activated: false,
       agreedWithTerms: false,
@@ -443,7 +433,6 @@ let app = new Vue({
       localStorage.removeItem('photo_100')
 
       firebase.auth().signOut()
-
       chrome.tabs.reload()
     }
   },
@@ -487,6 +476,8 @@ let app = new Vue({
   the value to the Storage with the idea
   of use it to keep `background.js` process as a singletone
 */
+console.log(chrome.extension.getViews())
+
 chrome.tabs.onCreated.addListener(() => {
   // Getting all tabs
   chrome.tabs.query({}, tabs => {
@@ -562,9 +553,3 @@ firebase.auth().onAuthStateChanged(user => {
     })
   }
 })
-
-// me.once('value', snap => {
-//   console.log(snap.val())
-// }, e => {
-//   console.log(e)
-// })
