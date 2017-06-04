@@ -1,7 +1,7 @@
 const EXTENSION_ID = chrome.runtime.id
 const API = 'https://api.vk.com/method'
-const ENV = 'DEBUG'
-// const env = 'PRODUCTION'
+// const ENV = 'DEBUG'
+const ENV = 'PRODUCTION'
 
 chrome.browserAction.onClicked.addListener(function (tab) {
   chrome.tabs.query({
@@ -20,7 +20,7 @@ class Background {
   constructor () {
       this.config = {
         socketServer: ENV === 'PRODUCTION'
-          ? 'https://fletcherist.com'
+          ? 'https://vkabuser.fletcherist.com'
           : 'http://localhost:80'
       }
       this.socket = io(this.config.socketServer)
@@ -36,7 +36,7 @@ class Background {
       chrome.storage.local.get(null, function (storage) {
         const { access_token, username, user_id } = storage
         if (!access_token || !username || !user_id) {
-          return reject()
+          return reject('Not authenticated')
         }
 
         self.socket.on('connect', () => {
@@ -45,11 +45,12 @@ class Background {
         self.socket.emit('get_tasks', {
           user_id
         }, response => {
+          console.log(response)
           const { error, message, tasks } = response
           if (error) {
             return reject(message)
           }
-          
+
           console.log(tasks)
           return resolve(tasks)
         })
@@ -66,18 +67,5 @@ class Background {
 
 const background = new Background()
 background.getTasks()
-
-// socket.on('connect', () => {})
-// socket.on('event', () => {})
-// socket.on('disconnect', () => {})
-// socket.emit('path', {
-//   path: document.location.href.toString()
-// }, data => {
-//   console.log(data)
-// })
-// socket.on('news', news => {
-//   console.log(news)
-// })
-
-
-console.log(io)
+  .catch(e => console.log(e))
+  .then(tasks => console.log(tasks))
