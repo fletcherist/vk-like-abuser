@@ -1,16 +1,17 @@
 const Algorithms = require('./algorithms')
 
 class FastFromTarget extends Algorithms {
-  constructor ({target}) {
+  constructor ({target, amount}) {
     super()
 
     this.tasks = []
+    this.amount = amount || 5
 
      this.users.sort((a, b) => {
       return a.createdAt < b.createdAt
     })
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < this.amount; i++) {
       this.tasks.push({
         object: target,
         target: this.users[i].id

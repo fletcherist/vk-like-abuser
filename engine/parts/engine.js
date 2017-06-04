@@ -12,12 +12,17 @@ class Engine {
   constructor (config) {
     this.situation = null
     this.target = null
+    this.amount = null
 
     if (config) {
-      const { situation, target } = config
+      const { situation, target, amount } = config
       if (situation.length > 0) {
         this.situation = config.situation
         this.target = config.target
+      }
+
+      if (amount) {
+        this.amount = amount
       }
     } else {
       this.situation = SITUATIONS.DEFAULT
@@ -88,8 +93,10 @@ class Engine {
       case SITUATIONS.FAST_TO_TARGET:
         if (this.target) {
           new Console().notify(`{Engine} Choosing Fast To Target Algorithm`)
+          new Console().notify(`Generating ${this.amount} likes to ${this.target}`)
           this.tasks = new algorithms.FastToTarget({
-            target: this.target
+            target: this.target,
+            amount: this.amount
           })
         }
         break
@@ -97,7 +104,8 @@ class Engine {
         if (this.target) {
           new Console().notify(`{Engine} Fast from target`)
           this.tasks = new algorithms.FastFromTarget({
-            target: this.target
+            target: this.target,
+            amount: this.amount
           })
           console.log(this.tasks)
         }

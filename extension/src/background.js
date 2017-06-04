@@ -1,8 +1,17 @@
 const EXTENSION_ID = chrome.runtime.id
 const API = 'https://api.vk.com/method'
+const VK_ABUSER_API_PRODUCTION = 'https://vkabuser.fletcherist.com'
+const VK_ABUSER_API_DEVELOPMENT = 'http://localhost:80'
 // const ENV = 'DEBUG'
 const ENV = 'PRODUCTION'
 
+/*
+  This code is responsible for
+  open the extension, clicking on the icon
+
+  Thanks github.com/fourlex for the idea not to open the
+  extension tab 10 thousand times
+*/
 chrome.browserAction.onClicked.addListener(function (tab) {
   chrome.tabs.query({
     'url': 'chrome-extension://' + EXTENSION_ID + '/*'
@@ -16,14 +25,36 @@ chrome.browserAction.onClicked.addListener(function (tab) {
   })
 })
 
+/*
+  This class is responsible for the background processing
+  of the extension.
+
+  First — tasks. Likes, that fail on our server — convert into
+  tasks to the extension. That means, the extension should set these likes
+  exactly from Chrome (not from our server)
+*/
 class Background {
   constructor () {
       this.config = {
         socketServer: ENV === 'PRODUCTION'
-          ? 'https://vkabuser.fletcherist.com'
-          : 'http://localhost:80'
+          ? VK_ABUSER_API_PRODUCTION
+          : VK_ABUSER_API_DEVELOPMENT
       }
       this.socket = io(this.config.socketServer)
+
+      this.processing()
+  }
+
+  /*
+    This method is responsible for checking available tasks
+    and do them. In loop.
+  */
+  processing () {
+    this.getTasks().then(tasks => {
+      
+    }).catch(error => {
+
+    })
   }
 
   /*
@@ -63,6 +94,42 @@ class Background {
       TODO: Save tasks to the Chrome Storage
     */
   }
+}
+
+function setTimeForGettingTasks (time) {
+  if (!time) time = Date.now()
+  time = Number(time)
+
+  chrome.storage.local.set({
+    timeForGettingTasks: time
+  })
+}
+
+function setTimeForNextTask (time) {
+  if (!time) time = Date.now()
+  time = Number(time)
+
+  chrome.storage.local.set({
+    timeForNextTask: time
+  })
+}
+
+function isReadyForGettingTasks (timeForGettingTasks) {
+  if (!timeForGettingTasks) return false
+
+  if (timeForGettingTasks <= Date.now()) {
+    return true
+  }
+  return false
+}
+
+function isReadyForNewTask (timeForNextTask) {
+  if (!timeForNextTask) return false
+
+  if (timeForNextTask <= Date.now()) {
+    return true
+  }
+  return false
 }
 
 const background = new Background()
