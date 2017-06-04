@@ -36,10 +36,16 @@ io.on('connection', function (socket) {
       })
     }
 
-    return fn({
-      status: 1,
-      error: 0,
-      tasks: [1,2,3,4,5,6]
-    })
+    return api.getTasks(user_id)
+      .then(tasks => fn({
+        status: 1,
+        error: 0,
+        tasks: tasks
+      }))
+      .catch(error => fn({
+        status: 0,
+        error: 1,
+        message: error
+      }))
   })
 })
