@@ -75,12 +75,12 @@
         </div>
       </div>
       </div>
-      <div v-if='!authorized'
+      <div
         class='wrapper__like_abuser wrapper--next'
         v-bind:class="{'wrapper--wide': !authorized}">
         <global-stats></global-stats>
       </div>
-      <div>
+      <div v-if='authorized'>
         <like-exchanger></like-exchanger>
       </div>
     </div>
