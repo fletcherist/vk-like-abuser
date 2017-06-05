@@ -10,6 +10,9 @@
   "dependencies": {
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
+    "gulp-csso": "^3.0.0",
+    "gulp-html-replace": "^1.6.2",
+    "gulp-rename": "^1.2.2",
     "gulp-zip": "^4.0.0"
   },
   "devDependencies": {},
