@@ -55,14 +55,14 @@ a:hover {
 }
 
 .button:hover {
-  text-decoration: none !important; 
+  text-decoration: none !important;
 }
 
 .button__donate {
   background: #E55D87; /* fallback for old browsers */
   background: -webkit-linear-gradient(to left, #E55D87 , #5FC3E4);
   background: linear-gradient(to right, #E55D87 , #5FC3E4);
-  
+
 }
 
 .foo {
@@ -118,7 +118,7 @@ a:hover {
 }
 
 .wrapper__like_abuser {
-  max-width: 260px;
+  max-width: 320px;
   width: 30vw;
   background-color: white;
   box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
@@ -349,6 +349,12 @@ a:hover {
   display: flex;
 }
 
+@media (max-width: 600px) {
+  .global-stats {
+    
+  }
+}
+
 .global-stats__stat {
   min-width: 30%;
   padding: 0 .5rem 0 1rem;
@@ -521,3 +527,9 @@ a:hover {
   green  #7BCD7F
 
 */
+
+.faq h1 {
+  font-size: 1.2rem;
+  margin-top: 2rem;
+  margin-bottom: .5rem;
+}

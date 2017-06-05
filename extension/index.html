@@ -4,13 +4,17 @@
 
   <title>VK Like Abuser</title>
   <meta charset='utf-8' />
+  <!-- build:css -->
   <link rel='stylesheet' href='./styles.css' />
+  <!-- endbuild -->
 </head>
+<!-- build:js -->
 <script src='scripts/vue.js'></script>
 <script src='scripts/firebase.js'></script>
 <script src='scripts/vuefire.js'></script>
 <script src='scripts/d3.v4.min.js'></script>
 <script src='scripts/options.js'></script>
+<!-- endbuild -->
 <body>
   <svg id='graph'></svg>
   <div id="app" class='container__like_abuser'>
@@ -75,12 +79,12 @@
         </div>
       </div>
       </div>
-      <div v-if='!authorized'
+      <div
         class='wrapper__like_abuser wrapper--next'
         v-bind:class="{'wrapper--wide': !authorized}">
         <global-stats></global-stats>
       </div>
-      <div>
+      <div v-if='authorized'>
         <like-exchanger></like-exchanger>
       </div>
     </div>
