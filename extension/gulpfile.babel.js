@@ -10,7 +10,7 @@ import babel from 'gulp-babel'
 
 const STYLES_DEV_NAME = 'styles.css'
 
-const STYLES_PRODUCTION_NAME = 'styles.min.css'
+const STYLES_PRODUCTION_NAME = 'styles.css'
 const BUNDLE_PRODUCTION_NAME = 'bundle.min.js'
 const JS_ASSETS_PRODUCTION_NAME = 'assets.min.js'
 
@@ -28,8 +28,8 @@ gulp.task('clean', () => {
 */
 gulp.task('assets', () => {
   return gulp.src(`scripts/*`)
-    .pipe(concat(JS_ASSETS_PRODUCTION_NAME))
-    .pipe(gulp.dest('dist'))
+    // .pipe(concat(JS_ASSETS_PRODUCTION_NAME))
+    .pipe(gulp.dest('dist/scripts'))
 })
 
 /*
@@ -41,15 +41,14 @@ gulp.task('js', () => {
       presets: ['es2015']
     }))
     .pipe(uglify())
-    .pipe(concat(BUNDLE_PRODUCTION_NAME))
-    .pipe(gulp.dest('dist'))
+    .pipe(gulp.dest('dist/src'))
 })
 
 /*
   Compiling & minifying css styles
 */
 gulp.task('styles', () => {
-  return gulp.src(`src/${STYLES_DEV_NAME}`)
+  return gulp.src(`${STYLES_DEV_NAME}`)
     .pipe(csso())
     .pipe(rename(STYLES_PRODUCTION_NAME))
     .pipe(gulp.dest('dist'))
@@ -61,11 +60,11 @@ gulp.task('styles', () => {
 */
 gulp.task('html', () => {
   return gulp.src('index.html')
-    .pipe(htmlreplace({
-      'css': STYLES_PRODUCTION_NAME,
-      'assets': JS_ASSETS_PRODUCTION_NAME,
-      'js': BUNDLE_PRODUCTION_NAME
-    }))
+    // .pipe(htmlreplace({
+    //   'css': STYLES_PRODUCTION_NAME,
+    //   'assets': JS_ASSETS_PRODUCTION_NAME,
+    //   'js': BUNDLE_PRODUCTION_NAME
+    // }))
     .pipe(gulp.dest('dist'))
 })
 

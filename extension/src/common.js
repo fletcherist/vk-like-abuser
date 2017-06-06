@@ -11,6 +11,8 @@ firebase.initializeApp(config)
 let ACCESS_TOKEN = localStorage.getItem('access_token')
 let MY_ID = localStorage.getItem('user_id')
 
+const TELEGRAM_CHANNEL = 'https://t.me/joinchat/AAAAAEL5zbAb46YiIsuOVg'
+
 /*
   VueFire is a firebase module for Vue
   that is responsible for 2-way data binding
