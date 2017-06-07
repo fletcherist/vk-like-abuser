@@ -66,7 +66,7 @@ Vue.component('help', {
 
 Vue.component('like-exchanger', {
   template: `
-    <div class="wrapper__like_abuser like-exchanger">
+    <div class="wrapper like-exchanger">
       <div>Быстрый обмен лайками</div>
       <div class="">Хотите обменяться лайками?</div>
       <div class="like-exchanger__container">
@@ -125,4 +125,11 @@ Vue.component('like-exchanger', {
       return this.isStarted && !this.isSearching
     }
   }
+})
+
+
+Vue.component('follow-us', {
+  template: `
+    <div>Hello world</div>
+  `
 })

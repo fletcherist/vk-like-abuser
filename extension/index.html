@@ -17,10 +17,10 @@
 <!-- endbuild -->
 <body>
   <svg id='graph'></svg>
-  <div id="app" class='container__like_abuser'>
+  <div id="app" class='container'>
     <div style='float: left'>
       <div
-      class='wrapper__like_abuser'
+      class='wrapper'
       v-bind:class="{'wrapper--wide': !authorized}">
       <div class='foo'>
         <div v-if='authorized'>
@@ -80,7 +80,7 @@
       </div>
       </div>
       <div
-        class='wrapper__like_abuser wrapper--next'
+        class='wrapper wrapper--next'
         v-bind:class="{'wrapper--wide': !authorized}">
         <global-stats></global-stats>
       </div>
@@ -90,6 +90,7 @@
     </div>
     <div class='wrapper wrapper__right'>
       <realtime-likes></realtime-likes>
+      <follow-us></follow-us>
     </div>
   </div>
   <script src='src/components.js'></script>
