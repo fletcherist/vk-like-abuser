@@ -1,7 +1,7 @@
 body {
   margin: 0px;
   font-family: -apple-system,BlinkMacSystemFont,Roboto,Open Sans,Helvetica Neue,sans-serif;
-  background: #edeef0;
+  background: var(--main-bg-color);
 }
 
 a {
@@ -351,7 +351,7 @@ a:hover {
 
 @media (max-width: 600px) {
   .global-stats {
-    
+
   }
 }
 
