@@ -8,11 +8,17 @@ import concat from 'gulp-concat'
 import uglify from 'gulp-uglify'
 import babel from 'gulp-babel'
 
+import postcss from 'gulp-postcss'
+import cssVariables from 'postcss-css-variables'
+import autoprefixer from 'autoprefixer'
+
+
 const BUNDLE_PRODUCTION_NAME = 'bundle.min.js'
 const JS_ASSETS_PRODUCTION_NAME = 'assets.min.js'
 
 const PATHS = {
-  STYLES: 'src/styles'
+  STYLES: 'src/styles',
+  JS: `src/**/*.js`
 }
 
 gulp.task('default', () => {
@@ -39,7 +45,7 @@ gulp.task('assets', () => {
   Compiling javascript sources to bundle
 */
 gulp.task('js', () => {
-  return gulp.src(`src/**/*.js`)
+  return gulp.src(PATHS.JS)
     .pipe(babel({
       presets: ['es2015']
     }))
@@ -52,8 +58,9 @@ gulp.task('js', () => {
 */
 gulp.task('styles', () => {
   return gulp.src(`${PATHS.STYLES}/*`)
+    .pipe(concat('styles.css'))
+    .pipe(postcss([cssVariables, autoprefixer]))
     .pipe(csso())
-    .pipe(rename('styles.css'))
     .pipe(gulp.dest(`dist/${PATHS.STYLES}`))
 })
 
