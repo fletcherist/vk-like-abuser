@@ -26,7 +26,7 @@
     },
     {
       "matches": ["*://*/index.html"],
-      "css": ["styles.css"],
+      "css": ["src/styles/styles.css"],
       "js": ["scripts/d3.v4.min.js", "scripts/vue.js", "scripts/firebase.js", "scripts/vuefire.js"]
     }
   ],

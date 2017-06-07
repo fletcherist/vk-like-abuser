@@ -4,6 +4,7 @@
   "description": "Chrome Extension for VK Like Abuser",
   "author": "fletcherist <romanovexports@gmail.com>",
   "scripts": {
+    "start": "gulp",
     "deploy": "gulp deploy"
   },
   "dependencies": {
