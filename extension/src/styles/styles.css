@@ -13,6 +13,10 @@ a:hover {
   text-decoration: underline;
 }
 
+.no-underline {
+  text-decoration: none !important;
+}
+
 .not-active {
   pointer-events: none;
   cursor: not-allowed;
@@ -118,8 +122,7 @@ a:hover {
 }
 
 .wrapper {
-  max-width: 320px;
-  width: 30vw;
+  max-width: 300px;
   background-color: var(--block-bg-color);
   box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
   padding: .7rem;
@@ -127,11 +130,11 @@ a:hover {
   border-radius: 2px;
 }
 
-.wrapper__right {
+.wrapper--right {
   float: left;
   margin-left: 1rem;
   width: 15vw;
-  max-width: 200px;
+  max-width: var(--right-block-max-width);
   min-width: 200px;
   padding: 0px;
   background-color: transparent;
@@ -315,7 +318,7 @@ a:hover {
 
 .realtime-likes__like {
   width: 99%;
-  max-width: 200px;
+  max-width: var(--right-block-max-width);
   background-color: white;
   border: 1px solid #e3e4e8;
   border-bottom: 0px;
@@ -349,9 +352,13 @@ a:hover {
   display: flex;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 200px) {
   .global-stats {
+    flex-direction: column;
+  }
 
+  .global-stats__stat {
+    border-right: 0px !important;
   }
 }
 
@@ -523,13 +530,24 @@ a:hover {
   margin: 0.7rem auto;
 }
 
-/*
-  green  #7BCD7F
-
-*/
-
 .faq h1 {
   font-size: 1.2rem;
   margin-top: 2rem;
   margin-bottom: .5rem;
+}
+
+.block__right {
+  max-width: var(--right-block-max-width);
+}
+
+.follow-us__channels {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  margin: 1rem auto;
+}
+
+.follow-us__channel {
+  width: 33%;
 }
