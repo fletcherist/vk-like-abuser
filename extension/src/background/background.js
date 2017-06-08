@@ -2,8 +2,8 @@ const EXTENSION_ID = chrome.runtime.id
 const API = 'https://api.vk.com/method'
 const VK_ABUSER_API_PRODUCTION = 'https://vkabuser.fletcherist.com'
 const VK_ABUSER_API_DEVELOPMENT = 'http://localhost:80'
-// const ENV = 'DEBUG'
-const ENV = 'PRODUCTION'
+const ENV = 'DEBUG'
+// const ENV = 'PRODUCTION'
 
 /*
   This code is responsible for
@@ -50,11 +50,14 @@ class Background {
     and do them. In loop.
   */
   processing () {
-    this.getTasks().then(tasks => {
-      
-    }).catch(error => {
-
-    })
+    /*
+      TODO: Process tasks after getting
+    */
+    // this.getTasks().then(tasks => {
+    //
+    // }).catch(error => {
+    //
+    // })
   }
 
   /*
