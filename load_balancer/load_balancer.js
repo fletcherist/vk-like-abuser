@@ -17,13 +17,13 @@ app.get('/exchanger/get_target', (req, res) => {
   return res.json(user)
 })
 
-io.on('connection', function (socket) {
-  console.log(socket.id)
-  console.log('connected')
-  socket.emit('news', { hello: 'world' })
-  socket.on('path', function (data, fn) {
-    console.log(data)
-    fn('your tasks')
+
+const clients = []
+io.on('connection', socket => {
+  clients.push(socket.id)
+
+  socket.on('disconnect', () => {
+    clients.splice(clients.indexOf(socket.id), 1)
   })
 
   socket.on('get_tasks', (data, fn) => {
@@ -47,5 +47,9 @@ io.on('connection', function (socket) {
         error: 1,
         message: error
       }))
+  })
+
+  socket.on('count_online_users', (fn) => {
+  	return fn(clients)
   })
 })
