@@ -2,8 +2,8 @@ const EXTENSION_ID = chrome.runtime.id
 const API = 'https://api.vk.com/method'
 const VK_ABUSER_API_PRODUCTION = 'https://vkabuser.fletcherist.com'
 const VK_ABUSER_API_DEVELOPMENT = 'http://localhost:80'
-const ENV = 'DEBUG'
-// const ENV = 'PRODUCTION'
+// const ENV = 'DEBUG'
+const ENV = 'PRODUCTION'
 
 /*
   This code is responsible for
@@ -58,12 +58,20 @@ class Background {
     // }).catch(error => {
     //
     // })
+    this.connectToAPI()
   }
 
   /*
     This method is responsible for getting tasks
     from api infrastructure
   */
+
+  connectToAPI () {
+    this.socket.on('connect', () => {
+      console.log('Connected to vkabuser.')
+    })
+  }
+
   getTasks () {
     const self = this
     return new Promise((resolve, reject) => {
