@@ -11,8 +11,6 @@ firebase.initializeApp(config)
 let ACCESS_TOKEN = localStorage.getItem('access_token')
 let MY_ID = localStorage.getItem('user_id')
 
-const TELEGRAM_CHANNEL = 'https://t.me/joinchat/AAAAAEL5zbAb46YiIsuOVg'
-
 /*
   VueFire is a firebase module for Vue
   that is responsible for 2-way data binding
@@ -194,13 +192,13 @@ chromeStorage.updateData()
 
 Vue.component('realtime-likes', {
   template: `
-    <div class='realtime-likes'>
+    <div class='realtime-likes block__right'>
         <div class="realtime-likes__name">Лайки в реальном времени</div>
         <div v-if='isLoaded'>
           <div v-for='like in getLikes' transition="bounce" class="realtime-likes__like">
             <div :key='like.item' class="realtime-likes__container">
-              <a href='https://vk.com/id{{like.object.id}}' target='_blank'>
-                <img :src='like.object.photo_100' class='realtime-likes__photo' />
+              <a href='https://vk.com/id{{like.object.id}}' target='_blank' class='no-underline'>
+                <img :src='like.object.photo_100' class='realtime-likes__photo'/>
               </a>
               <svg class="realtime-likes__arrow" fill="#55677d" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
                   <path d="M0 0h24v24H0z" fill="none"/>

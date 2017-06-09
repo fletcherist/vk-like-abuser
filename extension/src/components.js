@@ -1,4 +1,4 @@
-const APP_VERSION = '0.2.7'
+const APP_VERSION = '0.3.0'
 const ENV = 'debug'
 const VKABUSER_SERVER = 'https://vkabuser.fletcherist.com'
 // const ENV = 'production'
@@ -7,6 +7,27 @@ const VKABUSER_SERVER = 'https://vkabuser.fletcherist.com'
 Vue.component('preloader', {
   template: `
     <div class="vk-like-preloader"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="75" width="75" viewbox="0 0 75 75"><circle cx="37.5" cy="37.5" r="33.5" stroke-width="8"/></svg></div>
+  `
+})
+
+Vue.component('telegram-logo', {
+  template: `
+  <svg width="40px" height="40px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 240 240">
+    <defs>
+    <linearGradient id="b" x1="0.6667" y1="0.1667" x2="0.4167" y2="0.75">
+      <stop stop-color="#37aee2" offset="0"/>
+      <stop stop-color="#1e96c8" offset="1"/>
+    </linearGradient>
+    <linearGradient id="w" x1="0.6597" y1="0.4369" x2="0.8512" y2="0.8024">
+      <stop stop-color="#eff7fc" offset="0"/>
+      <stop stop-color="#fff" offset="1"/>
+    </linearGradient>
+    </defs>
+    <circle cx="120" cy="120" r="120" fill="url(#b)"/>
+    <path fill="#c8daea" d="m98 175c-3.8876 0-3.227-1.4679-4.5678-5.1695L82 132.2059 170 80"/>
+    <path fill="#a9c9dd" d="m98 175c3 0 4.3255-1.372 6-3l16-15.558-19.958-12.035"/>
+    <path fill="url(#w)" d="m100.04 144.41 48.36 35.729c5.5185 3.0449 9.5014 1.4684 10.876-5.1235l19.685-92.763c2.0154-8.0802-3.0801-11.745-8.3594-9.3482l-115.59 44.571c-7.8901 3.1647-7.8441 7.5666-1.4382 9.528l29.663 9.2583 68.673-43.325c3.2419-1.9659 6.2173-0.90899 3.7752 1.2584"/>
+  </svg>
   `
 })
 
@@ -66,7 +87,7 @@ Vue.component('help', {
 
 Vue.component('like-exchanger', {
   template: `
-    <div class="wrapper__like_abuser like-exchanger">
+    <div class="wrapper like-exchanger">
       <div>Быстрый обмен лайками</div>
       <div class="">Хотите обменяться лайками?</div>
       <div class="like-exchanger__container">
@@ -125,4 +146,26 @@ Vue.component('like-exchanger', {
       return this.isStarted && !this.isSearching
     }
   }
+})
+
+
+const TELEGRAM_CHANNEL = 'https://t.me/joinchat/AAAAAEL5zbAb46YiIsuOVg'
+
+Vue.component('follow-us', {
+  template: `
+    <div class='wrapper block__right wrapper--next'>
+      <span>Следите за новостями</span>
+      <div class="follow-us__channels">
+        <a href="${TELEGRAM_CHANNEL}" target="_blank" class="follow-us__channel no-underline">
+          <telegram-logo></telegram-logo>
+        </a>
+        <a href="${TELEGRAM_CHANNEL}" target="_blank" class="follow-us__channel no-underline">
+          <telegram-logo></telegram-logo>
+        </a>
+        <a href="${TELEGRAM_CHANNEL}" target="_blank" class="follow-us__channel no-underline">
+          <telegram-logo></telegram-logo>
+        </a>
+      </div>
+    </div>
+  `
 })

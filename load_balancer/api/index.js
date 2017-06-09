@@ -10,7 +10,6 @@ const getTasks = user_id => {
 
     db.ref(`/tasks/${user_id}`).once('value', snap => {
       const tasks = snap.val()
-      console.log(tasks)
       return resolve(tasks)
     })
   })
