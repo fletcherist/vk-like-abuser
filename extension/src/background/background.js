@@ -136,6 +136,3 @@ function isReadyForNewTask (timeForNextTask) {
 }
 
 const background = new Background()
-background.getTasks()
-  .catch(e => console.log(e))
-  .then(tasks => console.log(tasks))
