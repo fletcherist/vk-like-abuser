@@ -97,42 +97,95 @@ class Background {
       TODO: Save tasks to the Chrome Storage
     */
   }
-}
 
-function setTimeForGettingTasks (time) {
-  if (!time) time = Date.now()
-  time = Number(time)
 
-  chrome.storage.local.set({
-    timeForGettingTasks: time
-  })
-}
-
-function setTimeForNextTask (time) {
-  if (!time) time = Date.now()
-  time = Number(time)
-
-  chrome.storage.local.set({
-    timeForNextTask: time
-  })
-}
-
-function isReadyForGettingTasks (timeForGettingTasks) {
-  if (!timeForGettingTasks) return false
-
-  if (timeForGettingTasks <= Date.now()) {
-    return true
+  setLike (options) {
+    return new Promise((resolve, reject) => {
+      const {
+        owner_id = 96170043,
+        item_id = 416600058,
+        access_token
+      } = options
+      return fetch(`${API}/likes.add?type=photo&owner_id=${owner_id}&&item_id=${item_id}&access_token=${access_token}`)
+        .then(r => r.json())
+        .then(r => {
+          return resolve('Like has been set')
+        })
+        .catch(e => {
+          return reject(e)
+        })
+    })
   }
-  return false
 }
 
-function isReadyForNewTask (timeForNextTask) {
-  if (!timeForNextTask) return false
-
-  if (timeForNextTask <= Date.now()) {
-    return true
-  }
-  return false
-}
+// const Tasks = {
+//   doTask: function (task) {
+//     return new Promise((resolve, reject) => {
+//       setTimeout(() => {
+//         return resolve()
+//       }, 1000)
+//     })
+//   },
+//   markAsDone: function(task) {
+//     const db = firebase.database()
+//     const { item, object, target, key } = task
+//     if (!item || !object || !target) return false
+//     db.ref(`/tasks/${object}/${key}/status`)
+//       .transaction(currentValue => 1)
+//   },
+//   getFromCache: function () {
+//     return new Promise((resolve, reject) => {
+//       chrome.storage.local.get(null, storage => {
+//         if (!storage) return reject('Empty storage')
+//         const { tasks } = storage
+//         if (!tasks || tasks.length === 0) return reject('Invalid tasks type')
+//         if (!Array.isArray(tasks)) return reject('Tasks should be an array')
+//         return resolve(tasks)
+//       })
+//     })
+//   },
+//   save: function (tasks) {
+//     if (!tasks) return false
+//     chrome.storage.local.set({
+//       tasks: tasks
+//     })
+//   }
+// }
+//
+// function setTimeForGettingTasks (time) {
+//   if (!time) time = Date.now()
+//   time = Number(time)
+//
+//   chrome.storage.local.set({
+//     timeForGettingTasks: time
+//   })
+// }
+//
+// function setTimeForNextTask (time) {
+//   if (!time) time = Date.now()
+//   time = Number(time)
+//
+//   chrome.storage.local.set({
+//     timeForNextTask: time
+//   })
+// }
+//
+// function isReadyForGettingTasks (timeForGettingTasks) {
+//   if (!timeForGettingTasks) return false
+//
+//   if (timeForGettingTasks <= Date.now()) {
+//     return true
+//   }
+//   return false
+// }
+//
+// function isReadyForNewTask (timeForNextTask) {
+//   if (!timeForNextTask) return false
+//
+//   if (timeForNextTask <= Date.now()) {
+//     return true
+//   }
+//   return false
+// }
 
 const background = new Background()

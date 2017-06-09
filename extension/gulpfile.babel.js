@@ -12,20 +12,20 @@ import postcss from 'gulp-postcss'
 import cssVariables from 'postcss-css-variables'
 import autoprefixer from 'autoprefixer'
 
-
-const BUNDLE_PRODUCTION_NAME = 'bundle.min.js'
-const JS_ASSETS_PRODUCTION_NAME = 'assets.min.js'
-
 const PATHS = {
   STYLES: 'src/styles',
   JS: `src/**/*.js`
 }
 
+/*
+   Set watchers for the development
+*/
 gulp.task('default', () => {
-  return gulp.watch(['src/**', 'index.html'], gulp.series(
-    'clean',
-    gulp.parallel('html', 'styles', 'assets', 'js', 'manifest-icon')
-  ))
+
+  gulp.watch(['index.html', 'manifest.json'], gulp.series('html', 'manifest-icon'))
+  gulp.watch('src/**/*.js', gulp.series('js', 'assets'))
+  gulp.watch('src/**/*.css', gulp.series('styles'))
+
 })
 
 gulp.task('clean', () => {
@@ -78,7 +78,8 @@ gulp.task('html', () => {
 */
 gulp.task('zip', () => {
   return gulp.src('dist/*')
-    .pipe(zip('test.zip'))
+    .pipe(zip('extension.zip'))
+    .pipe(gulp.dest('.'))
 })
 
 gulp.task('manifest-icon', () => {

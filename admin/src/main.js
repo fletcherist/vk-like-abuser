@@ -10,6 +10,7 @@ import { db } from './firebase'
 import VueFire from 'vuefire'
 import VuexFire from 'vuexfire'
 import Vuex from 'vuex'
+import VueSocketio from 'vue-socket.io'
 
 import anArrayFromObject from './utils/anArrayFromObject'
 
@@ -17,6 +18,7 @@ Vue.use(Vuex)
 Vue.use(VueFire)
 Vue.use(VuexFire)
 Vue.use(KeenUI)
+Vue.use(VueSocketio, 'http://vkabuser.fletcherist.com')
 
 export const store = new Vuex.Store({
   state: {
@@ -42,7 +44,7 @@ export const store = new Vuex.Store({
   },
   actions: {
     loadUsers ({commit}) {
-      db.ref('users').orderByChild('createdAt').once('value', snap => {
+      db.ref('users').orderByChild('createdAt').limitToFirst(1).once('value', snap => {
         const users = anArrayFromObject(snap.val())
         db.ref('statistics').once('value', snap => {
           const stats = snap.val()
