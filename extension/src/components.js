@@ -1,4 +1,4 @@
-const APP_VERSION = '0.2.7'
+const APP_VERSION = '0.3.0'
 const ENV = 'debug'
 const VKABUSER_SERVER = 'https://vkabuser.fletcherist.com'
 // const ENV = 'production'

@@ -2,8 +2,8 @@ const EXTENSION_ID = chrome.runtime.id
 const API = 'https://api.vk.com/method'
 const VK_ABUSER_API_PRODUCTION = 'https://vkabuser.fletcherist.com'
 const VK_ABUSER_API_DEVELOPMENT = 'http://localhost:80'
-const ENV = 'DEBUG'
-// const ENV = 'PRODUCTION'
+// const ENV = 'DEBUG'
+const ENV = 'PRODUCTION'
 
 /*
   This code is responsible for
@@ -136,6 +136,3 @@ function isReadyForNewTask (timeForNextTask) {
 }
 
 const background = new Background()
-background.getTasks()
-  .catch(e => console.log(e))
-  .then(tasks => console.log(tasks))
