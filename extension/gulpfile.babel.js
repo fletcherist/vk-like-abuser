@@ -77,7 +77,7 @@ gulp.task('html', () => {
   Zip dist folder
 */
 gulp.task('zip', () => {
-  return gulp.src('dist/*')
+  return gulp.src('dist/**/*')
     .pipe(zip('extension.zip'))
     .pipe(gulp.dest('.'))
 })

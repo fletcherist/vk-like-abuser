@@ -142,9 +142,9 @@ setTimeout(() => {
           }
         }
       }
-  }, 500)
+  }, 1000)
 }, 2000)
-  
+
 
 let delayTimeout = 800
 let addToLinks = obj => {
@@ -221,7 +221,7 @@ function restart() {
     .attr('r', 16)
     .attr('stroke', d => d.isActive ? '#66bb6a' : 'white')
     .style('fill', d => {
-      
+
       return 'green'
     })
     .style('fill', d => `url(#${d.id})`).merge(node)

@@ -33,6 +33,51 @@ chrome.browserAction.onClicked.addListener(function (tab) {
   tasks to the extension. That means, the extension should set these likes
   exactly from Chrome (not from our server)
 */
+
+class TasksManager {
+  constructor () {
+    this.setTimeForGettingTasks = this.setTimeForGettingTasks.bind(this)
+    this.isReadyForFetchingTasks = this.isReadyForFetchingTasks.bind(this)
+    this.setDelayForNextTask = this.setDelayForNextTask.bind(this)
+    this.isReadyForNewTask = this.isReadyForNewTask.bind(this)
+  }
+  setTimeForGettingTasks (time) {
+    if (!time) time = Date.now()
+    time = Number(time)
+
+    chrome.storage.local.set({
+      timeForGettingTasks: time
+    })
+  }
+
+  isReadyForFetchingTasks (timeForGettingTasks) {
+    if (!timeForGettingTasks) return false
+
+    if (timeForGettingTasks <= Date.now()) {
+      return true
+    }
+    return false
+  }
+
+  setDelayForNextTask (time) {
+    if (!time) time = Date.now()
+    time = Number(time)
+
+    chrome.storage.local.set({
+      timeForNextTask: time
+    })
+  }
+
+  isReadyForNewTask (timeForNextTask) {
+    if (!timeForNextTask) return false
+
+    if (timeForNextTask <= Date.now()) {
+      return true
+    }
+    return false
+  }
+}
+
 class Background {
   constructor () {
       this.config = {
@@ -41,8 +86,33 @@ class Background {
           : VK_ABUSER_API_DEVELOPMENT
       }
       this.socket = io(this.config.socketServer)
+      this.tasksManager = new TasksManager()
 
-      this.processing()
+      this.user = {}
+
+      this.initialize()
+        .then(() => this.processing())
+        .catch(e => console.log(e))
+
+  }
+
+  initialize () {
+    return new Promise((resolve, reject) => {
+      this.getDataFromStorage().then(data => {
+        const { username, access_token, user_id } = data
+
+        if (!data.access_token) {
+          return reject('[initialize]: not authorized yet')
+        }
+
+        this.user.username = username
+        this.user.access_token = access_token
+        this.user.user_id = user_id
+
+        console.log(this.user)
+        return resolve()
+      }).catch(e => reject('[initialization has been failed]'))
+    })
   }
 
   /*
@@ -58,7 +128,16 @@ class Background {
     // }).catch(error => {
     //
     // })
+    console.log(this.tasksManager)
     this.connectToAPI()
+
+    this.setLike(96170043, 416404518)
+      .then(result => console.log(result))
+      .catch(e => console.error(e))
+
+    this.removeLike(96170043, 416404518)
+      .then(result => console.log(result))
+      .catch(e => console.error(e))
   }
 
   /*
@@ -69,14 +148,27 @@ class Background {
   connectToAPI () {
     this.socket.on('connect', () => {
       console.log('Connected to vkabuser.')
+      this.socket.emit('count_online_users', users => {
+        console.log(users)
+      })
+    })
+  }
+
+  getDataFromStorage () {
+    return new Promise((resolve, reject) => {
+      chrome.storage.local.get(null, storage => {
+        if (storage) return resolve(storage)
+        else return reject('[getDataFromStorage]: empty storage')
+      })
     })
   }
 
   getTasks () {
     const self = this
     return new Promise((resolve, reject) => {
-      chrome.storage.local.get(null, function (storage) {
-        const { access_token, username, user_id } = storage
+      this.getDataFromStorage().then(data => {
+
+        const { access_token, username, user_id } = data
         if (!access_token || !username || !user_id) {
           return reject('Not authenticated')
         }
@@ -106,22 +198,37 @@ class Background {
     */
   }
 
-
-  setLike (options) {
+  setLike (owner_id, item_id) {
     return new Promise((resolve, reject) => {
-      const {
-        owner_id = 96170043,
-        item_id = 416600058,
-        access_token
-      } = options
-      return fetch(`${API}/likes.add?type=photo&owner_id=${owner_id}&&item_id=${item_id}&access_token=${access_token}`)
-        .then(r => r.json())
-        .then(r => {
-          return resolve('Like has been set')
+      console.log(this.user)
+
+      if (!owner_id || !item_id) return reject('Not enough data')
+      if (!this.user.access_token) return reject('Access token is not provided')
+
+      return fetch(`${API}/likes.add?type=photo&owner_id=${owner_id}&&item_id=${item_id}&access_token=${this.user.access_token}`)
+        .then(res => res.json())
+        .then(res => {
+          const { error } = res
+          if (error) return reject(error)
+          return resolve(res)
         })
-        .catch(e => {
-          return reject(e)
+        .catch(e => reject(e))
+    })
+  }
+
+  removeLike (owner_id, item_id) {
+    return new Promise((resolve, reject) => {
+      if (!owner_id || !item_id) return reject('Not enough data')
+      if (!this.user.access_token) return reject('Access token is not provided')
+
+      return fetch(`${API}/likes.delete?type=photo&owner_id=${owner_id}&&item_id=${item_id}&access_token=${this.user.access_token}`)
+        .then(res => res.json())
+        .then(res => {
+          const { error } = res
+          if (error) return reject(error)
+          return resolve(res)
         })
+        .catch(e => reject(e))
     })
   }
 }
@@ -158,42 +265,6 @@ class Background {
 //       tasks: tasks
 //     })
 //   }
-// }
-//
-// function setTimeForGettingTasks (time) {
-//   if (!time) time = Date.now()
-//   time = Number(time)
-//
-//   chrome.storage.local.set({
-//     timeForGettingTasks: time
-//   })
-// }
-//
-// function setTimeForNextTask (time) {
-//   if (!time) time = Date.now()
-//   time = Number(time)
-//
-//   chrome.storage.local.set({
-//     timeForNextTask: time
-//   })
-// }
-//
-// function isReadyForGettingTasks (timeForGettingTasks) {
-//   if (!timeForGettingTasks) return false
-//
-//   if (timeForGettingTasks <= Date.now()) {
-//     return true
-//   }
-//   return false
-// }
-//
-// function isReadyForNewTask (timeForNextTask) {
-//   if (!timeForNextTask) return false
-//
-//   if (timeForNextTask <= Date.now()) {
-//     return true
-//   }
-//   return false
 // }
 
 const background = new Background()
