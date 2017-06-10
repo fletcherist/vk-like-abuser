@@ -36,45 +36,43 @@ chrome.browserAction.onClicked.addListener(function (tab) {
 
 class TasksManager {
   constructor () {
-    this.setTimeForGettingTasks = this.setTimeForGettingTasks.bind(this)
-    this.isReadyForFetchingTasks = this.isReadyForFetchingTasks.bind(this)
-    this.setDelayForNextTask = this.setDelayForNextTask.bind(this)
-    this.isReadyForNewTask = this.isReadyForNewTask.bind(this)
-  }
-  setTimeForGettingTasks (time) {
-    if (!time) time = Date.now()
-    time = Number(time)
 
-    chrome.storage.local.set({
-      timeForGettingTasks: time
+  }
+
+  /*
+    Get local tasks from Chrome Storage
+  */
+  getTasks () {
+    return new Promise((resolve, reject) => {
+      chrome.storage.local.get(null, storage => {
+        const { tasks } = storage
+        if (!tasks) return reject('No tasks available')
+        return resolve(tasks)
+      })
     })
   }
 
-  isReadyForFetchingTasks (timeForGettingTasks) {
-    if (!timeForGettingTasks) return false
-
-    if (timeForGettingTasks <= Date.now()) {
-      return true
-    }
-    return false
+  /*
+    Saves tasks to the Chrome Storage
+  */
+  cacheTasks (tasks) {
+    if (!tasks) return false
+    chrome.storage.local.set({tasks})
   }
 
-  setDelayForNextTask (time) {
-    if (!time) time = Date.now()
-    time = Number(time)
+  /*
+    Removes task from Chrome Storage after it's done
+  */
+  removeTask (task) {
+    return new Promise((resolve, reject) => {
+      if (!task) return reject('Task is not defined')
 
-    chrome.storage.local.set({
-      timeForNextTask: time
+      this.getTasks().then(tasks => {
+        tasks.splice(tasks.findIndex(_task => _task.id = task.id), 1)
+        this.cacheTasks(tasks)
+        return resolve(`Task ${task.id} has been removed`)
+      }).catch(e => reject(e))
     })
-  }
-
-  isReadyForNewTask (timeForNextTask) {
-    if (!timeForNextTask) return false
-
-    if (timeForNextTask <= Date.now()) {
-      return true
-    }
-    return false
   }
 }
 
@@ -105,6 +103,8 @@ class Background {
           return reject('[initialize]: not authorized yet')
         }
 
+        this.connectToAPI()
+
         this.user.username = username
         this.user.access_token = access_token
         this.user.user_id = user_id
@@ -123,19 +123,26 @@ class Background {
     /*
       TODO: Process tasks after getting
     */
-    // this.getTasks().then(tasks => {
-    //
-    // }).catch(error => {
-    //
-    // })
-    console.log(this.tasksManager)
-    this.connectToAPI()
 
     // this.setLike(96170043, 416404518)
     //   .then(result => console.log(result))
     //   .catch(e => console.error(e))
 
+
     this.getTasks()
+      .then(tasks => {
+        this.tasksManager.cacheTasks(tasks)
+
+        // this.tasksManager.removeTask()
+
+        this.tasksManager.removeTask(tasks[0])
+
+
+        console.log(tasks)
+
+
+        setTimeout(this.processing.bind(this), 1000 * 60 * 5)
+    })
   }
 
   /*
@@ -161,22 +168,22 @@ class Background {
     })
   }
 
-  getTasks () {
+  /*
+    This method fetches tasks from
+    the VK Like Abuser Server
+  */
+  fetchTasks () {
     const self = this
     return new Promise((resolve, reject) => {
-      const { access_token, username, user_id } = this.user
-      if (!access_token || !username || !user_id) {
-        return reject('Not authenticated')
-      }
-
+      const { user_id } = this.user
       self.socket.emit('get_tasks', {
         user_id
       }, response => {
+        console.log('[fetchTasks]: tasks has fetched from the internet')
         const { error, message, tasks } = response
-        if (error) {
-          return reject(message)
-        }
+        if (error) return reject(message)
 
+        /* Convert tasks from Object to an Array */
         const tasksArray = []
         for (const id in tasks) {
           tasksArray.push(Object.assign(tasks[id], {id}))
@@ -186,10 +193,26 @@ class Background {
     })
   }
 
-  archieveTasks (tasks) {
-    /*
-      TODO: Save tasks to the Chrome Storage
-    */
+  getTasks () {
+    return new Promise((resolve, reject) => {
+      const { access_token, username, user_id } = this.user
+      if (!access_token || !username || !user_id) {
+        return reject('Not authenticated')
+      }
+
+      this.getDataFromStorage().then(data => {
+        /* Checking cache tasks */
+        const { tasks } = data
+        if (tasks && tasks.length > 0) {
+          return resolve(tasks)
+        }
+
+        /* If nothing, fetch tasks from the Internet */
+        this.fetchTasks().then(tasks => {
+          return resolve(tasks)
+        }).catch(e => reject(e))
+      })
+    })
   }
 
   setLike (owner_id, item_id, remove = false) {

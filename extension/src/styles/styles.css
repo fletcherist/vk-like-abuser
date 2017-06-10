@@ -130,6 +130,11 @@ a:hover {
   border-radius: 2px;
 }
 
+.wrapper--left {
+  min-width: 300px;
+  max-width: 300px;
+}
+
 .wrapper--right {
   float: left;
   margin-left: 1rem;
@@ -546,8 +551,10 @@ a:hover {
   flex-wrap: wrap;
   width: 100%;
   margin: 1rem auto;
+  padding: 1rem;
 }
 
 .follow-us__channel {
+  margin: 0px auto;
   width: 33%;
 }

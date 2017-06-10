@@ -71,41 +71,6 @@ Vue.component('global-stats', {
   }
 })
 
-Vue.component('stats', {
-  template: `
-    <div>
-      <h1>Общая статистика</h1>
-      <div class='stats__item'>Пользователей: <b>{{allUsers}}</b></div>
-      <div class='stats__item'>Лайков поставлено: <b>{{allLikes}}</b></div>
-    </div>
-  `,
-  firebase: {
-    users: users,
-    globalStats: {
-      source: globalStats,
-      asObject: true
-    }
-  },
-  computed: {
-    allLikes: function () {
-      if (this.globalStats.likes &&
-          this.globalStats.likes.all) {
-        return formatNumber(this.globalStats.likes.all)
-      }
-      return 0
-    },
-
-    allUsers: function () {
-      if (this.globalStats.users &&
-          this.globalStats.users.total) {
-        return formatNumber(this.globalStats.users.total)
-      }
-      return 0
-    }
-  }
-})
-
-
 /*
   Ex. 1994293 → 1 994 293
       431943 → 431 943 etc.
@@ -291,11 +256,14 @@ const faq = [
 
 const howItWorks = Vue.component('faq', {
   template: `
-    <div class='faq'>
-      <div v-for='item in faq'>
-        <h1>{{item.title}}</h1>
-        <div>{{item.description}}</div>
-        {{{item.additionHtml}}}
+    <div>
+      <h1>Быстрый старт</h1>
+      <div class='faq'>
+        <div v-for='item in faq'>
+          <h1>{{item.title}}</h1>
+          <div>{{item.description}}</div>
+          {{{item.additionHtml}}}
+        </div>
       </div>
     </div>
   `,
@@ -326,31 +294,36 @@ Vue.component('main-navigation', {
           v-bind:class="{
             'navigation__button--selected': this.currentPage === 1,
             'navigation__button--not-selected': this.currentPage !== 0
-          }">FAQ</div>
+          }">FAQ
+        </div>
         <div
           @click='setCurrentPage(2)'
           class='navigation__button'
           v-bind:class="{
             'navigation__button--selected': this.currentPage === 2,
             'navigation__button--not-selected': this.currentPage !== 0
-          }">Donate</div>
+          }">Donate
+        </div>
         <div
           @click='setCurrentPage(3)'
           class='navigation__button'
           v-bind:class="{
             'navigation__button--selected': this.currentPage === 3,
             'navigation__button--not-selected': this.currentPage !== 0
-          }">Статистика</div>
+          }">Новости
+        </div>
+        <div
+          @click='setCurrentPage(4)'
+          class='navigation__button'
+          v-bind:class="{
+            'navigation__button--selected': this.currentPage === 4,
+            'navigation__button--not-selected': this.currentPage !== 0
+          }">Рулетка
+        </div>
       </div>
-      <div v-if='this.currentPage === 1'>
-        <faq></faq>
-      </div>
-      <div v-if='this.currentPage === 2'>
-        <donate></donate>
-      </div>
-      <div v-if='this.currentPage === 3'>
-        <stats></stats>
-      </div>
+      <div v-if='this.currentPage === 1'><faq></faq></div>
+      <div v-if='this.currentPage === 2'><donate></donate></div>
+      <div v-if='this.currentPage === 3'><follow-us></follow-us></div>
     </div>
   `,
   data: function () {

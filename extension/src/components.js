@@ -1,4 +1,4 @@
-const APP_VERSION = '0.3.0'
+const APP_VERSION = '0.3.1'
 const ENV = 'debug'
 const VKABUSER_SERVER = 'https://vkabuser.fletcherist.com'
 // const ENV = 'production'
@@ -12,7 +12,7 @@ Vue.component('preloader', {
 
 Vue.component('telegram-logo', {
   template: `
-  <svg width="40px" height="40px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 240 240">
+  <svg width="70px" height="70px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 240 240">
     <defs>
     <linearGradient id="b" x1="0.6667" y1="0.1667" x2="0.4167" y2="0.75">
       <stop stop-color="#37aee2" offset="0"/>
@@ -153,15 +153,12 @@ const TELEGRAM_CHANNEL = 'https://t.me/joinchat/AAAAAEL5zbAb46YiIsuOVg'
 
 Vue.component('follow-us', {
   template: `
-    <div class='wrapper block__right wrapper--next'>
-      <span>Следите за новостями</span>
+    <div class=''>
+      <h1>Следите за новостями</h1>
+      <span>Наша группа ВКонтакте <b>заблокирована</b>.
+        Последние обновления. Ход разработки. Не пропустите главное. Наш телеграм канал:
+      </span>
       <div class="follow-us__channels">
-        <a href="${TELEGRAM_CHANNEL}" target="_blank" class="follow-us__channel no-underline">
-          <telegram-logo></telegram-logo>
-        </a>
-        <a href="${TELEGRAM_CHANNEL}" target="_blank" class="follow-us__channel no-underline">
-          <telegram-logo></telegram-logo>
-        </a>
         <a href="${TELEGRAM_CHANNEL}" target="_blank" class="follow-us__channel no-underline">
           <telegram-logo></telegram-logo>
         </a>
