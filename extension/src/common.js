@@ -312,14 +312,6 @@ Vue.component('main-navigation', {
             'navigation__button--not-selected': this.currentPage !== 0
           }">Новости
         </div>
-        <div
-          @click='setCurrentPage(4)'
-          class='navigation__button'
-          v-bind:class="{
-            'navigation__button--selected': this.currentPage === 4,
-            'navigation__button--not-selected': this.currentPage !== 0
-          }">Рулетка
-        </div>
       </div>
       <div v-if='this.currentPage === 1'><faq></faq></div>
       <div v-if='this.currentPage === 2'><donate></donate></div>

@@ -2,6 +2,7 @@ body {
   margin: 0px;
   font-family: -apple-system,BlinkMacSystemFont,Roboto,Open Sans,Helvetica Neue,sans-serif;
   background: var(--main-bg-color);
+  min-height: 101vh;
 }
 
 a {
@@ -551,7 +552,7 @@ a:hover {
   flex-wrap: wrap;
   width: 100%;
   margin: 1rem auto;
-  padding: 1rem;
+  padding: .5rem;
 }
 
 .follow-us__channel {

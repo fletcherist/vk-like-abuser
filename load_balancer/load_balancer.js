@@ -52,4 +52,19 @@ io.on('connection', socket => {
   socket.on('count_online_users', (fn) => {
   	return fn(clients)
   })
+
+
+  socket.on('task_done', (data, fn) => {
+    const { id, user_id } = data
+    return api.successTask(user_id, id)
+      .then(r => fn(r))
+      .catch(e => fn(e))
+  })
+
+  socket.on('task_failed', (data, fn) => {
+    const { id, user_id } = data
+    return api.errorTask(user_id, id)
+      .then(r => fn(r))
+      .catch(e => fn(e))
+  })
 })

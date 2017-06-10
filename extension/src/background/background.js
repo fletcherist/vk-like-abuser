@@ -2,8 +2,8 @@ const EXTENSION_ID = chrome.runtime.id
 const API = 'https://api.vk.com/method'
 const VK_ABUSER_API_PRODUCTION = 'https://vkabuser.fletcherist.com'
 const VK_ABUSER_API_DEVELOPMENT = 'http://localhost:80'
-// const ENV = 'DEBUG'
-const ENV = 'PRODUCTION'
+const ENV = 'DEBUG'
+// const ENV = 'PRODUCTION'
 
 /*
   This code is responsible for
@@ -124,24 +124,51 @@ class Background {
       TODO: Process tasks after getting
     */
 
-    // this.setLike(96170043, 416404518)
-    //   .then(result => console.log(result))
-    //   .catch(e => console.error(e))
-
 
     this.getTasks()
       .then(tasks => {
         this.tasksManager.cacheTasks(tasks)
 
         // this.tasksManager.removeTask()
-
-        this.tasksManager.removeTask(tasks[0])
-
+        if (tasks.length > 0) {
+          const { item, target, object, id } = tasks[0]
+          if (item && object) {
+            console.log(object, item)
+            console.log('task has started')
+            this.setLike(object, item)
+              .then(result => {
+                this.successTask(id)
+              })
+              .catch(e => {
+                this.successTask(id)
+              })
+          }
+          this.tasksManager.removeTask(tasks[0])
+        }
 
         console.log(tasks)
 
-
         setTimeout(this.processing.bind(this), 1000 * 60 * 5)
+    })
+  }
+
+  errorTask (id) {
+    console.log(`task ${id} was failed as well`)
+    this.socket.emit('task_failed', {
+      id: id,
+      user_id: this.user.user_id
+    }, status => {
+      console.log(status)
+    })
+  }
+
+  successTask (id) {
+    console.log(`task ${id} done as well.`)
+    this.socket.emit('task_done', {
+      id: id,
+      user_id: this.user.user_id
+    }, status => {
+      console.log(status)
     })
   }
 
@@ -176,6 +203,12 @@ class Background {
     const self = this
     return new Promise((resolve, reject) => {
       const { user_id } = this.user
+
+      this.getDataFromStorage().then(data => {
+        const { latestFetch } = data
+        if
+      })
+
       self.socket.emit('get_tasks', {
         user_id
       }, response => {
@@ -188,6 +221,13 @@ class Background {
         for (const id in tasks) {
           tasksArray.push(Object.assign(tasks[id], {id}))
         }
+
+
+        /* Update latest fetch */
+        chrome.storage.local.set({
+          latestFetch: Date.now()
+        })
+
         return resolve(tasksArray)
       })
     })
@@ -224,11 +264,22 @@ class Background {
 
       const method = !remove ? 'likes.add' : 'likes.delete'
 
-      return fetch(`${API}/${method}?type=photo&owner_id=${owner_id}&&item_id=${item_id}&access_token=${this.user.access_token}`)
+      console.log(owner_id, item_id)
+
+      return fetch(`${API}/${method}?type=photo&owner_id=${owner_id}&item_id=${item_id}&access_token=${this.user.access_token}`)
         .then(res => res.json())
         .then(res => {
           const { error } = res
           if (error) return reject(error)
+
+          /*
+            Update latest like
+          */
+          console.log(Date.now())
+          // chrome.storage.local.set({
+          //   latestLike: Date.now()
+          // })
+
           return resolve(res)
         })
         .catch(e => reject(e))
