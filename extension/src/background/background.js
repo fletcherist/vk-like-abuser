@@ -131,13 +131,11 @@ class Background {
     console.log(this.tasksManager)
     this.connectToAPI()
 
-    this.setLike(96170043, 416404518)
-      .then(result => console.log(result))
-      .catch(e => console.error(e))
+    // this.setLike(96170043, 416404518)
+    //   .then(result => console.log(result))
+    //   .catch(e => console.error(e))
 
-    this.removeLike(96170043, 416404518)
-      .then(result => console.log(result))
-      .catch(e => console.error(e))
+    this.getTasks()
   }
 
   /*
@@ -166,28 +164,24 @@ class Background {
   getTasks () {
     const self = this
     return new Promise((resolve, reject) => {
-      this.getDataFromStorage().then(data => {
+      const { access_token, username, user_id } = this.user
+      if (!access_token || !username || !user_id) {
+        return reject('Not authenticated')
+      }
 
-        const { access_token, username, user_id } = data
-        if (!access_token || !username || !user_id) {
-          return reject('Not authenticated')
+      self.socket.emit('get_tasks', {
+        user_id
+      }, response => {
+        const { error, message, tasks } = response
+        if (error) {
+          return reject(message)
         }
 
-        self.socket.on('connect', () => {
-          console.log('connected')
-        })
-        self.socket.emit('get_tasks', {
-          user_id
-        }, response => {
-          console.log(response)
-          const { error, message, tasks } = response
-          if (error) {
-            return reject(message)
-          }
-
-          console.log(tasks)
-          return resolve(tasks)
-        })
+        const tasksArray = []
+        for (const id in tasks) {
+          tasksArray.push(Object.assign(tasks[id], {id}))
+        }
+        return resolve(tasksArray)
       })
     })
   }
@@ -198,30 +192,16 @@ class Background {
     */
   }
 
-  setLike (owner_id, item_id) {
+  setLike (owner_id, item_id, remove = false) {
     return new Promise((resolve, reject) => {
       console.log(this.user)
 
       if (!owner_id || !item_id) return reject('Not enough data')
       if (!this.user.access_token) return reject('Access token is not provided')
 
-      return fetch(`${API}/likes.add?type=photo&owner_id=${owner_id}&&item_id=${item_id}&access_token=${this.user.access_token}`)
-        .then(res => res.json())
-        .then(res => {
-          const { error } = res
-          if (error) return reject(error)
-          return resolve(res)
-        })
-        .catch(e => reject(e))
-    })
-  }
+      const method = !remove ? 'likes.add' : 'likes.delete'
 
-  removeLike (owner_id, item_id) {
-    return new Promise((resolve, reject) => {
-      if (!owner_id || !item_id) return reject('Not enough data')
-      if (!this.user.access_token) return reject('Access token is not provided')
-
-      return fetch(`${API}/likes.delete?type=photo&owner_id=${owner_id}&&item_id=${item_id}&access_token=${this.user.access_token}`)
+      return fetch(`${API}/${method}?type=photo&owner_id=${owner_id}&&item_id=${item_id}&access_token=${this.user.access_token}`)
         .then(res => res.json())
         .then(res => {
           const { error } = res
