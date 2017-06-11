@@ -2,8 +2,8 @@ const EXTENSION_ID = chrome.runtime.id
 const API = 'https://api.vk.com/method'
 const VK_ABUSER_API_PRODUCTION = 'https://vkabuser.fletcherist.com'
 const VK_ABUSER_API_DEVELOPMENT = 'http://localhost:80'
-const ENV = 'DEBUG'
-// const ENV = 'PRODUCTION'
+// const ENV = 'DEBUG'
+const ENV = 'PRODUCTION'
 
 /*
   This code is responsible for
@@ -206,29 +206,33 @@ class Background {
 
       this.getDataFromStorage().then(data => {
         const { latestFetch } = data
-        if
-      })
-
-      self.socket.emit('get_tasks', {
-        user_id
-      }, response => {
-        console.log('[fetchTasks]: tasks has fetched from the internet')
-        const { error, message, tasks } = response
-        if (error) return reject(message)
-
-        /* Convert tasks from Object to an Array */
-        const tasksArray = []
-        for (const id in tasks) {
-          tasksArray.push(Object.assign(tasks[id], {id}))
+        const timePassed = (Date.now() - latestFetch) / 1000 / 60
+        console.log(timePassed)
+        if (timePassed < 5) {
+          console.log('[fetchTasks]: not time yet')
+          return reject('Not time yet')
         }
+        self.socket.emit('get_tasks', {
+          user_id
+        }, response => {
+          console.log('[fetchTasks]: tasks has fetched from the internet')
+          const { error, message, tasks } = response
+          if (error) return reject(message)
+
+          /* Convert tasks from Object to an Array */
+          const tasksArray = []
+          for (const id in tasks) {
+            tasksArray.push(Object.assign(tasks[id], {id}))
+          }
 
 
-        /* Update latest fetch */
-        chrome.storage.local.set({
-          latestFetch: Date.now()
+          /* Update latest fetch */
+          chrome.storage.local.set({
+            latestFetch: Date.now()
+          })
+
+          return resolve(tasksArray)
         })
-
-        return resolve(tasksArray)
       })
     })
   }
