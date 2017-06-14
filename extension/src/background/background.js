@@ -112,7 +112,7 @@ class Background {
       this.user = {}
 
       this.initialize()
-        .then(() => this.processing())
+        .then(() => {})
         .catch(e => console.log(e))
 
   }
@@ -136,6 +136,7 @@ class Background {
         this.user.user_id = user_id
 
         console.log(this.user)
+        this.processing()
         return resolve()
       }).catch(e => reject('[initialization has been failed]'))
     })
