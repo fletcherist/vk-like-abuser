@@ -8,7 +8,7 @@
         <div class='stats__block'>
           <div class='stats__value_desc'>
             <ui-icon icon='perm_identity' class='stats__icon'></ui-icon>
-            All users 
+            All users
           </div>
           <div class='stats__value'>
             {{globalStats.users.total}}
@@ -128,7 +128,7 @@
         <div class='stats__block'>
           <div class='stats__value_desc'>
             <ui-icon icon='extension' class='stats__icon'></ui-icon>
-            Tasks 
+            Tasks
           </div>
           <div class='stats__value'>
             {{globalStats.tasks.all}}
@@ -224,7 +224,7 @@ export default {
   justify-content: center;
   padding: 2rem 10% 10rem;
 }
-  
+
 .stats {
 }
 

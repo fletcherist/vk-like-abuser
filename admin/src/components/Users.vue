@@ -10,7 +10,7 @@
         <!-- <div @click='removeUser(user.id)'>x</div> -->
         <div class='user__avatar'>
         <a target='_blank' :href="'http://vk.com/id' + user.id">
-          <div class='avatar__status' :class="{ 
+          <div class='avatar__status' :class="{
               'avatar--isNotActive' : user.isActive === false,
               'avatar--isActive': user.isActive === true
             }">
@@ -45,6 +45,7 @@ export default {
     }),
     filteredUsers: function () {
       let count = 0
+      console.log(this.users)
       return this.users.filter(user => {
         if (count >= 30) {
           return false
