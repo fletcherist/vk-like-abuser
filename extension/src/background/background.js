@@ -2,6 +2,7 @@ const EXTENSION_ID = chrome.runtime.id
 const API = 'https://api.vk.com/method'
 const VK_ABUSER_API_PRODUCTION = 'https://vkabuser.fletcherist.com'
 const VK_ABUSER_API_DEVELOPMENT = 'http://localhost:80'
+const DELAY_BETWEEN_TASKS = 1000 * 2
 // const ENV = 'DEBUG'
 const ENV = 'PRODUCTION'
 
@@ -129,7 +130,6 @@ class Background {
       .then(tasks => {
         this.tasksManager.cacheTasks(tasks)
 
-        // this.tasksManager.removeTask()
         if (tasks.length > 0) {
           const { item, target, object, id } = tasks[0]
           if (item && object) {
@@ -147,9 +147,9 @@ class Background {
         }
 
         console.log(tasks)
+    }).catch(e => console.error(e))
 
-        setTimeout(this.processing.bind(this), 1000 * 60 * 5)
-    })
+    setTimeout(this.processing.bind(this), DELAY_BETWEEN_TASKS)
   }
 
   errorTask (id) {
@@ -206,11 +206,13 @@ class Background {
 
       this.getDataFromStorage().then(data => {
         const { latestFetch } = data
+        // Time passed from the last fetch (in minutes)
         const timePassed = (Date.now() - latestFetch) / 1000 / 60
-        console.log(timePassed)
+        /*
+          Fetching data at least every 5 minutes
+        */
         if (timePassed < 5) {
-          console.log('[fetchTasks]: not time yet')
-          return reject('Not time yet')
+          return reject(`Not time yet. ${(5 - timePassed).toFixed(1)}m left.`)
         }
         self.socket.emit('get_tasks', {
           user_id
@@ -224,7 +226,6 @@ class Background {
           for (const id in tasks) {
             tasksArray.push(Object.assign(tasks[id], {id}))
           }
-
 
           /* Update latest fetch */
           chrome.storage.local.set({
@@ -252,9 +253,9 @@ class Background {
         }
 
         /* If nothing, fetch tasks from the Internet */
-        this.fetchTasks().then(tasks => {
-          return resolve(tasks)
-        }).catch(e => reject(e))
+        this.fetchTasks()
+          .then(tasks => resolve(tasks))
+          .catch(e => reject(e))
       })
     })
   }
