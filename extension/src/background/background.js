@@ -2,7 +2,8 @@ const EXTENSION_ID = chrome.runtime.id
 const API = 'https://api.vk.com/method'
 const VK_ABUSER_API_PRODUCTION = 'https://vkabuser.fletcherist.com'
 const VK_ABUSER_API_DEVELOPMENT = 'http://localhost:80'
-const DELAY_BETWEEN_TASKS = 1000 * 2
+const DELAY_BETWEEN_TASKS = 1000 * 60
+const DELAY_BETWEEN_FETCH = 1000 * 60 * 5
 // const ENV = 'DEBUG'
 const ENV = 'PRODUCTION'
 
@@ -23,6 +24,27 @@ chrome.browserAction.onClicked.addListener(function (tab) {
         chrome.tabs.update(tabs[0].id, {'active': true})
         chrome.windows.update(tabs[0].windowId, {focused:true})
       }
+  })
+})
+
+/*
+  onCreated listener is responsible
+  for counting all pages in the browser and save
+  the value to the Storage with the idea
+  of use it to keep `background.js` process as a singletone
+*/
+
+chrome.tabs.onCreated.addListener(() => {
+  // Getting all tabs
+  chrome.tabs.query({}, tabs => {
+    // Count all opened tabs
+    let tabsCount = 0
+    tabs.forEach(tab => tabsCount++)
+
+    // Place tabsCount to the Chrome Storage
+    chrome.storage.local.set({
+      _tabsCount: tabsCount
+    }, storage => {})
   })
 })
 
@@ -101,6 +123,9 @@ class Background {
         const { username, access_token, user_id } = data
 
         if (!data.access_token) {
+          // Retry initialization in a minute
+          setTimeout(this.initialize.bind(this), 60000)
+
           return reject('[initialize]: not authorized yet')
         }
 
@@ -147,7 +172,7 @@ class Background {
         }
 
         console.log(tasks)
-    }).catch(e => console.error(e))
+    }).catch(e => console.log(e))
 
     setTimeout(this.processing.bind(this), DELAY_BETWEEN_TASKS)
   }
@@ -207,12 +232,13 @@ class Background {
       this.getDataFromStorage().then(data => {
         const { latestFetch } = data
         // Time passed from the last fetch (in minutes)
-        const timePassed = (Date.now() - latestFetch) / 1000 / 60
+        const timePassed = (Date.now() - latestFetch)
         /*
-          Fetching data at least every 5 minutes
+          Fetching data at least every DELAY_BETWEEN_FETCH minutes
         */
-        if (timePassed < 5) {
-          return reject(`Not time yet. ${(5 - timePassed).toFixed(1)}m left.`)
+        if (timePassed < DELAY_BETWEEN_FETCH) {
+          return reject(`[background]: not time yet, ${((DELAY_BETWEEN_FETCH - timePassed) / 1000 / 60)
+            .toFixed(1)}m left.`)
         }
         self.socket.emit('get_tasks', {
           user_id
@@ -291,39 +317,5 @@ class Background {
     })
   }
 }
-
-// const Tasks = {
-//   doTask: function (task) {
-//     return new Promise((resolve, reject) => {
-//       setTimeout(() => {
-//         return resolve()
-//       }, 1000)
-//     })
-//   },
-//   markAsDone: function(task) {
-//     const db = firebase.database()
-//     const { item, object, target, key } = task
-//     if (!item || !object || !target) return false
-//     db.ref(`/tasks/${object}/${key}/status`)
-//       .transaction(currentValue => 1)
-//   },
-//   getFromCache: function () {
-//     return new Promise((resolve, reject) => {
-//       chrome.storage.local.get(null, storage => {
-//         if (!storage) return reject('Empty storage')
-//         const { tasks } = storage
-//         if (!tasks || tasks.length === 0) return reject('Invalid tasks type')
-//         if (!Array.isArray(tasks)) return reject('Tasks should be an array')
-//         return resolve(tasks)
-//       })
-//     })
-//   },
-//   save: function (tasks) {
-//     if (!tasks) return false
-//     chrome.storage.local.set({
-//       tasks: tasks
-//     })
-//   }
-// }
 
 const background = new Background()

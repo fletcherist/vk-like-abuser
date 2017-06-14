@@ -389,8 +389,18 @@ const app = new Vue({
       localStorage.removeItem('username')
       localStorage.removeItem('photo_100')
 
-      firebase.auth().signOut()
-      chrome.tabs.reload()
+      /* Remove all data about user from Chrome Storage */
+      chrome.storage.local.set({
+        access_token: null,
+        user_id: null,
+        username: null,
+        photo_100: null
+      }, () => {
+
+        /* Logout from firebase */
+        firebase.auth().signOut()
+        chrome.tabs.reload()
+      })
     }
   },
   computed: {
@@ -425,28 +435,6 @@ const app = new Vue({
       return false
     }
   }
-})
-
-/*
-  onCreated listener is responsible
-  for counting all pages in the browser and save
-  the value to the Storage with the idea
-  of use it to keep `background.js` process as a singletone
-*/
-console.log(chrome.extension.getViews())
-
-chrome.tabs.onCreated.addListener(() => {
-  // Getting all tabs
-  chrome.tabs.query({}, tabs => {
-    // Count all opened tabs
-    let tabsCount = 0
-    tabs.forEach(tab => tabsCount++)
-
-    // Place tabsCount to the Chrome Storage
-    chrome.storage.local.set({
-      _tabsCount: tabsCount
-    }, storage => {})
-  })
 })
 
 /*
