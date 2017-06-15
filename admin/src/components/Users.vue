@@ -1,10 +1,6 @@
 <template>
   <div>
-    <ui-textbox
-      icon="search"
-      placeholder="Начните вводить имя"
-      v-model="queryUsername">
-    </ui-textbox>
+    hello world
     <div class='users'>
       <div class='user' v-for='user in filteredUsers' ref='user'>
         <!-- <div @click='removeUser(user.id)'>x</div> -->

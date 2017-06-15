@@ -2,21 +2,10 @@
   <div class='wrapper'>
     <!-- <ui-button @click='sortUsers()'>Sort Users</ui-button> -->
     <!-- <ui-button @click='sortUsers()'>Sort Users By Likes</ui-button> -->
-    <ui-tabs
-      raised>
-      <ui-tab title="Now">
-        <div v-if="global_stats">
-          <stats></stats>
-        </div>
-      </ui-tab>
-      <ui-tab title="Users">
-        <users></users>
-      </ui-tab>
-      <ui-tab title="Tasks">
-        <tasks></tasks>
-      </ui-tab>
-    </ui-tabs>
+    <router-link to="users">users</router-link>
+    <router-link to="stats">statistics</router-link>
 
+    <router-view></router-view>
 </template>
 
 <script>
@@ -114,7 +103,7 @@ export default {
 <style scoped>
 a {
   text-decoration: none;
-  color: black;
+  color: blue;
 }
 
 .quick-stats {

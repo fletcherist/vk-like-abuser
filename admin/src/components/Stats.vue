@@ -7,7 +7,6 @@
       <div class='stats__container'>
         <div class='stats__block'>
           <div class='stats__value_desc'>
-            <ui-icon icon='perm_identity' class='stats__icon'></ui-icon>
             All users
           </div>
           <div class='stats__value'>
@@ -28,7 +27,6 @@
       <div class='stats__container'>
         <div class='stats__block'>
           <div class='stats__value_desc'>
-            <ui-icon icon='favorite' class='stats__icon'></ui-icon>
             Likes count
           </div>
           <div class='stats__value'>
@@ -47,7 +45,6 @@
       <div class='stats__container'>
         <div class='stats__block'>
           <div class='stats__value_desc'>
-            <ui-icon icon='free_breakfast' class='stats__icon'></ui-icon>
             today
           </div>
         </div>
@@ -95,7 +92,6 @@
       <div class='stats__container'>
         <div class='stats__block'>
           <div class='stats__value_desc'>
-            <ui-icon icon='show_chart' class='stats__icon'></ui-icon>
             percents
           </div>
         </div>
@@ -127,7 +123,6 @@
       <div class='stats__container'>
         <div class='stats__block'>
           <div class='stats__value_desc'>
-            <ui-icon icon='extension' class='stats__icon'></ui-icon>
             Tasks
           </div>
           <div class='stats__value'>
@@ -153,10 +148,7 @@
       </div>
     </div>
     <div v-else>
-      <ui-progress-circular
-        color="multi-color"
-        :size="54"
-      ></ui-progress-circular>
+    loading
     </div>
   </div>
 </template>
@@ -219,10 +211,6 @@ export default {
 <style scoped>
 
 .container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  padding: 2rem 10% 10rem;
 }
 
 .stats {
@@ -231,8 +219,10 @@ export default {
 .stats__container {
   display: flex;
   flex-direction: column;
-  padding: 30px;
-  box-shadow: 2px 1px 10px rgba(0, 0, 0, .1);
+  flex-grow: 2px;
+  padding: 15px;
+  /*box-shadow: 2px 1px 10px rgba(0, 0, 0, .1);*/
+  border-bottom: 2px solid rgba(0, 0, 0, .6);
   margin: 5px;
 }
 
@@ -259,7 +249,7 @@ export default {
 .stats__value_desc {
   font-size: 1rem;
   font-weight: lighter;
-  text-transform: uppercase;
+  text-transform: lowercase;
   /*align-self: flex-start;*/
   width: 70%;
 }

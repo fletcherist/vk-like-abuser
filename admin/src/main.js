@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import App from './App'
 
-import KeenUI from 'keen-ui'
 import router from './router'
 
 import '../node_modules/keen-ui/dist/keen-ui.css'
@@ -17,7 +16,6 @@ import anArrayFromObject from './utils/anArrayFromObject'
 Vue.use(Vuex)
 Vue.use(VueFire)
 Vue.use(VuexFire)
-Vue.use(KeenUI)
 Vue.use(VueSocketio, 'http://vkabuser.fletcherist.com')
 
 export const store = new Vuex.Store({
