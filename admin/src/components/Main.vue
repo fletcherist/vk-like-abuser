@@ -4,8 +4,12 @@
     <!-- <ui-button @click='sortUsers()'>Sort Users By Likes</ui-button> -->
     <router-link to="users">users</router-link>
     <router-link to="stats">statistics</router-link>
+    <router-link to="background">background</router-link>
+
+    <h1></h1>
 
     <router-view></router-view>
+  </div>
 </template>
 
 <script>
@@ -108,6 +112,10 @@ a {
 
 .quick-stats {
   display: inline-block;
+  margin: 1rem;
+}
+
+.wrapper {
   margin: 1rem;
 }
 </style>

@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Main from 'components/Main'
 import Users from 'components/Users'
 import Stats from 'components/Stats'
+import BackgroundInfo from 'components/BackgroundInfo'
 
 Vue.use(Router)
 
@@ -22,6 +23,11 @@ export default new Router({
           path: 'stats',
           name: 'stats',
           component: Stats
+        },
+        {
+          path: 'background',
+          name: 'background',
+          component: BackgroundInfo
         }
       ]
     }

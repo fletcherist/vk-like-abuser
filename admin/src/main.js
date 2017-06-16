@@ -42,7 +42,7 @@ export const store = new Vuex.Store({
   },
   actions: {
     loadUsers ({commit}) {
-      db.ref('users').orderByChild('createdAt').limitToFirst(1).once('value', snap => {
+      db.ref('users').orderByChild('createdAt').limitToFirst(5).once('value', snap => {
         const users = anArrayFromObject(snap.val())
         db.ref('statistics').once('value', snap => {
           const stats = snap.val()
