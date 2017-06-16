@@ -222,7 +222,7 @@ export default {
   flex-grow: 2px;
   padding: 15px;
   /*box-shadow: 2px 1px 10px rgba(0, 0, 0, .1);*/
-  border-bottom: 2px solid rgba(0, 0, 0, .6);
+  border-bottom: 1px solid #eee;
   margin: 5px;
 }
 

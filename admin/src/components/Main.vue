@@ -2,9 +2,11 @@
   <div class='wrapper'>
     <!-- <ui-button @click='sortUsers()'>Sort Users</ui-button> -->
     <!-- <ui-button @click='sortUsers()'>Sort Users By Likes</ui-button> -->
-    <router-link to="users">users</router-link>
-    <router-link to="stats">statistics</router-link>
-    <router-link to="background">background</router-link>
+    <div class='nav'>
+      <div class='nav__link'><router-link to="users">users</router-link></div>
+      <div class='nav__link'><router-link to="stats">statistics</router-link></div>
+      <div class='nav__link'><router-link to="background">background</router-link></div>
+    </div>
 
     <h1></h1>
 
@@ -117,5 +119,13 @@ a {
 
 .wrapper {
   margin: 1rem;
+}
+
+.nav {
+  display: flex;
+}
+
+.nav__link {
+  flex-basis: 100px;
 }
 </style>
