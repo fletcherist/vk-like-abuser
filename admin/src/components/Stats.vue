@@ -153,7 +153,7 @@ import TimeAssistant from '../utils/timeAssistant'
 const time = new TimeAssistant()
 const todayStatsLink = `/daily_statistics/${time.getDateForFirebase()}`
 
-const formatNumber = num => num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
+const formatNumber = num => num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
 
 export default {
   name: 'stats',
