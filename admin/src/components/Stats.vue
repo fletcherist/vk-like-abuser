@@ -6,62 +6,53 @@
     <div v-if="globalStats.users" class='container'>
       <div class='stats__container'>
         <div class='stats__block'>
+          <h1>Total</h1>
+        </div>
+        <div class='stats__block'>
           <div class='stats__value_desc'>
             All users
           </div>
           <div class='stats__value'>
-            {{globalStats.users.total}}
+            {{formatNumber(globalStats.users.total)}}
           </div>
         </div>
         <div class='stats__block'>
           <div class='stats__value_desc'>Active users </div>
-          <div class='stats__value'>{{globalStats.users.active}}</div>
+          <div class='stats__value'>{{formatNumber(globalStats.users.active)}}</div>
         </div>
         <div class='stats__block'>
           <div class='stats__value_desc'>Inactive users </div>
           <div class='stats__value'>
-            {{globalStats.users.inactive}}
+            {{formatNumber(globalStats.users.inactive)}}
           </div>
         </div>
       </div>
       <div class='stats__container'>
         <div class='stats__block'>
-          <div class='stats__value_desc'>
-            Likes count
-          </div>
+          <div class='stats__value_desc'>Likes count</div>
           <div class='stats__value'>
-            {{globalStats.likes.all}}
+            {{formatNumber(globalStats.likes.all)}}
           </div>
         </div>
         <div class='stats__block'>
-          <div class='stats__value_desc'>
-            Like errors
-          </div>
+          <div class='stats__value_desc'>Like errors</div>
           <div class='stats__value'>
-            {{globalStats.errors.all}}
+            {{formatNumber(globalStats.errors.all)}}
           </div>
         </div>
       </div>
       <div class='stats__container'>
+        <div class='stats__block'><h1>Today</h1></div>
         <div class='stats__block'>
-          <div class='stats__value_desc'>
-            today
-          </div>
-        </div>
-        <div class='stats__block'>
-          <div class='stats__value_desc'>
-            new sign ups
-          </div>
-          <div class='stats__value'>
-            {{todayStats.users || 0}}
-          </div>
+          <div class='stats__value_desc'>new sign ups</div>
+          <div class='stats__value'>{{formatNumber(todayStats.users) || 0}}</div>
         </div>
         <div class='stats__block'>
           <div class='stats__value_desc'>
             new likes
           </div>
           <div class='stats__value'>
-            {{todayStats.likes}}
+            {{formatNumber(todayStats.likes)}}
           </div>
         </div>
         <div class='stats__block'>
@@ -69,7 +60,7 @@
             errors
           </div>
           <div class='stats__value'>
-            {{todayStats.errors}}
+            {{formatNumber(todayStats.errors)}}
           </div>
         </div>
         <div class='stats__block'>
@@ -77,7 +68,7 @@
             tasks set
           </div>
           <div class='stats__value'>
-            {{todayTasks.all}}
+            {{formatNumber(todayTasks.all)}}
           </div>
         </div>
         <div class='stats__block'>
@@ -85,19 +76,19 @@
             tasks completed
           </div>
           <div class='stats__value'>
-            {{todayTasks.success}}
+            {{formatNumber(todayTasks.success)}}
           </div>
         </div>
       </div>
       <div class='stats__container'>
         <div class='stats__block'>
           <div class='stats__value_desc'>
-            percents
+            <h1>Percentage</h1>
           </div>
         </div>
         <div class='stats__block'>
           <div class='stats__value_desc'>
-            success likes
+            Succeeded likes
           </div>
           <div class='stats__value'>
             {{successLikes}}%
@@ -105,7 +96,7 @@
         </div>
         <div class='stats__block'>
           <div class='stats__value_desc'>
-            error likes
+            failed likes
           </div>
           <div class='stats__value'>
             {{errorLikes}}%
@@ -126,7 +117,7 @@
             Tasks
           </div>
           <div class='stats__value'>
-            {{globalStats.tasks.all}}
+            {{formatNumber(globalStats.tasks.all)}}
           </div>
         </div>
         <div class='stats__block'>
@@ -134,7 +125,7 @@
             completed tasks
           </div>
           <div class='stats__value'>
-            {{globalStats.tasks.success}}
+            {{formatNumber(globalStats.tasks.success)}}
           </div>
         </div>
         <div class='stats__block'>
@@ -148,7 +139,7 @@
       </div>
     </div>
     <div v-else>
-    loading
+      loading
     </div>
   </div>
 </template>
@@ -161,6 +152,9 @@ import TimeAssistant from '../utils/timeAssistant'
 
 const time = new TimeAssistant()
 const todayStatsLink = `/daily_statistics/${time.getDateForFirebase()}`
+
+const formatNumber = num => num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
+
 export default {
   name: 'stats',
   computed: {
@@ -204,6 +198,9 @@ export default {
   },
   components: {
     'recounters': Recounters
+  },
+  methods: {
+    formatNumber: formatNumber
   }
 }
 
@@ -214,6 +211,7 @@ export default {
 }
 
 .stats {
+
 }
 
 .stats__container {
@@ -233,7 +231,7 @@ export default {
   display: flex;
   align-items: center;
   font-size: 1.5rem;
-  width: 300px;
+  width: 400px;
   text-align: left;
 }
 
@@ -259,6 +257,10 @@ export default {
 }
 .stats__not-active {
   color: #d32f2f;
+}
+
+h1 {
+  font-size: 1em !important;
 }
 
 </style>

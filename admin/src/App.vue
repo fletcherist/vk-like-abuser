@@ -20,6 +20,8 @@ export default {
 body {
   padding: 0px;
   margin: 0px;
+  font-size: 18px;
+  line-height: 1.5em;
 }
 
 </style>
