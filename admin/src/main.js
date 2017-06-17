@@ -42,8 +42,10 @@ export const store = new Vuex.Store({
   },
   actions: {
     loadUsers ({commit}) {
-      db.ref('users').orderByChild('createdAt').limitToFirst(5).once('value', snap => {
+      db.ref('users').orderByChild('createdAt').limitToFirst(10).once('value', snap => {
+        console.log(snap.val())
         const users = anArrayFromObject(snap.val())
+        console.log(users)
         db.ref('statistics').once('value', snap => {
           const stats = snap.val()
           users.map(user => {
@@ -52,6 +54,7 @@ export const store = new Vuex.Store({
               user.liked_you = stats[user.id].liked_you
             }
           })
+
           commit('loadUsers', users)
         })
       })

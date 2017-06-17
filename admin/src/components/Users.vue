@@ -1,24 +1,17 @@
 <template>
   <div>
-    hello world
+    <h1>users</h1>
     <div class='users'>
-      <div class='user' v-for='user in filteredUsers' ref='user'>
+      <div class='user' v-for='user in users'>
         <!-- <div @click='removeUser(user.id)'>x</div> -->
+        <div>{{user}}</div>
         <div class='user__avatar'>
         <a target='_blank' :href="'http://vk.com/id' + user.id">
-          <div class='avatar__status' :class="{
-              'avatar--isNotActive' : user.isActive === false,
-              'avatar--isActive': user.isActive === true
-            }">
-          </div>
-          <img
-            class='avatar'
-            :src='user.photo_100'
-          />
+          <img class='avatar' :src='user.photo_100' />
         </a>
         </div>
         <div class='user__stats'>
-          <b>{{user.you_liked || 0}}</b> <b>{{user.liked_you || 0}}</b>
+          <!-- <b>{{user.you_liked || 0}}</b> <b>{{user.liked_you || 0}}</b> -->
         </div>
       </div>
     </div>
@@ -40,6 +33,7 @@ export default {
       users: state => state.users
     }),
     filteredUsers: function () {
+      console.log('hello')
       let count = 0
       console.log(this.users)
       return this.users.filter(user => {
@@ -76,8 +70,9 @@ export default {
 
 .users {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  /*flex-direction: row;*/
+  flex-direction: column;
+  /*flex-wrap: wrap;*/
 }
 
 .user__avatar {

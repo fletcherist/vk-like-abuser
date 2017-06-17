@@ -17,17 +17,15 @@
           </div>
         </div>
         <div class='stats__block'>
-          <div class='stats__value_desc'>Active users </div>
-          <div class='stats__value'>{{formatNumber(globalStats.users.active)}}</div>
+          <div class='stats__value_desc'>Active users</div>
+          <div class='stats__value'>{{globalStats.users.active}}</div>
         </div>
         <div class='stats__block'>
-          <div class='stats__value_desc'>Inactive users </div>
+          <div class='stats__value_desc'>Inactive users</div>
           <div class='stats__value'>
             {{formatNumber(globalStats.users.inactive)}}
           </div>
         </div>
-      </div>
-      <div class='stats__container'>
         <div class='stats__block'>
           <div class='stats__value_desc'>Likes count</div>
           <div class='stats__value'>
@@ -48,93 +46,51 @@
           <div class='stats__value'>{{formatNumber(todayStats.users) || 0}}</div>
         </div>
         <div class='stats__block'>
-          <div class='stats__value_desc'>
-            new likes
-          </div>
-          <div class='stats__value'>
-            {{formatNumber(todayStats.likes)}}
-          </div>
+          <div class='stats__value_desc'>new likes</div>
+          <div class='stats__value'>{{formatNumber(todayStats.likes)}}</div>
         </div>
         <div class='stats__block'>
-          <div class='stats__value_desc'>
-            errors
-          </div>
-          <div class='stats__value'>
-            {{formatNumber(todayStats.errors)}}
-          </div>
+          <div class='stats__value_desc'>errors</div>
+          <div class='stats__value'>{{formatNumber(todayStats.errors)}}</div>
         </div>
         <div class='stats__block'>
-          <div class='stats__value_desc'>
-            tasks set
-          </div>
-          <div class='stats__value'>
-            {{formatNumber(todayTasks.all)}}
-          </div>
+          <div class='stats__value_desc'>tasks set</div>
+          <div class='stats__value'>{{formatNumber(todayTasks.all)}}</div>
         </div>
         <div class='stats__block'>
-          <div class='stats__value_desc'>
-            tasks completed
-          </div>
-          <div class='stats__value'>
-            {{formatNumber(todayTasks.success)}}
-          </div>
+          <div class='stats__value_desc'>tasks completed</div>
+          <div class='stats__value'>{{formatNumber(todayTasks.success)}}</div>
         </div>
       </div>
       <div class='stats__container'>
         <div class='stats__block'>
-          <div class='stats__value_desc'>
-            <h1>Percentage</h1>
-          </div>
+          <div class='stats__value_desc'><h1>Percentage</h1></div>
         </div>
         <div class='stats__block'>
-          <div class='stats__value_desc'>
-            Succeeded likes
-          </div>
-          <div class='stats__value'>
-            {{successLikes}}%
-          </div>
+          <div class='stats__value_desc'>Succeeded likes</div>
+          <div class='stats__value'>{{successLikes}}%</div>
         </div>
         <div class='stats__block'>
-          <div class='stats__value_desc'>
-            failed likes
-          </div>
-          <div class='stats__value'>
-            {{errorLikes}}%
-          </div>
+          <div class='stats__value_desc'>failed likes</div>
+          <div class='stats__value'>{{errorLikes}}%</div>
         </div>
         <div class='stats__block'>
-          <div class='stats__value_desc'>
-            active users
-          </div>
-          <div class='stats__value'>
-            {{activeUsers}}%
-          </div>
+          <div class='stats__value_desc'>active users</div>
+          <div class='stats__value'>{{activeUsers}}%</div>
         </div>
       </div>
       <div class='stats__container'>
         <div class='stats__block'>
-          <div class='stats__value_desc'>
-            Tasks
-          </div>
-          <div class='stats__value'>
-            {{formatNumber(globalStats.tasks.all)}}
-          </div>
+          <div class='stats__value_desc'>Tasks</div>
+          <div class='stats__value'>{{globalStats.tasks.all}}</div>
         </div>
         <div class='stats__block'>
-          <div class='stats__value_desc'>
-            completed tasks
-          </div>
-          <div class='stats__value'>
-            {{formatNumber(globalStats.tasks.success)}}
-          </div>
+          <div class='stats__value_desc'>completed tasks</div>
+          <div class='stats__value'>{{globalStats.tasks.success}}</div>
         </div>
         <div class='stats__block'>
-          <div class='stats__value_desc'>
-            waiting tasks
-          </div>
-          <div class='stats__value'>
-            {{globalStats.tasks.all - globalStats.tasks.success}}
-          </div>
+          <div class='stats__value_desc'>waiting tasks</div>
+          <div class='stats__value'>{{globalStats.tasks.all - globalStats.tasks.success}}</div>
         </div>
       </div>
     </div>
@@ -153,7 +109,10 @@ import TimeAssistant from '../utils/timeAssistant'
 const time = new TimeAssistant()
 const todayStatsLink = `/daily_statistics/${time.getDateForFirebase()}`
 
-const formatNumber = num => num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+const formatNumber = num => {
+  if (!num) return ''
+  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
+}
 
 export default {
   name: 'stats',
