@@ -6,23 +6,23 @@ const anArrayFromObject = require('../funcs/anArrayFromObject')
 
 class GlobalStats {
   constructor () {
-    this.users = null
-    this.db = null
-    this.time = null
+    this.users = new Users()
+    this.db = new DB().db
+    this.time = new TimeAssistant()
     this.initialized = false
-
   }
 
   initialize () {
     return new Promise ((resolve, reject) => {
-      this.users = new Users().getUsers()
-      this.db = new DB().db
-      this.time = new TimeAssistant()  
-      this.initialized = true
+      const usersInstance = new Users()
+      usersInstance.initialize().then(() => {
+        this.users = usersInstance.getUsers()
+        this.db = new DB().db
+        this.time = new TimeAssistant()
+        this.initialized = true
 
-      setTimeout(() => {
         return resolve()
-      }, 10000)
+      }).catch(e => reject(e))
     })
   }
 
@@ -63,27 +63,28 @@ class GlobalStats {
       } else if (user.isValid === false) {
         counter.invalid++
       }
-
-      this.db.ref('/global_stats/users').update(counter)
     })
+    this.db.ref('/global_stats/users').update(counter)
   }
 
 
   countGenders () {
-    const users = anArrayFromObject(this.users)
-    let male = 0
-    let female = 0
-    let notDefinedGender = 0
-    users.forEach(user => {
-      const { sex } = user
-      if (sex === 'm') male++
-      else if (sex === 'f') female++
-      else notDefinedGender++
-    })
+    return new Promise ((resolve, reject) => {
+      const users = anArrayFromObject(this.users)
+      let male = 0
+      let female = 0
+      let notDefinedGender = 0
+      users.forEach(user => {
+        const { sex } = user
+        if (sex === 'm') male++
+        else if (sex === 'f') female++
+        else notDefinedGender++
+      })
 
-    console.log('male: ', male)
-    console.log('female:', female)
-    console.log('all:', users.length)
+      this.db.ref('/global_stats/sex').update({male, female})
+
+      return resolve()
+    })
   }
 
 
@@ -108,7 +109,7 @@ class GlobalStats {
 
   countAllCounters () {
     return Promise.all([
-      this.countUsersCounters()
+      this.countUsersCounters(), this.countGenders()
     ])
   }
 

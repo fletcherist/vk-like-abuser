@@ -18,6 +18,10 @@ class Users {
 
   initialize () {
     return new Promise ((resolve, reject) => {
+      if (this.initialized) {
+        return resolve()
+      }
+
       this.fetchUsers()
         .then(res => {
           this.initialized = true
@@ -70,9 +74,9 @@ class Users {
 
   getUsers () {
     var userList = []
-    let i = 0
+    let usersCount = 0
     for (let user in this.users) {
-      i++
+      usersCount++
       if (!this.users[user].latestLike) {
         this.users[user].latestLike = 0
       }
@@ -83,11 +87,11 @@ class Users {
         this.removeUser(user)
       }
 
-      if (this.users[user].id && this.users[user].isValid !== false) {
+      if (this.users[user].id) {
         userList.push(this.users[user])
       }
     }
-    this.usersCount = i
+    this.usersCount = usersCount
     return userList
   }
 

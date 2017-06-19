@@ -23,7 +23,6 @@ class Auth {
       // — Register new user
       .then(r => {
         vkUser.getUser().then(user => {
-          // TODO:
           // Get some info about this user
           // Test like
           vkUser.like({target: 1, id: 376599151}).then(r => {

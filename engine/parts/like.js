@@ -25,7 +25,6 @@ class Like {
           return reject()
         }
         this.vk = new VK(token)
-
         this.db = new DB()
         this.object = object
         this.target = target
@@ -124,7 +123,7 @@ function VK_API_WAIT () {
 }
 
 function randomFromInterval(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min)
+  return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
 module.exports = Like
