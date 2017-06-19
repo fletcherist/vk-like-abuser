@@ -1,6 +1,9 @@
 class TimeAssistant {
   constructor () {
-
+    this.getCurrentTime = this.getCurrentTime.bind(this)
+    this.getFormattedTime = this.getFormattedTime.bind(this)
+    this.getDateForFirebase = this.getDateForFirebase.bind(this)
+    this.getDateForLogs = this.getDateForLogs.bind(this)
   }
 
   getCurrentTime () {

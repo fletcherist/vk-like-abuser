@@ -33,9 +33,9 @@ class BugFixer  {
 
   validateUsers () {
     return new Promise((resolve, reject) => {
-      let users = this.db.ref('users')
-      users.once('value', data => {
+       this.db.ref('users').once('value', data => {
         const users = anArrayFromObject(data.val())
+        users.reverse()
         const promises = []
 
         let timeoutTime = 1000

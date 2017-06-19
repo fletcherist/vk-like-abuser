@@ -72,7 +72,7 @@ class VK {
     return new Promise((resolve, reject) => {
       this.vk.call('users.get', {
         user_ids: user_ids,
-        fields: ['photo_50', 'photo_100']
+        fields: ['photo_50', 'photo_100', 'sex', 'bdate']
       }).then(res => {
         if (res.length > 0) res = res[0]
         return resolve(res)

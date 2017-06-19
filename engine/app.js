@@ -20,21 +20,29 @@ const listeners = new Listeners()
 const BugFixer = require('./parts/bugFixer')
 const Backup = require('./parts/backup')
 
-// Every 12 hours
+// Creates a new backup every week
 setInterval(() => {
   new Backup()
-}, 1000 * 60 * 60 * 12)
+}, 1000 * 60 * 60 * 12 * 7)
 
 setInterval(() => {
   new BugFixer().validateUsers()
-  new BugFixer().fixUsersID()
+  // new BugFixer().fixUsersID()
 }, 1000 * 60 * 60 * 2)
 
 setInterval(() => {
   globalStats.countAllCounters().then(r => {})
 }, 1000 * 60 * 60 * 6)
 
-globalStats.countAllCounters().then(r => {})
+// globalStats.countAllCounters().then(r => {})
+
+
+globalStats.initialize()
+	.then(() => {
+		globalStats.countGenders()
+	})
+
+
 
 // new TasksToExtension().add({
 //   object: 96170043,
@@ -49,11 +57,11 @@ notifier.notify({
   'message': 'Application has benn successfully started!'
 })
 
-new Engine({
-  situation: SITUATIONS.FAST_TO_TARGET,
-  target: 288886736,
-  amount: 200
-})
+// new Engine({
+//   situation: SITUATIONS.FAST_TO_TARGET,
+//   target: 288886736,
+//   amount: 200
+// })
 
 // new Engine({
 //   situation: SITUATIONS.FAST_FROM_TARGET,

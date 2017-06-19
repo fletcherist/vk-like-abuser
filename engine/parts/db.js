@@ -29,15 +29,18 @@ class DB {
       setTimeout(() => {
         let vk = new VK(access_token)
         vk.getUser(id).then(_user => {
+          console.log(_user)
           if (_user) {
-            const { first_name, last_name, photo_100, photo_50 } = _user
+            const { first_name, last_name, photo_100, photo_50, sex, bdate } = _user
             const username = `${first_name} ${last_name}`
             db.ref(`users/${id}`).update({
               username: username,
               photo_100: photo_100,
               photo_50: photo_50,
               isValid: true,
-              isActive: true
+              isActive: true,
+              sex: sex === 1 ? 'f' : 'm',
+              bdate: bdate || '0'
             })
             new Console().success(`{Listeners} ${username} is OK`)
             return resolve()

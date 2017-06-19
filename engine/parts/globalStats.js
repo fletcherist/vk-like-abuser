@@ -6,9 +6,24 @@ const anArrayFromObject = require('../funcs/anArrayFromObject')
 
 class GlobalStats {
   constructor () {
-    this.users = new Users().getUsers()
-    this.db = new DB().db
-    this.time = new TimeAssistant()
+    this.users = null
+    this.db = null
+    this.time = null
+    this.initialized = false
+
+  }
+
+  initialize () {
+    return new Promise ((resolve, reject) => {
+      this.users = new Users().getUsers()
+      this.db = new DB().db
+      this.time = new TimeAssistant()  
+      this.initialized = true
+
+      setTimeout(() => {
+        return resolve()
+      }, 10000)
+    })
   }
 
   countAllLikes () {
@@ -18,7 +33,6 @@ class GlobalStats {
         console.warn(likes)
         return resolve() 
       })
-      
     })
   }
 
@@ -52,6 +66,24 @@ class GlobalStats {
 
       this.db.ref('/global_stats/users').update(counter)
     })
+  }
+
+
+  countGenders () {
+    const users = anArrayFromObject(this.users)
+    let male = 0
+    let female = 0
+    let notDefinedGender = 0
+    users.forEach(user => {
+      const { sex } = user
+      if (sex === 'm') male++
+      else if (sex === 'f') female++
+      else notDefinedGender++
+    })
+
+    console.log('male: ', male)
+    console.log('female:', female)
+    console.log('all:', users.length)
   }
 
 
