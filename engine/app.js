@@ -15,7 +15,7 @@ const TasksToExtension = require('./parts/tasksToExtension')
 const algorithms = require('./algorithms')
 
 const listeners = new Listeners()
-// const engine = new Engine()
+const engine = new Engine()
 
 const BugFixer = require('./parts/bugFixer')
 const Backup = require('./parts/backup')
@@ -57,6 +57,7 @@ notifier.notify({
 //   target: 288886736,
 //   amount: 200
 // })
+
 
 // new Engine({
 //   situation: SITUATIONS.FAST_FROM_TARGET,

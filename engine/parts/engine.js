@@ -8,14 +8,18 @@ const algorithms = require('../algorithms')
 const SITUATIONS = require('../config').SITUATIONS
 const RESTART_ENGINE_TIME = 60000
 
+// const waiter = () => 3000
+const defaultWaiter = () => 2000
+
 class Engine {
   constructor (config) {
     this.situation = null
     this.target = null
     this.amount = null
+    this.waiter = null
 
     if (config) {
-      const { situation, target, amount } = config
+      const { situation, target, amount, waiter } = config
       if (situation.length > 0) {
         this.situation = config.situation
         this.target = config.target
@@ -24,8 +28,15 @@ class Engine {
       if (amount) {
         this.amount = amount
       }
+
+      if (waiter && typeof waiter() === 'Number') {
+        this.waiter = waiter
+      } else {
+        this.waiter = defaultWaiter
+      }
     } else {
       this.situation = SITUATIONS.DEFAULT
+      this.waiter = defaultWaiter
     }
 
     this.db = new DB()
@@ -65,6 +76,8 @@ class Engine {
     this.stopTime = new Date()
 
     const timePassed = ((this.stopTime - this.startTime) / 1000 / 60).toFixed(2)
+    const likesSet = this.success
+    const likesPerMinute = Math.floor(likesSet / timePasset)
 
     new Console().success(`{Engine} All tasks are done for ${timePassed} minutes:
           ${this.success} success,
@@ -121,10 +134,12 @@ class Engine {
     if (this.tasks.length === 0) {
       return this.complete()
     }
-    this.doTask(this.tasks[0]).then(() => {
+
+    setTimeout (() => {
+      this.doTask(this.tasks[0])
       this.tasks.shift()
       this.getNextTask()
-    })
+    }, this.waiter())
   }
 
   doTask ({object, target}) {
