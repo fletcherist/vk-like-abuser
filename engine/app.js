@@ -15,7 +15,7 @@ const TasksToExtension = require('./parts/tasksToExtension')
 const algorithms = require('./algorithms')
 
 const listeners = new Listeners()
-const engine = new Engine()
+// const engine = new Engine()
 
 const BugFixer = require('./parts/bugFixer')
 const Backup = require('./parts/backup')
@@ -29,8 +29,12 @@ globalStats.initialize().then(() => {
 
 // Creates a new backup every week
 setInterval(() => {
-  new Backup()
+  new Backup().initialize()
 }, 1000 * 60 * 60 * 12 * 7)
+
+// new Backup().initialize()
+new Backup().getLatestBackup()
+
 
 setInterval(() => {
   new BugFixer().validateUsers()
