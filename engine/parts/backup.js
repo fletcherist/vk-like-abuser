@@ -4,6 +4,7 @@ const Console = require('./console')
 const TimeAssistant = require('./timeAssistant')
 
 const getFolders = require('../funcs/getFolders')
+const readFiles = require('../funcs/readFiles')
 
 class Backup {
   constructor () {
@@ -23,14 +24,13 @@ class Backup {
   }
 
   getLatestBackup () {
-    new Console().notify('{Backup}: Getting latest backup')
-    try {
+    return new Promise((resolve, reject) => {
+      new Console().notify('{Backup}: Getting latest backup')
+
       const folders = getFolders(this.getBackupDir())
       if (!folders || folders.length === 0) {
         return false
       }
-
-      console.log(folders)
 
       const latestBackupFolder = folders.reduce((_prev, _current) => {
         const previous = _prev.split('-').map(n => parseInt(n))
@@ -44,13 +44,24 @@ class Backup {
         return _prev
       })
 
-      console.log(latestBackupFolder)
+      if (!latestBackupFolder) {
+        return false
+      }
 
-    } catch (e) {
-      console.log(e)
-    }
+      const backupData = {}
+      try {
+        readFiles(`${this.getBackupDir()}/${latestBackupFolder}/`, data => {
+          for (const index in data) {
+            const dbName = index.split('.')[0]
+            backupData[dbName] = JSON.parse(data[index])
+          }
 
-    // console.log(this.time.getDateForLogs())
+          return resolve(backupData)
+        })
+      } catch (e) {
+        return reject(e)
+      }
+    })
   }
 
   backupUsers () {

@@ -19,18 +19,19 @@ const listeners = new Listeners()
 
 const BugFixer = require('./parts/bugFixer')
 const Backup = require('./parts/backup')
+const Analytics = require('./parts/analytics')
 
-const globalStats = new GlobalStats()
-globalStats.initialize().then(() => {
-	setInterval(() => {
-	  globalStats.countAllCounters().then(r => {})
-	}, 1000 * 60 * 60 * 6)	
-})
+// const globalStats = new GlobalStats()
+// globalStats.initialize().then(() => {
+// 	setInterval(() => {
+// 	  globalStats.countAllCounters().then(r => {})
+// 	}, 1000 * 60 * 60 * 6)	
+// })
 
 // Creates a new backup every week
-setInterval(() => {
-  new Backup().initialize()
-}, 1000 * 60 * 60 * 12 * 7)
+// setInterval(() => {
+//   new Backup().initialize()
+// }, 1000 * 60 * 60 * 12 * 7)
 
 // new Backup().initialize()
 new Backup().getLatestBackup()
@@ -41,6 +42,9 @@ setInterval(() => {
   // new BugFixer().fixUsersID()
 }, 1000 * 60 * 60 * 2)
 
+
+
+const analytics = new Analytics()
 
 
 // new TasksToExtension().add({
