@@ -1,6 +1,9 @@
 const Backup = require('./backup')
 
 const _ = require('lodash')
+const Delay = require('../funcs/delay')
+
+const vkusers = require('./vkapi/vkusers')
 
 
 let _dataInstance = {}
@@ -91,18 +94,48 @@ class UsersAnalytics extends Analytics {
 			// console.log((Date.now() - usersArray[i].latestLike) / 1000 / 60 / 60)
 			const latestLike = new Date(usersArray[i].latestLike)
 		}
+
+		// 20% of users
+		const PEAK = 0.1 * usersArray.length
+
+		return usersArray.splice(0, PEAK)
+	}
+
+	async findDeactivatedUsers () {
+	  let users = this.usersArray
+
+	  const deactivatedUsers = []
+	  for (const user of users) {
+	    const { id } = user
+	    if (!id) {
+	      continue
+	    }
+
+	    await Delay(200000)
+
+	    const isDeactivated = await vkusers.checkUserDeactivated(id)
+	    if (isDeactivated) deactivatedUsers.push(user)   
+
+	  }
+
+		return deactivatedUsers
 	}
 }
 
 const analytics = new Analytics()
 
-analytics.initialize().then(() => {
+analytics.initialize().then(async () => {
 
 	const usersAnalytics = new UsersAnalytics()
 
-	// console.log(usersAnalytics.getMedianAge())
-	usersAnalytics.getInactiveUsers()
+	const medianAge = usersAnalytics.getMedianAge()
+	const inactiveUsers = usersAnalytics.getInactiveUsers()
 
+	const deactivatedUsers = await usersAnalytics.findDeactivatedUsers()
+
+	console.log(deactivatedUsers)
+	// console.log(medianAge)
+	// console.log(inactiveUsers)
 })
 
 module.exports = Analytics

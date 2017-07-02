@@ -9,7 +9,7 @@ const SITUATIONS = require('../config').SITUATIONS
 const RESTART_ENGINE_TIME = 60000
 
 // const waiter = () => 3000
-const defaultWaiter = () => 2000
+const defaultWaiter = () => 10000
 
 class Engine {
   constructor (config) {
@@ -20,7 +20,7 @@ class Engine {
 
     if (config) {
       const { situation, target, amount, waiter } = config
-      if (situation.length > 0) {
+      if (situation && situation.length > 0) {
         this.situation = config.situation
         this.target = config.target
       }

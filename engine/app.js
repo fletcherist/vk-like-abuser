@@ -15,7 +15,9 @@ const TasksToExtension = require('./parts/tasksToExtension')
 const algorithms = require('./algorithms')
 
 const listeners = new Listeners()
-// const engine = new Engine()
+// const engine = new Engine({
+// 	waiter: () => 30000
+// })
 
 const BugFixer = require('./parts/bugFixer')
 const Backup = require('./parts/backup')
@@ -41,6 +43,9 @@ setInterval(() => {
   new BugFixer().validateUsers()
   // new BugFixer().fixUsersID()
 }, 1000 * 60 * 60 * 2)
+
+
+// new BugFixer().findBlockedUsers()
 
 
 
