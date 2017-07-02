@@ -18,7 +18,6 @@ if (firebase) {
 }
 
 export const db = _db
-
 export default app
 
 // const admin = require('firebase-admin')

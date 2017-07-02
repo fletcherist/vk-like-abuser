@@ -3,64 +3,6 @@
   const env = 'DEBUG'
   // const env = 'PRODUCTION'
 
-  // chrome.storage.local.get(null, function (storage) {
-
-  //   const { user_id, access_token, username,
-  //
-  //     timeForGettingTasks,
-  //     timeForNextTask,
-  //     tasks,
-  //
-  //     _tabsCount
-  //
-  //   } = storage
-  //
-  //   if (!timeForNextTask || !timeForGettingTasks) {
-  //     if (!timeForGettingTasks) {
-  //       setTimeForGettingTasks()
-  //     }
-  //
-  //     if (!timeForNextTask) {
-  //       setTimeForNextTask()
-  //     }
-  //   } else {
-  //     // Everything is ok
-  //     if (isReadyForGettingTasks(timeForGettingTasks)) {
-  //       let time = Date.now() + 1000 * 120
-  //
-  //       // getTasks({user_id, access_token})
-  //       //   .then(tasks => {
-  //       //     console.log(tasks)
-  //       //   })
-  //       //   .catch(e => {
-  //       //     console.log(e)
-  //       //   })
-  //
-  //       setTimeForGettingTasks(time)
-  //     }
-  //
-  //     if (isReadyForNewTask(timeForNextTask)) {
-  //       // setTimeout(() => {
-  //       //   getTasks({user_id, access_token})
-  //       //     .then(tasks => {
-  //       //       if (tasks.length === 0) {
-  //       //         return setTimeForNextTask(Date.now() + 1000 * 120)
-  //       //       }
-  //       //       const task = tasks[0]
-  //       //       Tasks.doTask(task).then(r => {
-  //       //         console.log(tasks)
-  //       //         tasks = tasks.shift()
-  //       //         Tasks.save(tasks)
-  //       //         Tasks.markAsDone(task)
-  //
-  //       //         return setTimeForNextTask(Date.now() + 1000 * 60)
-  //       //       })
-  //       //     })
-  //       // }, 1000)
-  //     }
-  //   }
-  // })
-
   const likes = document.querySelectorAll('.post_full_like_wrap')
   likes.forEach(like => {
     const abuserLike = document.createElement('div')

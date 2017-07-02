@@ -85,18 +85,11 @@ class UsersAnalytics extends Analytics {
 	getInactiveUsers () {
 		let usersArray = this.usersArray
 		usersArray = usersArray.filter(user => user.latestLike)
-		console.log(usersArray[0])
-
-		usersArray = _.sortBy(usersArray, ['latestLike']).reverse()
-		// usersArray = _.reverse(usersArray)
-		// usersArray.sort((a, b) => (a.latestLike > b.latestLike))
-
-		console.log(usersArray)
+		usersArray = _.sortBy(usersArray, ['latestLike'])
 
 		for (let i = 0; i < 100; i++) {
 			// console.log((Date.now() - usersArray[i].latestLike) / 1000 / 60 / 60)
 			const latestLike = new Date(usersArray[i].latestLike)
-			console.log(latestLike)
 		}
 	}
 }
@@ -107,8 +100,8 @@ analytics.initialize().then(() => {
 
 	const usersAnalytics = new UsersAnalytics()
 
-	console.log(usersAnalytics.getMedianAge())
-	// usersAnalytics.getInactiveUsers()
+	// console.log(usersAnalytics.getMedianAge())
+	usersAnalytics.getInactiveUsers()
 
 })
 
