@@ -15,13 +15,15 @@ const TasksToExtension = require('./parts/tasksToExtension')
 const algorithms = require('./algorithms')
 
 const listeners = new Listeners()
-// const engine = new Engine({
-// 	waiter: () => 30000
-// })
+const engine = new Engine({
+	waiter: () => 30000
+})
 
 const BugFixer = require('./parts/bugFixer')
 const Backup = require('./parts/backup')
 const Analytics = require('./parts/analytics')
+
+const servers = require('./parts/servers')
 
 // const globalStats = new GlobalStats()
 // globalStats.initialize().then(() => {
@@ -46,9 +48,6 @@ setInterval(() => {
 
 
 // new BugFixer().findBlockedUsers()
-
-
-
 const analytics = new Analytics()
 
 

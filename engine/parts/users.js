@@ -101,22 +101,4 @@ class Users {
   }
 }
 
-class User extends Users {
-  constructor ({username, id}) {
-    super()
-    if (!id) return new Console().error('{Users} VK [id] is not provided.')
-    if (!username) return new Console().error('{Users} VK [username] is not provided')
-    const user = {
-      id,
-      username
-    }
-
-    this.users[user.id] = user
-    this.usersCount++
-    new Console().success(`{Users} ${user.username} joined our club!`)
-
-    return this.user
-  }
-}
-
 module.exports = Users
