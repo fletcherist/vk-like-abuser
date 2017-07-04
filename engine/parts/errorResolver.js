@@ -1,6 +1,9 @@
 const Console = require('./console')
 const TasksToExtension = require('./tasksToExtension')
 
+const usersApi = require('./firebase-api/users')
+const {deactivateUser} = usersApi
+
 const ERRORS = {
   FLOOD_CONTROL: 'FLOOD_CONTROL',
   VALIDATION_REQUIRED: 'VALIDATION_REQUIRED',
@@ -54,25 +57,30 @@ class ErrorResolver {
         // this.db.setInactive(this.object)
         break
       case ERRORS.INVALID_SESSION:
-        // this.db.deactivateUser(this.target)
-        // this.globalStats.incrementDeactivationsCount()
+        deactivateUser(this.target)
+        this.globalStats.incrementDeactivationsCount()
 
+        break
+
+      case ERRORS.INVALID_ACCESS_TOKEN:
+        deactivateUser(this.target)
+        this.globalStats.incrementDeactivationsCount()
         break
 
       case ERRORS.ACCESS_REVOKED:
         // Here we must remove the user from our database
-        // this.db.deactivateUser(this.target)
-        // this.globalStats.incrementDeactivationsCount()
+        deactivateUser(this.target)
+        this.globalStats.incrementDeactivationsCount()
 
         break
       case ERRORS.DEACTIVATED:
         // Here we also must remove the user from our database
-        // this.db.deactivateUser(this.target)
-        // this.globalStats.incrementDeactivationsCount()
+        deactivateUser(this.target)
+        this.globalStats.incrementDeactivationsCount()
         break
       case ERRORS.NO_ACCESS:
-        // this.db.deactivateUser(this.target)
-        // this.globalStats.incrementDeactivationsCount()
+        deactivateUser(this.target)
+        this.globalStats.incrementDeactivationsCount()
         // Here we want user to give us an access again
         break
 

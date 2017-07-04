@@ -68,7 +68,7 @@ class DB {
         let users = snapshot.val()
         for (let userId in users) {
           let user = users[userId]
-          if (user.isActive === false) {
+          if (user.isActive === false || user.isValid === false) {
             delete users[userId]
           }
         }
