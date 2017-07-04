@@ -9,7 +9,7 @@ const SITUATIONS = require('../config').SITUATIONS
 const RESTART_ENGINE_TIME = 60000
 
 // const waiter = () => 3000
-const defaultWaiter = () => 4000
+const defaultWaiter = () => 10000
 
 class Engine {
   constructor (config) {
