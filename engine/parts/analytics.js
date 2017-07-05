@@ -3,7 +3,7 @@ const Backup = require('./backup')
 const _ = require('lodash')
 const Delay = require('../funcs/delay')
 
-const vkusers = require('./vkapi/vkusers')
+const vkusers = require('./api/vk/users')
 
 
 let _dataInstance = {}
@@ -114,8 +114,7 @@ class UsersAnalytics extends Analytics {
       await Delay(200000)
 
       const isDeactivated = await vkusers.checkUserDeactivated(id)
-      if (isDeactivated) deactivatedUsers.push(user)   
-
+      if (isDeactivated) deactivatedUsers.push(user)
     }
 
     return deactivatedUsers

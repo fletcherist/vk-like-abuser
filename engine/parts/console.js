@@ -1,29 +1,8 @@
-const DB = require('../app').DB
 const TimeAssistant = require('./timeAssistant')
 
 const fs = require('fs')
 
 let consoleInstance = null
-let pushesInstance = null
-
-class Pushes {
-  constructor () {
-    if (!pushesInstance) {
-      // this.db = new DB()
-      // this.pushes = this.db.ref('/pushes')
-      
-      pushesInstance = this
-    }
-    return pushesInstance
-  }
-
-  send (msg) {
-    // this.pushes.push({
-    //   time: new Date().toString(),
-    //   message: msg
-    // })
-  }
-}
 
 class Console {
   constructor (msg) {
@@ -77,6 +56,12 @@ class Console {
       `${msg}\n`, () => {})
   }
 }
+
+module.exports.log = () => ({
+  notify: msg => new Console().notify(msg),
+  error: msg => new Console().error(msg),
+  success: msg => new Console().success(msg)
+})
 
 
 module.exports = Console
