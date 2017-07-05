@@ -8,4 +8,7 @@ const app = admin.initializeApp({
   databaseURL: firebaseConfig.databaseURL
 })
 
+const db = app.database()
+
 module.exports = app
+module.exports.db = db

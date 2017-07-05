@@ -25,7 +25,6 @@ class Console {
       return false
     let message = `[${this.time.getFormattedTime()}] ` + 'Error: ' + msg
     console.warn(message)
-    new Pushes().send(message)
     this.writeToLogs(message)
   }
 
@@ -34,7 +33,6 @@ class Console {
       return false
     let message = `[${this.time.getFormattedTime()}] ` + 'Success: ' + msg
     console.log(message)
-    new Pushes().send(message)
     this.writeToLogs(message)
   }
 
@@ -43,7 +41,6 @@ class Console {
       return false
     let message = `[${this.time.getFormattedTime()}] ` + 'Notification: ' + msg
     console.log(message)
-    new Pushes().send(message)
     this.writeToLogs(message)
   }
 

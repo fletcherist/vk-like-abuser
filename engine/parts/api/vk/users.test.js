@@ -10,7 +10,6 @@ test(`# ${getUser.name} should get object with user`, async () => {
 
   // Random man should bot be as ok
   expect(await getUser(22222222222)).toBeFalsy()
-
 })
 
 test(`# ${checkUserDeactivated.name} should better work`, async () => {

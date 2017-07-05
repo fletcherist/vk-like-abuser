@@ -1,7 +1,7 @@
 const Console = require('./console')
 const TasksToExtension = require('./tasksToExtension')
 
-const usersApi = require('./firebase-api/users')
+const usersApi = require('./api/db/users')
 const {deactivateUser} = usersApi
 
 const ERRORS = {
