@@ -3,7 +3,7 @@ const Backup = require('./backup')
 const _ = require('lodash')
 const Delay = require('../funcs/delay')
 
-const vkusers = require('./api/vk/users')
+const vkusers = require('../api/vk/users')
 
 
 let _dataInstance = {}
@@ -133,8 +133,8 @@ analytics.initialize().then(async () => {
   // const deactivatedUsers = await usersAnalytics.findDeactivatedUsers()
   // console.log(deactivatedUsers)
 
-  console.log(medianAge)
-  console.log(inactiveUsers)
+  // console.log(medianAge)
+  // console.log(inactiveUsers)
 })
 
 module.exports = Analytics

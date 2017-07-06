@@ -1,5 +1,5 @@
 const VKapi = require('node-vkapi')
-const { log } = require('../../console')
+const { log } = require('../../parts/console')
 
 const api = new VKapi()
 
@@ -33,7 +33,6 @@ async function checkUserDeactivated (id) {
 
   return false
 }
-
 
 module.exports = {
   getUser,

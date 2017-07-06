@@ -8,6 +8,15 @@ const anArrayFromObject = require('../funcs/anArrayFromObject')
 
 let db = app.database()
 
+const {
+  getUsers,
+  getUser,
+
+  isUserExist,
+  deactivateUser
+
+} = require('../api/db/users')
+
 let dbInstance = null
 class DB {
   constructor () {
@@ -61,97 +70,21 @@ class DB {
     })
   }
 
-  getUsers () {
-    return new Promise ((resolve, reject) => {
-      this.db.ref('/users').once('value')
-      .then(snapshot => {
-        let users = snapshot.val()
-        for (let userId in users) {
-          let user = users[userId]
-          if (user.isActive === false || user.isValid === false) {
-            delete users[userId]
-          }
-        }
-        return resolve(users)
-      })
-      .catch(e => reject())
-    })
+  async getUsers () {
+    const users = await getUsers(10)
+    return users
   }
 
-
-  getUserById (id) {
-    return new Promise ((resolve, reject) => {
-      let user = this.db.ref(`/users/${id}`)
-      user.once('value').then(r => {
-        if (r.val() == null) {
-          return resolve(r.val())
-        }
-
-        return reject()
-      })
-    })
+  async getUserById (id) {
+    return await getUser(id)
   }
 
-  isUserExist (id) {
-    return new Promise ((resolve, reject) => {
-      let user = this.db.ref(`/users/${id}`)
-      user.once('value').then(r => {
-        if (r.val() == null) {
-          return resolve()
-        }
-
-        return reject()
-      })
-    })
+  async isUserExist (id) {
+    return await isUserExist(id)
   }
 
-  findAvailableItemToLike ({object, target, type, items}) {
-    return new Promise((resolve, reject) => {
-      const alreadyLiked = this.db.ref(`/likes/${object}/${target}/${type}`)
-
-      alreadyLiked.once('value', likes => {
-        if (likes.val()) {
-          const alreadyLikedList = likes.val()
-          for (let availableItemId of items) {
-            if (alreadyLikedList[availableItemId] === 1) {
-              // In that case do nothing
-            } else {
-              return resolve(availableItemId)
-            }
-          }
-        }
-
-        return resolve(items[0])
-      })
-    })
-  }
-
-  addUser ({username, access_token, id}) {
-    if (!username) return new Console().error('{DB} No username provided')
-    if (!access_token) return new Console().error('{DB} No access token provided')
-    if (!id) return new Console().error('{DB} No vk id provided')
-
-    this.isUserExist(id)
-    .then(isUserExist => {
-        this.db.ref(`users/${id}`).set({
-          username,
-          access_token,
-          id,
-          createdAt: firebase.database.ServerValue.TIMESTAMP
-        }).then(r => new Console().success(`{DB} User ${username} has been added`))
-      }
-    ).catch(e => {
-      return new Console().error('{DB} User is already exist')
-    })
-  }
-
-  deactivateUser (id) {
-    if (!id) return new Console().error(`${DB} [deactivate user] no id`)
-
-    this.db.ref(`/users/${id}`).update({
-      isActive: false,
-      isValid: false
-    })
+  async deactivateUser (id) {
+    return await deactivateUser(id)
   }
 
   addToLikedList ({object, target, type, id}) {

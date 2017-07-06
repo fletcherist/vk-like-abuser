@@ -16,7 +16,7 @@ const algorithms = require('./algorithms')
 
 const listeners = new Listeners()
 const engine = new Engine({
-	waiter: () => 30000
+  waiter: () => 30000
 })
 
 const BugFixer = require('./parts/bugFixer')
@@ -25,17 +25,20 @@ const Analytics = require('./parts/analytics')
 
 const servers = require('./parts/servers')
 
-// const globalStats = new GlobalStats()
-// globalStats.initialize().then(() => {
-// 	setInterval(() => {
-// 	  globalStats.countAllCounters().then(r => {})
-// 	}, 1000 * 60 * 60 * 6)	
-// })
+const globalStats = new GlobalStats()
+
+globalStats.countAllCounters().then(r => {})
+
+globalStats.initialize().then(() => {
+  setInterval(() => {
+    globalStats.countAllCounters().then(r => {})
+  }, 1000 * 60 * 60 * 6)
+})
 
 // Creates a new backup every week
-// setInterval(() => {
-//   new Backup().initialize()
-// }, 1000 * 60 * 60 * 12 * 7)
+setInterval(() => {
+  new Backup().initialize()
+}, 1000 * 60 * 60 * 12 * 7)
 
 // new Backup().initialize()
 new Backup().getLatestBackup()

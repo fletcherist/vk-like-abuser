@@ -77,7 +77,7 @@ class Engine {
 
     const timePassed = ((this.stopTime - this.startTime) / 1000 / 60).toFixed(2)
     const likesSet = this.success
-    const likesPerMinute = Math.floor(likesSet / timePasset)
+    const likesPerMinute = Math.floor(likesSet / timePassed)
 
     new Console().success(`{Engine} All tasks are done for ${timePassed} minutes:
           ${this.success} success,

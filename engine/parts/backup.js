@@ -6,6 +6,8 @@ const TimeAssistant = require('./timeAssistant')
 const getFolders = require('../funcs/getFolders')
 const readFiles = require('../funcs/readFiles')
 
+const { getUsers } = require('../api/db/users')
+
 class Backup {
   constructor () {
     const DB = require('./db')
@@ -64,12 +66,13 @@ class Backup {
     })
   }
 
-  backupUsers () {
-    this.DB.getUsers().then(users => {
+  async backupUsers () {
+    try {
+      const users = await getUsers()
       this.saveData('users', users)
-    }).catch(e => {
+    } catch (e) {
       console.warn(e)
-    })
+    }
   }
 
   backupTasks () {
@@ -94,8 +97,6 @@ class Backup {
   }
 
   saveData (type, data) {
-    
-
     const formattedData = JSON.stringify(data, null, 2)
     try {
       const path = `${this.getBackupDir()}/${this.time.getDateForLogs()}`

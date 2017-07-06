@@ -2,6 +2,9 @@ const DB = require('./db')
 const Console = require('./console')
 
 let usersInstance = null
+
+const { getUsers } = require('../api/db/users')
+
 class Users {
   constructor () {
     if (!usersInstance) {
@@ -16,41 +19,30 @@ class Users {
     return usersInstance
   }
 
-  initialize () {
-    return new Promise ((resolve, reject) => {
-      if (this.initialized) {
-        return resolve()
-      }
+  async initialize () {
+    if (this.initialized)
+      return true
 
-      this.fetchUsers()
-        .then(res => {
-          this.initialized = true
-          new Console().success('Class {Users} has been successfully initialized')
-
-          resolve()
-        })
-        .catch(e => {
-          new Console().error('{Users} Can`t be initialized')
-          reject()
-        })
-    })
-  }
-
-  fetchUsers () {
-    return new Promise((resolve, reject) => {
-      this.db.getUsers()
-        .then(users => {
-          this.users = users
-          resolve()
-        })
-        .catch(e => reject())
-    })
-  }
-
-  showUsers () {
-    for (let user in this.users) {
-      console.log(this.users[user].id)
+    try {
+      await this.fetchUsers()
+      this.initialized = true
+      new Console().success('Class {Users} has been successfully initialized')
+    } catch (e) {
+      new Console().error('{Users} Can`t be initialized')
+      return false
     }
+  }
+
+  async fetchUsers () {
+    const users = await getUsers(10)
+    for (let userId in users) {
+      let user = users[userId]
+      if (user.isActive === false || user.isValid === false) {
+        delete users[userId]
+      }
+    }
+
+    this.users = users
   }
 
   findById (id) {
@@ -81,23 +73,12 @@ class Users {
         this.users[user].latestLike = 0
       }
 
-      // If user with no VK id
-      if (!this.users[user].id) {
-        // Remove him from database
-        this.removeUser(user)
-      }
-
       if (this.users[user].id) {
         userList.push(this.users[user])
       }
     }
     this.usersCount = usersCount
     return userList
-  }
-
-
-  removeUser (id) {
-    // TODO
   }
 }
 

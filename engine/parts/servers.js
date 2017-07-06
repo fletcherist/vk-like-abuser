@@ -1,7 +1,7 @@
 const DB = require('./db')
 const db = new DB().db
 
-const { getUsers } = require('./api/db/users')
+const { getUsers } = require('../api/db/users')
 const delay = require('../funcs/delay')
 
 module.exports.getUserServer = async function (userId) {
