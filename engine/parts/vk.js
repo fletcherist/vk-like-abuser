@@ -68,75 +68,71 @@ class VK {
     VK method
     Returns user's id, and 50px, 100px photos
   */
-  getUser (user_ids) {
-    return new Promise((resolve, reject) => {
-      this.vk.call('users.get', {
+  async getUser (user_ids) {
+    try {
+      const response = await this.vk.call('users.get', {
         user_ids: user_ids,
         fields: ['photo_50', 'photo_100', 'sex', 'bdate']
-      }).then(res => {
-        if (res.length > 0) res = res[0]
-        return resolve(res)
       })
-      .catch(e => {
-        return reject(e)
-      })
-    })
+
+      if (response && response.length > 0) {
+        const user = response[0]
+        return user
+      }
+    } catch (e) {
+      throw new Error(e)
+    }
   }
 
   /*
     Add like to any type of wallpost
     Ex. photo, wall, avatar etc.
   */
-  like ({target, id, type}) {
+  async like ({target, id, type}) {
     if (!target) return new Console().error('{VK} no target')
     if (!id) return new Console().error('{VK} no id')
 
-    return new Promise ((resolve, reject) => {
-      this.vk.call('likes.add', {
+    try {
+      return await this.vk.call('likes.add', {
         type: 'photo',
         owner_id: target,
         item_id: id
-      }).then(res => {
-        return resolve(res)
-      }).catch(e => {
-        return reject(e)
       })
-    })
+    } catch (e) {
+      return e
+    }
   }
 
-  getPhoto (user_id) {
+  async getPhoto (user_id) {
     const types = ['wall', 'profile']
     const typeToSearch = types[Math.floor(Math.random() * types.length)]
 
-    return new Promise ((resolve, reject) => {
-      this.vk.call('photos.get', {
+    try {
+      const { count, items } = await this.vk.call('photos.get', {
         owner_id: user_id,
         album_id: typeToSearch,
         extended: 1,
         rev: 1
-      }).then(res => {
-        const { count, items } = res
-        if (count === 0) {
-          return reject()
-        }
+      })
 
-        for (let i = 0; i < items.length; i++) {
-          const { id, likes } = items[i]
-          if (!id || !likes) {
-            return reject()
-          } 
-          if (id && likes) {
-            if (likes.user_likes === 0) {
-              return resolve(id)
-            }
+      if (count === 0) {
+        throw new Error()
+      }
+
+      for (let i = 0; i < items.length; i++) {
+        const { id, likes } = items[i]
+        if (!id || !likes) {
+          throw new Error()
+        } 
+        if (id && likes) {
+          if (likes.user_likes === 0) {
+            return id
           }
         }
-
-        return reject()
-      }).catch(e => {
-        return reject(e)
-      })
-    })
+      }
+    } catch (e) {
+      throw new Error(e)
+    }
   }
 }
 

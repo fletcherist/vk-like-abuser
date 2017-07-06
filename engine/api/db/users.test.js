@@ -11,7 +11,7 @@ const {
 } = users
 
 test(`# getUsers(limit) should get an array of users`, async () => {
-  expect((await getUsers(5)).length).toBe(5)
+  expect(Object.values(await getUsers(5)).length).toBe(5)
 })
 
 // Pavel Durov will never use our great service

@@ -34,7 +34,7 @@ class Users {
   }
 
   async fetchUsers () {
-    const users = await getUsers(10)
+    const users = await getUsers()
     for (let userId in users) {
       let user = users[userId]
       if (user.isActive === false || user.isValid === false) {
