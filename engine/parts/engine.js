@@ -9,7 +9,7 @@ const SITUATIONS = require('../config').SITUATIONS
 const RESTART_ENGINE_TIME = 60000
 
 // const waiter = () => 3000
-const defaultWaiter = () => 10000
+const defaultWaiter = () => 5000
 
 class Engine {
   constructor (config) {
@@ -144,7 +144,7 @@ class Engine {
 
   doTask ({object, target}) {
     return new Promise((resolve, reject) => {
-      new Like({object, target})
+      Like({object, target})
         .then(() => {
           this.globalStats.incrementLikesCount()
           this.success++
