@@ -3,22 +3,53 @@ const db = new DB().db
 
 const { getUsers } = require('../api/db/users')
 const delay = require('../funcs/delay')
+const config = require('../config')
 
-module.exports.getUserServer = async function (userId) {
+async function getUserServer (userId) {
   if (!userId) return false
   const snapshot = await db.ref(`/users/${userId}/server`).once('value')
   const server = snapshot.val()
   return server
 }
 
-module.exports.setUserServer = async function (userId, server) {
+async function setUserServer (userId, server) {
   if (!userId || !server) return false
   return await db.ref(`/users/${userId}/server`).transaction(currentValue => server)
 }
 
-module.exports.getServers = async function () {
+async function getServers () {
   const snapshot = await db.ref('/servers').once('value')
   const servers = snapshot.val()
   return servers
 }
 
+async function setServerClientId (serverName, clientId) {
+  if (!clientId || !serverName) return 'Not enough data'
+  const server = db.ref(`/servers/${serverName}`)
+  const serverObject = await server.once('value')
+  if (!serverObject) return `No server with this name (${serverName})`
+
+  await server.update({clientId})
+}
+
+const updateServersInformation = async function () {
+  const { servers } = config
+  for (const server in servers) {
+    const { clientId } = servers[server]
+    if (!clientId) continue
+    await setServerClientId(server, clientId)
+  }
+
+  console.log('servers information has been updated')
+}
+
+// updateServersInformation()
+// getServers().then(r => console.log(r))
+
+module.exports = {
+  getUserServer,
+  getServers,
+  setUserServer,
+  updateServersInformation,
+  setServerClientId
+}
