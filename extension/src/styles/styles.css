@@ -559,3 +559,22 @@ a:hover {
   margin: 0px auto;
   width: 33%;
 }
+
+.news {
+  display: flex;
+}
+
+.news__header {
+  flex-direction: flex-start;
+  padding-right: 15px;
+  font-weight: bold;
+}
+
+.news__title { 
+  flex-grow: 3;
+  color: var(--blue-text);
+}
+
+.news__timestamp {
+  flex-direction: flex-end;
+}

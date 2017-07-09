@@ -33,8 +33,7 @@
           </div>
         </div>
         <div v-else>
-            <a href='https://oauth.vk.com/authorize?client_id=5133221&scope=wall,friends,offline&redirect_uri=https://oauth.vk.com/blank.html&display=popup&v=5.17&response_type=token' class='button' target='_blank'
-            v-bind:class="{'not-active': !agreedWithTerms}">Войти</a>
+            <login-button />
         </div>
       </div>
       <div v-if='authorized'>
@@ -59,23 +58,16 @@
             <div class='stats__item'>Вы поставили лайков: <b>{{stats.you_liked || 0}}</b></div>
             <div class='stats__item'>Вам поставили лайков: <b>{{stats.liked_you || 0}}</b></div>
           </div>
-          <main-navigation></main-navigation>
+          <main-navigation />
         </div>
         <div v-else>
-          <need-validation></need-validation>
+          <need-validation />
         </div>
         <help></help>
       </div>
       <div v-else>
         <div class='disclaimer'>
           Чтобы начать пользоваться приложением, необходимо авторизоваться. Напоминаем, что накрутка лайков <b>нарушает</b> правила ВКонтакте.
-          <div class='disclaimer__agree'>
-            <input
-              type='checkbox'
-              v-model='agreedWithTerms'
-            />
-            <a href='https://vk.com/terms' target='_blank'>Я нарушаю правила ВКонтакте</a>
-          </div>
         </div>
       </div>
       </div>
@@ -83,7 +75,9 @@
         class='wrapper wrapper--next'
         v-bind:class="{'wrapper--wide': !authorized}">
         <global-stats></global-stats>
+
       </div>
+      <!-- <instant-news /> -->
       <div v-if='authorized'>
         <!-- <like-exchanger></like-exchanger> -->
       </div>

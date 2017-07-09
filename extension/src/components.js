@@ -1,12 +1,15 @@
 const APP_VERSION = '0.3.2'
 const ENV = 'debug'
 const VKABUSER_SERVER = 'https://vkabuser.fletcherist.com'
+// const VKABUSER_SERVER = 'http://localhost:80'
 // const ENV = 'production'
 
 
 Vue.component('preloader', {
   template: `
-    <div class="vk-like-preloader"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="75" width="75" viewbox="0 0 75 75"><circle cx="37.5" cy="37.5" r="33.5" stroke-width="8"/></svg></div>
+    <div class="vk-like-preloader">
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="75" width="75" viewbox="0 0 75 75"><circle cx="37.5" cy="37.5" r="33.5" stroke-width="8"/></svg>
+    </div>
   `
 })
 
@@ -150,7 +153,6 @@ Vue.component('like-exchanger', {
 
 
 const TELEGRAM_CHANNEL = 'https://t.me/joinchat/AAAAAEL5zbAb46YiIsuOVg'
-
 Vue.component('follow-us', {
   template: `
     <div class=''>
@@ -165,4 +167,54 @@ Vue.component('follow-us', {
       </div>
     </div>
   `
+})
+
+Vue.component('login-button', {
+  data: function () {
+    return {
+      server: '5133221'
+    }
+  },
+  init: function () {
+    // Getting the most relevant auth server
+    fetch(`${VKABUSER_SERVER}/server`)
+      .then(r => r.json())
+      .then(r => {
+        if (r && r.server && r.server.clientId) {
+          this.server = r.server.clientId
+        }
+        console.log(r)
+      })
+      .catch(e => {
+        console.log(e)
+      })
+  },
+  template: `
+    <a href='https://oauth.vk.com/authorize?client_id={{{server}}}&scope=wall,friends,offline&redirect_uri=https://oauth.vk.com/blank.html&display=popup&v=5.17&response_type=token'
+      class='button' target='_blank'>Войти</a>
+  `
+})
+
+// TODO: fetch data
+Vue.component('instant-news', {
+  data: function () {
+    return {
+      title: 'Запуск магазинаasdasdasdashd'
+    }
+  },
+  template: `
+    <div class='wrapper wrapper--next news'>
+      <div class='news__header'>Новости</div>
+      <div class='news__title' v-html='titleFormatted'></div>
+      <div class='news__timestamp'>10 июн</div>
+    </div>
+  `,
+  computed: {
+    titleFormatted: function () {
+      console.log(this.title.length)
+      return this.title.length > 24
+        ? this.title.slice(0, 24) + '...'
+        : this.title
+    }
+  }
 })
