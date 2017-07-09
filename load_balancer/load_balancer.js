@@ -17,6 +17,11 @@ app.get('/exchanger/get_target', (req, res) => {
   return res.json(user)
 })
 
+app.get('/server', async (req, res) => {
+  const server = await api.servers.getMostRelevantServer()
+  res.send({msg: 'we found a relevant server for you!', server: server})
+})
+
 
 const clients = []
 io.on('connection', socket => {
@@ -50,7 +55,7 @@ io.on('connection', socket => {
   })
 
   socket.on('count_online_users', (fn) => {
-  	return fn(clients)
+    return fn(clients)
   })
 
 
