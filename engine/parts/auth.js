@@ -16,40 +16,23 @@ class Auth {
     this.access_token = access_token
   }
 
-  authenticate () {
+  async authenticate () {
     const vkUser = new VK(this.access_token)
-    vkUser.checkToken()
-      // Success authentication
-      // — Register new user
-      .then(r => {
-        vkUser.getUser().then(user => {
-          // Get some info about this user
-          // Test like
-          vkUser.like({target: 1, id: 376599151}).then(r => {
-            // Auth success
-            return this.signupSuccess({
-              user: user,
-              access_token: this.access_token
-            })
-          }).catch(e => {
-            console.log(e)
-            this.signupFailure({
-              error: e.toString()
-            })
-          })
-        }).catch(e => {
-          console.log(e)
-          this.signupFailure({
-            error: e.toString()
-          })
-        })
+
+    try {
+      const user = await vkUser.getUser()
+      // Get some info about this user
+      await vkUser.like({target: 1, id: 376599151})
+      return this.signupSuccess({
+        user: user,
+        access_token: this.access_token
       })
-    .catch(e => {
+    } catch (e) {
       console.log(e)
       this.signupFailure({
         error: e.toString()
       })
-    })
+    }
   }
 
   signupSuccess ({user, access_token}) {
