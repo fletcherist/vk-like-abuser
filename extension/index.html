@@ -75,18 +75,18 @@
         class='wrapper wrapper--next'
         v-bind:class="{'wrapper--wide': !authorized}">
         <global-stats></global-stats>
-
       </div>
-      <!-- <instant-news /> -->
       <div v-if='authorized'>
         <!-- <like-exchanger></like-exchanger> -->
+        <instant-news />
       </div>
     </div>
     <div class='wrapper wrapper--right'>
       <realtime-likes></realtime-likes>
-      <!-- <follow-us></follow-us> -->
     </div>
   </div>
+  <script src='src/utils.js'></script>
+  <script src='src/fromCache.js'></script>
   <script src='src/components.js'></script>
   <script src='src/common.js'></script>
   <script src='src/graph.js'></script>

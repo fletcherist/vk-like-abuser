@@ -172,7 +172,7 @@ Vue.component('follow-us', {
 Vue.component('login-button', {
   data: function () {
     return {
-      server: '5133221'
+      server: '5133221' // Default auth server
     }
   },
   init: function () {
@@ -182,6 +182,7 @@ Vue.component('login-button', {
       .then(r => {
         if (r && r.server && r.server.clientId) {
           this.server = r.server.clientId
+          fromCache.server.set(this.server)
         }
         console.log(r)
       })
@@ -195,26 +196,45 @@ Vue.component('login-button', {
   `
 })
 
-// TODO: fetch data
+const BLOG_SERVER_ADDRESS = 'https://blog.vkabuser.ru'
 Vue.component('instant-news', {
   data: function () {
     return {
-      title: 'Запуск магазинаasdasdasdashd'
+      title: 'Server is not responsible',
+      timestamp: new Date(),
+      isLoaded: false
     }
   },
+  init: function () {
+    fetch(`${BLOG_SERVER_ADDRESS}/api/latest`)
+      .then(r => r.json())
+      .then(r => {
+        const { title, timestamp } = r
+        if (title) this.title = title
+        if (timestamp) this.timestamp = new Date(timestamp)
+        this.isLoaded = true
+      })
+      .catch(e => console.error(e))
+  },
   template: `
-    <div class='wrapper wrapper--next news'>
-      <div class='news__header'>Новости</div>
-      <div class='news__title' v-html='titleFormatted'></div>
-      <div class='news__timestamp'>10 июн</div>
+    <div class='wrapper wrapper--next news' v-if='isLoaded'>
+      <div class='news__header'>Последние новости</div>
+      <div class='news__container'>
+        <div class='news__title'>
+          <a href='${BLOG_SERVER_ADDRESS}' v-html='titleFormatted' target='_blank'></a>
+        </div>
+        <div class='news__timestamp' v-html='timestampFormatted'></div>
+      </div>
     </div>
   `,
   computed: {
     titleFormatted: function () {
-      console.log(this.title.length)
-      return this.title.length > 24
-        ? this.title.slice(0, 24) + '...'
+      return this.title.length > 45
+        ? this.title.slice(0, 45) + '...'
         : this.title
+    },
+    timestampFormatted: function () {
+      return `${this.timestamp.getDate()} ${getMonthShort(this.timestamp)}`
     }
   }
 })

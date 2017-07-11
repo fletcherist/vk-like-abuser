@@ -561,18 +561,24 @@ a:hover {
 }
 
 .news {
-  display: flex;
+  /*display: flex;*/
 }
 
 .news__header {
-  flex-direction: flex-start;
+  
   padding-right: 15px;
   font-weight: bold;
+}
+
+.news__container {
+  display: flex;
+  margin-top: 0.5rem;
 }
 
 .news__title { 
   flex-grow: 3;
   color: var(--blue-text);
+  overflow: hidden;
 }
 
 .news__timestamp {

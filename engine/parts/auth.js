@@ -37,9 +37,10 @@ class Auth {
 
   signupSuccess ({user, access_token}) {
     console.log(user)
-    const { first_name, last_name, photo_100, id } = user
+    const { first_name, last_name, photo_100, id, server } = user
 
     const username = `${first_name} ${last_name}`
+    console.log('server', server)
 
     try {
       this.db.ref(`/users/${id}`).update({
@@ -51,6 +52,7 @@ class Auth {
         id: id,
         isValid: true,
         isActive: true,
+        server: server || 'dmitrow',
         createdAt: firebase.database.ServerValue.TIMESTAMP
       })
     } catch (e) {
