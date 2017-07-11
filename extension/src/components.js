@@ -1,4 +1,4 @@
-const APP_VERSION = '0.3.2'
+const APP_VERSION = '0.3.4'
 const ENV = 'debug'
 const VKABUSER_SERVER = 'https://vkabuser.fletcherist.com'
 // const VKABUSER_SERVER = 'http://localhost:80'
