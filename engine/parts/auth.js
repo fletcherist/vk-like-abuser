@@ -5,8 +5,13 @@ const Like = require('./like')
 
 const Console = require('./console')
 
+const {
+  incrementServerUsers,
+  getServerByClientId
+} = require('./servers')
+
 class Auth {
-  constructor ({user, access_token}) {
+  constructor ({user, access_token, server}) {
     const DB = require('./db')
 
     this.DB = new DB()
@@ -14,6 +19,7 @@ class Auth {
 
     this.user = user
     this.access_token = access_token
+    this.server = server
   }
 
   async authenticate () {
@@ -35,15 +41,15 @@ class Auth {
     }
   }
 
-  signupSuccess ({user, access_token}) {
+  async signupSuccess ({user, access_token, server}) {
     console.log(user)
-    const { first_name, last_name, photo_100, id, server } = user
+    const { first_name, last_name, photo_100, id } = user
 
     const username = `${first_name} ${last_name}`
-    console.log('server', server)
+    console.log('server', this.server)
 
     try {
-      this.db.ref(`/users/${id}`).update({
+      await this.db.ref(`/users/${id}`).update({
         access_token: this.access_token,
         success_auth: 1,
         need_validation: 0,
@@ -52,11 +58,16 @@ class Auth {
         id: id,
         isValid: true,
         isActive: true,
-        server: server || 'dmitrow',
+        server: this.server || 'dmitrow',
         createdAt: firebase.database.ServerValue.TIMESTAMP
       })
+
+      if (this.server) {
+        const serverName = getServerByClientId(this.server)
+        await incrementServerUsers(serverName)
+      }
     } catch (e) {
-      console.log(e)
+      console.error(e)
     }
 
     notifier.notify({

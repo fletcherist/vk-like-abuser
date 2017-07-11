@@ -32,6 +32,23 @@ async function setServerClientId (serverName, clientId) {
   await server.update({clientId})
 }
 
+async function incrementServerUsers (serverName) {
+  if (!serverName) return false
+  const serverUsers = db.ref(`/servers/${serverName}/users`)
+  await serverUsers.transaction(currentValue => (currentValue + 1) || 0)
+}
+
+const getServerByClientId = _clientId => {
+  if (!_clientId) return false
+  const { servers } = config
+  for (const server in servers) {
+    const { clientId } = servers[server]
+    if (!clientId) continue
+    if (clientId === Number(_clientId)) return server
+  }
+  return false
+}
+
 const updateServersInformation = async function () {
   const { servers } = config
   for (const server in servers) {
@@ -51,5 +68,7 @@ module.exports = {
   getServers,
   setUserServer,
   updateServersInformation,
-  setServerClientId
+  setServerClientId,
+  incrementServerUsers,
+  getServerByClientId
 }

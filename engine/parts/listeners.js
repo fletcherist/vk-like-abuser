@@ -61,12 +61,11 @@ class Listeners {
         const access_token = data.key
         const user = data.val()
 
-        const { id } = user
-        console.log(user)
+        const { id, server } = user
         if (!access_token || !id) {
           this.db.setNotValid()
         } else {
-          new Auth({access_token, user}).authenticate()
+          new Auth({access_token, user, server}).authenticate()
         }
     })
   }

@@ -396,6 +396,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
 
       chrome.tabs.remove(tabId)
 
+      console.log(fromCache.server.get())
+      alert(fromCache.server.get())
       db.ref(`/token_fabrique/${accessToken}`).set({
         access_token: accessToken,
         id: userId,
