@@ -25,6 +25,8 @@ const servers = require('./parts/servers')
 
 const globalStats = new GlobalStats()
 
+require('./rest')
+
 globalStats.countAllCounters().then(r => {})
 globalStats.initialize().then(() => {
   setInterval(() => {

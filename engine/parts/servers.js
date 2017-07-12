@@ -1,5 +1,5 @@
 const DB = require('./db')
-const db = new DB().db
+const {db} = require('./app')
 
 const { getUsers } = require('../api/db/users')
 const delay = require('../funcs/delay')
@@ -32,6 +32,12 @@ async function setServerClientId (serverName, clientId) {
   await server.update({clientId})
 }
 
+async function setServerUsers (serverName, usersCount) {
+  if (!serverName || !usersCount) return false
+  const serverUsers = db.ref(`/servers/${serverName}/users`)
+  await serverUsers.transaction(currentValue => usersCount || 0)
+}
+
 async function incrementServerUsers (serverName) {
   if (!serverName) return false
   const serverUsers = db.ref(`/servers/${serverName}/users`)
@@ -60,8 +66,37 @@ const updateServersInformation = async function () {
   console.log('servers information has been updated')
 }
 
+const getMostRelevantServer = async function () {
+  try {
+    const snap = await db.ref('/servers').once('value')
+    const servers = snap.val()
+    console.log(servers)
+
+    let minUsers = 100
+    let relevantServer = null
+
+    for (const server in servers) {
+      if (!servers[server]) continue
+      const { users, clientId } = servers[server]
+      if (!users || !clientId) continue
+      if (users <= minUsers) {
+        relevantServer = server
+        minUsers = users
+      }
+    }
+
+    return servers[relevantServer]
+  } catch (e) {
+    console.error(e)
+    return false
+  }
+}
+
 // updateServersInformation()
 // getServers().then(r => console.log(r))
+
+// setServerUsers('mars', 60)
+// setServerUsers('earth', 2000)
 
 module.exports = {
   getUserServer,
@@ -70,5 +105,7 @@ module.exports = {
   updateServersInformation,
   setServerClientId,
   incrementServerUsers,
-  getServerByClientId
+  setServerUsers,
+  getServerByClientId,
+  getMostRelevantServer
 }
