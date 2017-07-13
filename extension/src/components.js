@@ -1,4 +1,4 @@
-const APP_VERSION = '0.3.4'
+const APP_VERSION = '0.3.5'
 const ENV = 'debug'
 const VKABUSER_SERVER = 'https://vkabuser.fletcherist.com'
 // const VKABUSER_SERVER = 'http://localhost:80'
@@ -82,7 +82,7 @@ Vue.component('help', {
         <span class='text-grey'>v${APP_VERSION}</span>
       </div>
       <div class='help__group'>
-        <a href='https://vk.com/vk_king_likes' target='_blank'>Группа ВКонтакте</a>
+        <a href='https://vkabuser.ru' target='_blank'>Наш сайт</a>
       </div>
     </div>
   `
@@ -237,4 +237,25 @@ Vue.component('instant-news', {
       return `${this.timestamp.getDate()} ${getMonthShort(this.timestamp)}`
     }
   }
+})
+
+Vue.component('money-spender', {
+  template: `
+    <div class='wrapper wrapper--next'>
+      Накрутка на конкретную фотку за бабки и быстро
+      <input class='shop__input' placeholder='Вставьте сюда ссылку на фотографию или пост'/>
+      <div class='shop__items'>
+        <div class='shop__item'>
+          <div>
+             ❤️
+          </div>
+          <div class='shop__description'>150 лайков</div>
+          <div class='shop__price'>50₽</div>
+        </div>
+        <div class='shop__item'></div>
+        <div class='shop__item'></div>
+      </div>
+      <div class='navigation__button'>Продолжить</div>
+    </div>
+  `
 })

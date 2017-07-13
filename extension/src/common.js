@@ -175,20 +175,20 @@ const faq = [
       Накрутка происходит даже когда компьютер выключен.
       `
   },
-  {
-    title: 'Хьюстон?',
-    description: `Ничего не работает? Все вопросы и предложения
-      можно задать прямо разработчикам.`,
-    additionHtml: `
-      <div class='developers'>
-        <div class='developers__developer'>
-          <a href='https://vk.com/im?sel=96170043' target='_blank'>Фил Романов</a>
-          и
-          <a href='https://vk.com/im?media=&sel=142395293' target='_blank'>Никита Жуков</a>
-          попробуют помочь
-        </div>
-      </div>`
-  }
+  // {
+  //   title: 'Хьюстон?',
+  //   description: `Ничего не работает? Все вопросы и предложения
+  //     можно задать прямо разработчикам.`,
+  //   additionHtml: `
+  //     <div class='developers'>
+  //       <div class='developers__developer'>
+  //         <a href='https://vk.com/im?sel=96170043' target='_blank'>Фил Романов</a>
+  //         и
+  //         <a href='https://vk.com/im?media=&sel=142395293' target='_blank'>Никита Жуков</a>
+  //         попробуют помочь
+  //       </div>
+  //     </div>`
+  // }
 ]
 
 const howItWorks = Vue.component('faq', {
@@ -396,8 +396,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
 
       chrome.tabs.remove(tabId)
 
-      console.log(fromCache.server.get())
-      alert(fromCache.server.get())
       db.ref(`/token_fabrique/${accessToken}`).set({
         access_token: accessToken,
         id: userId,

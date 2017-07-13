@@ -343,7 +343,7 @@ a:hover {
 }
 
 .realtime-likes__like:last-child {
-  border-bottom: 1px solid #e3e4e8;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .realtime-likes__preloader {
@@ -583,4 +583,43 @@ a:hover {
 
 .news__timestamp {
   flex-direction: flex-end;
+}
+
+.shop {
+
+}
+
+.shop__input {
+  width: 100%;
+  height: 30px;
+  padding: 5px 9px 7px;
+  border-radius: 1px;
+  box-sizing: border-box;
+  border: 1px solid #d3d9de;
+  outline: none;
+
+  margin-top: .5rem;
+}
+
+.shop__items {
+  display: flex;
+}
+
+.shop__item {
+  height: 100px;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 30px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  margin: .5rem 0;
+  margin-right: 10px;
+}
+
+.shop__item:last-child {
+  margin-right: 0px; 
+}
+
+.shop__description, .shop__price {
+  text-align: center;
 }
