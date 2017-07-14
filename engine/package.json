@@ -12,7 +12,7 @@
     "type": "git",
     "url": "git+https://github.com/fletcherist/vk-free-likes.git"
   },
-  "author": "",
+  "author": "Phil Romanov",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/fletcherist/vk-free-likes/issues"
@@ -24,7 +24,7 @@
     "firebase-admin": "^4.2.1",
     "jest": "^20.0.4",
     "lodash": "^4.17.4",
-    "node-fetch": "^1.6.3",
+    "node-fetch": "^1.7.1",
     "node-notifier": "^5.0.2",
     "node-vkapi": "^2.1.0",
     "socket.io": "^2.0.3"
