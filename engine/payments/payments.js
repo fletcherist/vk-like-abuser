@@ -1,6 +1,8 @@
 const { db } = require('../parts/app')
 const fetch = require('node-fetch')
 
+const { isWallpostExist } = require('../api/vk/wall')
+
 
 async function parseVKLink (link) {
   const photoRegex = /=photo([0-9]{1,18})_([0-9]{1,40})%/
@@ -12,11 +14,21 @@ async function parseVKLink (link) {
   }
 
   else if (link.match(postRegex)) {
-    console.log('POST MATCHED', link.match(postRegex))
+    const [result, userId, postId] = link.match(postRegex)
+    const isExist = await isWallpostExist(userId, postId)
+    if (isExist) {
+      // Todo: create task here
+      return console.log('POST MATCHED', link)
+    }
   }
 
   else if (link.match(groupPostRegex)) {
-    console.log('GROUP POST MATCHED', link.match(groupPostRegex))
+    const [result, userId, postId] = link.match(groupPostRegex)
+    const isExist = await isWallpostExist(userId, postId)
+    if (isExist) {
+      // Todo: create task here
+      return console.log('GROUP POST MATCHED', link)
+    }
   } else {
     console.log('NOT MATCHED')
   }
