@@ -11,12 +11,17 @@ async function isWallpostExist (userId, postId) {
 
 async function getWallpostById (userId, postId) {
   if (!userId || !postId) return false
-  const wallpost = await api.call('wall.getById', {
-    posts: `${userId}_${postId}`
-  })
 
-  if (wallpost.length === 0) return false
-  return wallpost[0]
+  try {
+    const wallpost = await api.call('wall.getById', {
+      posts: `${userId}_${postId}`
+    })
+    
+    if (wallpost.length === 0) return false
+    return wallpost[0]
+  } catch (e) {
+    return false
+  }
 }
 
 module.exports = {
