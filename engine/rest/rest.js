@@ -1,8 +1,12 @@
 const app = require('express')()
 const server = require('http').Server(app)
 const io = require('socket.io')(server)
+const bodyParser = require('body-parser')
 
-server.listen(80, () => console.log('Server is started'))
+app.use(bodyParser.json())
+
+server.listen(5000, () => console.log('Server is started'))
+
 
 app.get('/', (req, res) => {
   res.send('Hello from VK Like Abuser API.')
@@ -15,12 +19,25 @@ app.get('/', (req, res) => {
 //   const user = api.getUserToExchangeLikes()
 //   return res.json(user)
 // })
-const {getMostRelevantServer} = require('../parts/servers')
-const {getTasks, successTask, errorTask} = require('../parts/tasksToExtension')
+const { getMostRelevantServer } = require('../parts/servers')
+const { getTasks, successTask, errorTask } = require('../parts/tasksToExtension')
 
 app.get('/server', async (req, res) => {
   const server = await getMostRelevantServer()
   res.send({msg: 'we found a relevant server for you!', server: server})
+})
+
+app.post('/payments', async (req, res) => {
+  console.log(req.body)
+})
+
+const parseVKLink = require('../payments/parseVKLink')
+app.post('/payments/test', async (req, res) => {
+  const { url } = req.body
+  if (!url) return res.json({error: 1, msg: "no url"})
+
+  const parsed = parseVKLink(url)
+  res.json(parsed)
 })
 
 const clients = []

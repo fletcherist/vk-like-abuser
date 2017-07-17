@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/fletcherist/vk-free-likes#readme",
   "dependencies": {
+    "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "firebase": "^3.6.9",
     "firebase-admin": "^4.2.1",
@@ -27,6 +28,10 @@
     "node-fetch": "^1.7.1",
     "node-notifier": "^5.0.2",
     "node-vkapi": "^2.1.0",
+    "pre-commit": "^1.2.2",
     "socket.io": "^2.0.3"
-  }
+  },
+  "precommit": [
+    "test"
+  ]
 }

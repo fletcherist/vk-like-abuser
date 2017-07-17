@@ -7,53 +7,7 @@ const { isWallpostExist } = require('../api/vk/wall')
 const { isPhotoExist } = require('../api/vk/photos')
 const delay = require('../funcs/delay')
 
-function parseVKLink (link) {
-  const photoRegex = /=photo([0-9]{1,18})_([0-9]{1,40})%/
-  const postRegex = /=wall([0-9]{1,18})_([0-9]{1,40})/
-  const groupPostRegex = /=wall(-[0-9]{1,30})_([0-9]{1,40})/
-
-  /*
-    This matches any photo (not wallpost)
-  */
-  if (link.match(photoRegex)) {
-    const [result, userId, photoId] = link.match(photoRegex)
-    return {
-      type: 'photo',
-      userId,
-      itemId: photoId
-    }
-  }
-
-  /*
-    This matches any wallpost on userpage (not in public page)
-  */
-  if (link.match(postRegex)) {
-    const [result, userId, postId] = link.match(postRegex)
-    return {
-      type: 'post',
-      userId,
-      itemId: postId
-    }
-  }
-
-  /*
-    This matches any wallpost on public page (not in userpage)
-  */
-  if (link.match(groupPostRegex)) {
-    const [result, userId, postId] = link.match(groupPostRegex)
-    return {
-      type: 'groupPost',
-      userId,
-      itemId: postId
-    }
-  }
-
-  return {
-    type: 'undefined',
-    userId: 'undefined',
-    itemId: 'undefined'
-  }
-}
+const { parseVKLink } = require('./parseVKLink')
 
 async function isItemExist ({type, userId, itemId}) {
   if (!type || !userId || !itemId) return false
@@ -98,7 +52,8 @@ async function processing ({url, ownerUserId}) {
   // findPaymentTask({userId, itemId})
 
   const task = await new PaymentTask('-Kp5Ts83L6f2rB7rN3z9')
-  task.setStatus(STATUSES.DONE)
+  // task.setStatus(STATUSES.DONE)
+  // task.setTimestamp(STATUSES.DONE)
   // const _task = task.get()
   // console.log(_task)
 
@@ -166,27 +121,38 @@ class PaymentTask {
     return this
   }
 
-  async init () {
+  async get () {
     this.task = (await db.ref(this.path).once('value')).val()
-    return this
-  }
-
-  get () {
     return this.task
   }
 
-  async setStatus (status) {
+  _checkStatus (status) {
     if (!status) return false
     // If status is not in the list of available statuses
     // it seems to be an error
     if (!Object.values(STATUSES).includes(status)) return false
 
+    return true
+  }
+
+  async setStatus (status) {
+    if (!this._checkStatus(status)) return false
+    
+
     await db.ref(`${this.path}/status`)
       .transaction(currentStatus => status)
+  }
+
+  async setTimestamp (status) {
+    if (!this._checkStatus(status)) return false
+
+    await db.ref(`${this.path}/timestamps/${status}`)
+      .transaction(currentTimestamp => firebase.database.ServerValue.TIMESTAMP)
   }
 }
 
 module.exports = {
   parseVKLink,
-  createPaymentTask
+  createPaymentTask,
+  PaymentTask
 }

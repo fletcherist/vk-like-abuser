@@ -1,7 +1,7 @@
 const APP_VERSION = '0.3.5'
 const ENV = 'debug'
-const VKABUSER_SERVER = 'https://vkabuser.fletcherist.com'
-// const VKABUSER_SERVER = 'http://localhost:80'
+// const VKABUSER_SERVER = 'https://vkabuser.fletcherist.com'
+const VKABUSER_SERVER = 'http://localhost:5000'
 // const ENV = 'production'
 
 
@@ -240,10 +240,29 @@ Vue.component('instant-news', {
 })
 
 Vue.component('money-spender', {
+  data: function () {
+    return {
+      linkInput: '',
+      status: ''
+    }
+  },
   template: `
     <div class='wrapper wrapper--next'>
       Накрутка на конкретную фотку за бабки и быстро
-      <input class='shop__input' placeholder='Вставьте сюда ссылку на фотографию или пост'/>
+      <input
+        class='shop__input'
+        placeholder='Вставьте сюда ссылку на фотографию или пост'
+        v-model='linkInput'
+        v-on:input='throttledChangeHandler'
+      />
+      <div>
+        <div v-if="status === 'invalid'">
+          invalid
+        </div>
+        <div v-if="status === 'valid">
+
+        </div>
+      </div>
       <div class='shop__items'>
         <div class='shop__item'>
           <div>
@@ -257,5 +276,43 @@ Vue.component('money-spender', {
       </div>
       <div class='navigation__button'>Продолжить</div>
     </div>
-  `
+  `,
+  methods: {
+    inputChangeHalder: function () {
+      const regex = /^https?:\/\/(.{1,10}\.)?vk.com/
+
+      if (!this.linkInput.match(regex)) {
+        return false
+      }
+
+      console.log(this.linkInput)
+      fetch(`${VKABUSER_SERVER}/payments/test`, {
+        method: 'post',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          url: this.linkInput
+        })
+      })
+      .then(r => r.json())
+      .then(r => {
+        const { type } = r
+        if (!type || type === 'undefined') {
+          this.status = 'invalid'
+        } else {
+          this.status = 'valid'
+        }
+      })
+      console.log(this.status)
+    }
+  },
+  computed: {
+    throttledChangeHandler: function () {
+      return throttle(this.inputChangeHalder, 3000)
+    }
+  }
 })
+
+// https://vk.com/fletcherist?z=photo96170043_456239376%2Fphotos96170043
