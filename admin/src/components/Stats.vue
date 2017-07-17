@@ -5,9 +5,7 @@
     <!-- <recounters></recounters> -->
     <div v-if="globalStats.users" class='container'>
       <div class='stats__container'>
-        <div class='stats__block'>
-          <h1>Total</h1>
-        </div>
+        <h1>General activities</h1>
         <div class='stats__block'>
           <div class='stats__value_desc'>
             All users
@@ -40,7 +38,7 @@
         </div>
       </div>
       <div class='stats__container'>
-        <div class='stats__block'><h1>Today</h1></div>
+        <h1>Today fresh stats</h1>
         <div class='stats__block'>
           <div class='stats__value_desc'>new sign ups</div>
           <div class='stats__value'>{{formatNumber(todayStats.users) || 0}}</div>
@@ -63,9 +61,7 @@
         </div>
       </div>
       <div class='stats__container'>
-        <div class='stats__block'>
-          <div class='stats__value_desc'><h1>Percentage</h1></div>
-        </div>
+        <h1>Some percents</h1>
         <div class='stats__block'>
           <div class='stats__value_desc'>Succeeded likes</div>
           <div class='stats__value'>{{successLikes}}%</div>
@@ -80,6 +76,7 @@
         </div>
       </div>
       <div class='stats__container'>
+        <h1>Tasks</h1>
         <div class='stats__block'>
           <div class='stats__value_desc'>Tasks</div>
           <div class='stats__value'>{{globalStats.tasks.all}}</div>
@@ -110,7 +107,7 @@ const time = new TimeAssistant()
 const todayStatsLink = `/daily_statistics/${time.getDateForFirebase()}`
 
 const formatNumber = num => {
-  if (!num) return ''
+  if (!num) return 0
   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
 }
 
@@ -122,7 +119,7 @@ export default {
       return (this.globalStats.likes.all / (this.globalStats.errors.all + this.globalStats.likes.all)).toFixed(2) * 100
     },
     errorLikes () {
-      return (this.globalStats.errors.all / (this.globalStats.errors.all + this.globalStats.likes.all)).toFixed(2) * 100
+      return (this.globalStats.errors.all / (this.globalStats.errors.all + this.globalStats.likes.all) * 100).toFixed(2)
     },
     activeUsers () {
       return (this.globalStats.users.active / this.globalStats.users.total)
@@ -136,7 +133,7 @@ export default {
     },
     todayTasks () {
       if (this.todayStats && this.todayStats.tasks) {
-        return this.todayStats.tasks
+        return this.todayStats.tasks || 0
       }
 
       return {
@@ -190,8 +187,10 @@ export default {
   display: flex;
   align-items: center;
   font-size: 1.5rem;
-  width: 400px;
+  width: 100%;
+  max-width: 400px;
   text-align: left;
+  line-height: 1.3rem;
 }
 
 .stats__icon {
@@ -201,14 +200,14 @@ export default {
 
 .stats__value {
   align-self: center;
+  font-size: 1rem;
 }
 
 .stats__value_desc {
-  font-size: 1rem;
-  font-weight: lighter;
+  font-size: .9rem;
   text-transform: lowercase;
   /*align-self: flex-start;*/
-  width: 70%;
+  width: 60%;
 }
 
 .stats__active {
