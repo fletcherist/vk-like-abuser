@@ -103,6 +103,21 @@ class VK {
     }
   }
 
+  async dislike({target, id, type}) {
+    if (!target) return new Console().error('{VK} no target')
+    if (!id) return new Console().error('{VK} no id')
+
+    try {
+      return await this.vk.call('likes.remove', {
+        type: type,
+        owner_id: target,
+        item_id: id
+      })
+    } catch (e) {
+      return e
+    }
+  }
+
   async getPhoto (user_id) {
     const types = ['wall', 'profile']
     const typeToSearch = types[Math.floor(Math.random() * types.length)]
