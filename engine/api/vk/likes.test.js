@@ -1,0 +1,4 @@
+const {
+  getLikesList
+} = require('./likes')
+
