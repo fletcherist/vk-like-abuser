@@ -108,7 +108,7 @@ class VK {
     if (!id) return new Console().error('{VK} no id')
 
     try {
-      return await this.vk.call('likes.remove', {
+      return await this.vk.call('likes.delete', {
         type: type,
         owner_id: target,
         item_id: id
