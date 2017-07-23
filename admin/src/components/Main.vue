@@ -117,15 +117,12 @@ a {
   margin: 1rem;
 }
 
-.wrapper {
-  margin: 1rem;
-}
-
 .nav {
   display: flex;
 }
 
 .nav__link {
-  flex-basis: 100px;
+  flex-grow: 1;
+  margin: 1rem;
 }
 </style>
