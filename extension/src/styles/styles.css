@@ -3,6 +3,7 @@ body {
   font-family: -apple-system,BlinkMacSystemFont,Roboto,Open Sans,Helvetica Neue,sans-serif;
   background: var(--main-bg-color);
   min-height: 101vh;
+  font-size: 12px;
 }
 
 a {
@@ -601,12 +602,18 @@ a:hover {
   margin-top: .5rem;
 }
 
+.shop__emoji {
+  font-size: 3rem;
+  text-align: center;
+  padding-top: .5rem;
+}
+
 .shop__items {
   display: flex;
 }
 
 .shop__item {
-  height: 100px;
+  height: 115px;
   flex-grow: 1;
   flex-shrink: 1;
   flex-basis: 30px;
@@ -616,8 +623,16 @@ a:hover {
   margin-right: 10px;
 }
 
+.shop__item--disabled {
+  opacity: .5;
+}
+
 .shop__item:last-child {
   margin-right: 0px; 
+}
+
+.shop__description {
+  text-align: center;
 }
 
 .shop__description, .shop__price {

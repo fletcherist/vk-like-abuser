@@ -264,12 +264,10 @@ Vue.component('money-spender', {
         </div>
       </div>
       <div class='shop__items'>
-        <div class='shop__item'>
-          <div>
-             ❤️
-          </div>
+        <div class='shop__item shop__item--disabled'>
+          <div class='shop__emoji'>❤️</div>
           <div class='shop__description'>150 лайков</div>
-          <div class='shop__price'>50₽</div>
+          <div class='shop__price'>Купить за 50₽</div>
         </div>
         <div class='shop__item'></div>
         <div class='shop__item'></div>
