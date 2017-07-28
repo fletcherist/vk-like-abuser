@@ -3,7 +3,7 @@ const Console = require('./console')
 
 let usersInstance = null
 
-const { getUsers } = require('../api/db/users')
+const { getUsers, getActiveUsers } = require('../api/db/users')
 
 class Users {
   constructor () {
@@ -34,7 +34,7 @@ class Users {
   }
 
   async fetchUsers () {
-    const users = await getUsers()
+    const users = await getActiveUsers()
     for (let userId in users) {
       let user = users[userId]
       if (user.isActive === false || user.isValid === false) {

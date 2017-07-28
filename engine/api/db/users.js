@@ -9,6 +9,15 @@ async function getUsers (limit) {
   return users
 }
 
+async function getActiveUsers () {
+  const snapshot = await db.ref(`/users`)
+    .orderByChild('isActive')
+    .equalTo(true)
+    .once('value')
+  const users = snapshot.val()
+  return users
+}
+
 async function getUser (userId) {
   if (!userId) return false
   const snapshot = await db.ref(`/users/${userId}`).once('value')
@@ -54,6 +63,7 @@ async function getRandomUser () {
 
 module.exports = {
   getUsers,
+  getActiveUsers,
   getUser,
   isUserExist,
 
