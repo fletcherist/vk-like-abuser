@@ -1,6 +1,6 @@
 const _log = require('../../parts/console').log
-const {db} = require('../../parts/app')
-const {random} = require('lodash')
+const { db } = require('../../parts/app')
+const { random } = require('lodash')
 
 async function getUsers (limit) {
   if (!limit) limit = 10000

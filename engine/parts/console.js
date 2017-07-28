@@ -1,4 +1,5 @@
 const TimeAssistant = require('./timeAssistant')
+const { segmentClient } = require('./app')
 
 const fs = require('fs')
 
@@ -25,6 +26,7 @@ class Console {
       return false
     let message = `[${this.time.getFormattedTime()}] ` + 'Error: ' + msg
     console.warn(message)
+    segmentClient.track({event: 'console.error', message, userId: 'userId'})
     this.writeToLogs(message)
   }
 
@@ -33,6 +35,7 @@ class Console {
       return false
     let message = `[${this.time.getFormattedTime()}] ` + 'Success: ' + msg
     console.log(message)
+    segmentClient.track({event: 'console.success', message, userId: 'userId'})
     this.writeToLogs(message)
   }
 
@@ -41,6 +44,7 @@ class Console {
       return false
     let message = `[${this.time.getFormattedTime()}] ` + 'Notification: ' + msg
     console.log(message)
+    segmentClient.track({event: 'console.notify', message, userId: 'userId'})
     this.writeToLogs(message)
   }
 

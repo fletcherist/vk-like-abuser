@@ -25,3 +25,16 @@ const getMonthShort = time => {
 function formatNumber (num) {
     return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")
 }
+
+function throttle (callback, limit) {
+    var wait = false;
+    return function () {
+        if (!wait) {
+            callback.call();
+            wait = true;
+            setTimeout(function () {
+                wait = false;
+            }, limit);
+        }
+    }
+}
