@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/fletcherist/vk-free-likes#readme",
   "dependencies": {
+    "analytics-node": "^3.0.0",
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "firebase": "^3.6.9",

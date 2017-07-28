@@ -1,14 +1,14 @@
 const admin = require('firebase-admin')
+const SegmentAnalytics = require('analytics-node')
 
-const firebaseConfig = require('../config').firebase
+const config = require('../config')
 const serviceAccount = require('../firebase-key.json')
 
 const app = admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: firebaseConfig.databaseURL
+  databaseURL: config.firebase.databaseURL
 })
 
-const db = app.database()
-
 module.exports = app
-module.exports.db = db
+module.exports.db = app.database()
+module.exports.segmentClient = new SegmentAnalytics(config.segment.analyticsWriteKey)

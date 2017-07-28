@@ -7,7 +7,7 @@ const vkusers = require('../api/vk/users')
 
 
 let _dataInstance = {}
-class Analytics {
+class Statistics {
   constructor () {
 
     this.isInitialized = false
@@ -30,7 +30,7 @@ class Analytics {
 }
 
 
-class UsersAnalytics extends Analytics {
+class UsersStatistics extends Statistics {
   constructor () {
     super()
     this.users = this.data.users
@@ -121,14 +121,14 @@ class UsersAnalytics extends Analytics {
   }
 }
 
-const analytics = new Analytics()
+const statistics = new Statistics()
 
-analytics.initialize().then(async () => {
+statistics.initialize().then(async () => {
 
-  const usersAnalytics = new UsersAnalytics()
+  const usersStatistics = new UsersStatistics()
 
-  const medianAge = usersAnalytics.getMedianAge()
-  const inactiveUsers = usersAnalytics.getInactiveUsers()
+  const medianAge = usersStatistics.getMedianAge()
+  const inactiveUsers = usersStatistics.getInactiveUsers()
 
   // const deactivatedUsers = await usersAnalytics.findDeactivatedUsers()
   // console.log(deactivatedUsers)
@@ -137,4 +137,4 @@ analytics.initialize().then(async () => {
   // console.log(inactiveUsers)
 })
 
-module.exports = Analytics
+module.exports = Statistics
