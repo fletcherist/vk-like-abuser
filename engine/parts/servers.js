@@ -67,13 +67,24 @@ const getServerNameByClientId = _clientId =>
 
 const updateServersInformation = async function () {
   const { servers } = config
-  for (const server in servers) {
-    const { clientId } = servers[server]
-    if (!clientId) continue
-    await setServerClientId(server, clientId)
-  }
 
-  console.log('servers information has been updated')
+  const VKServersList = await VKServers.getServersInfo()
+  try {
+    for (const server in servers) {
+      const { clientId } = servers[server]
+      if (!clientId) continue
+      await setServerClientId(server, clientId)
+
+      const currentVKServer = VKServersList.find(_server => clientId === _server.id)
+      if (currentVKServer) {
+        const { members_count } = currentVKServer
+        await setServerUsers(server, members_count)
+      }
+    }
+    console.log('servers information has been updated')
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 const getMostRelevantServer = async function () {
@@ -108,6 +119,7 @@ const getMostRelevantServer = async function () {
 // setServerUsers('mars', 60)
 // setServerUsers('earth', 2000)
 
+setInterval(updateServersInformation, 36e5)
 
 module.exports = {
   getUserServer,

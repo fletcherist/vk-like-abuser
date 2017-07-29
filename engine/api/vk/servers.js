@@ -42,7 +42,6 @@ async function getServersInfo () {
   try {
     const serversResponse = await api.call('apps.get', {app_ids: serversStr})
     if (serversResponse.items) {
-      console.log(Object.values(serversResponse.items))
       return Object.values(serversResponse.items)
     }
     return []
