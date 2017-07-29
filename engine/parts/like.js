@@ -102,6 +102,7 @@ async function createRealtimeLike (object, target, item) {
 
 function errorHandler ({object, target, item, e}) {
   if (e) {
+    console.log('Error handler: ', object, target, item)
     return new ErrorResolver({
       error: e,
       object: object,

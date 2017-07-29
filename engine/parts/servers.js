@@ -2,6 +2,8 @@ const DB = require('./db')
 const {db} = require('./app')
 
 const { getUsers } = require('../api/db/users')
+const VKServers = require('../api/vk/servers')
+
 const delay = require('../funcs/delay')
 const config = require('../config')
 
@@ -50,10 +52,18 @@ const getServerByClientId = _clientId => {
   for (const server in servers) {
     const { clientId } = servers[server]
     if (!clientId) continue
-    if (clientId === Number(_clientId)) return server
+    if (clientId === Number(_clientId)) {
+      console.log(server)
+      return Object.assign(servers[server], {
+        name: server
+      })
+    }
   }
   return false
 }
+
+const getServerNameByClientId = _clientId =>
+  getServerByClientId(_clientId).name
 
 const updateServersInformation = async function () {
   const { servers } = config
@@ -98,6 +108,7 @@ const getMostRelevantServer = async function () {
 // setServerUsers('mars', 60)
 // setServerUsers('earth', 2000)
 
+
 module.exports = {
   getUserServer,
   getServers,
@@ -106,6 +117,9 @@ module.exports = {
   setServerClientId,
   incrementServerUsers,
   setServerUsers,
+
   getServerByClientId,
+  getServerNameByClientId,
+
   getMostRelevantServer
 }

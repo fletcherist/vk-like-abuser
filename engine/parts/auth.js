@@ -7,7 +7,7 @@ const Console = require('./console')
 
 const {
   incrementServerUsers,
-  getServerByClientId
+  getServerNameByClientId
 } = require('./servers')
 
 class Auth {
@@ -63,7 +63,7 @@ class Auth {
       })
 
       if (this.server) {
-        const serverName = getServerByClientId(this.server)
+        const serverName = getServerNameByClientId(this.server)
         await incrementServerUsers(serverName)
       }
     } catch (e) {
