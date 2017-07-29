@@ -142,19 +142,14 @@ class Engine {
     }, this.waiter())
   }
 
-  doTask ({object, target}) {
-    return new Promise((resolve, reject) => {
-      Like({object, target})
-        .then(() => {
-          this.globalStats.incrementLikesCount()
-          this.success++
-          return resolve()
-        })
-        .catch((e) => {
-          this.errors++
-          return resolve()
-        })
-    })
+  async doTask ({object, target}) {
+    try {
+      await Like({object, target})
+      this.globalStats.incrementLikesCount()
+      this.success++
+    } catch (e) {
+      this.errors++
+    }
   }
 
   isItTimeToRunEngine () {

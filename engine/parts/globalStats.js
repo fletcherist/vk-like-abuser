@@ -1,3 +1,5 @@
+const { segmentClient } = require('./app')
+
 const Users = require('./users')
 const DB = require('./db')
 const TimeAssistant = require('./timeAssistant')
@@ -65,6 +67,7 @@ class GlobalStats {
       }
     })
     this.db.ref('/global_stats/users').update(counter)
+    this.track('counters.countActiveUsers')
   }
 
 
@@ -82,6 +85,7 @@ class GlobalStats {
       })
 
       this.db.ref('/global_stats/sex').update({male, female})
+      this.track('counters.countGenders')
 
       return resolve()
     })
@@ -121,6 +125,8 @@ class GlobalStats {
     // Incrementing daily likes counter
     this.db.ref(`/daily_statistics/${this.time.getDateForFirebase()}/likes`)
       .transaction(currentValue => (currentValue || 0) + 1)
+
+    this.track('likes.success')
   }
 
   incrementErrorsCount () {
@@ -131,6 +137,8 @@ class GlobalStats {
     // Incrementing daily errors counter
     this.db.ref(`/daily_statistics/${this.time.getDateForFirebase()}/errors`)
       .transaction(currentValue => (currentValue || 0) + 1)
+
+    this.track('likes.error')
   }
 
   incrementUsersCount () {
@@ -139,6 +147,8 @@ class GlobalStats {
 
     this.db.ref(`/daily_statistics/${this.time.getDateForFirebase()}/users`)
       .transaction(currentValue => (currentValue || 0) + 1)
+
+    this.track('users.newUser')
   }
 
   incrementTasksCount () {
@@ -147,6 +157,8 @@ class GlobalStats {
 
     this.db.ref(`/daily_statistics/${this.time.getDateForFirebase()}/tasks/all`)
       .transaction(currentValue => (currentValue || 0) + 1)
+
+    this.track('tasks.newTask')
   }
 
   incrementSuccessTasks () {
@@ -155,6 +167,8 @@ class GlobalStats {
 
     this.db.ref(`/daily_statistics/${this.time.getDateForFirebase()}/tasks/success`)
       .transaction(currentValue => (currentValue || 0) + 1)
+
+    this.track('tasks.successTask')
   }
 
   incrementDeactivationsCount () {
@@ -163,6 +177,8 @@ class GlobalStats {
 
     this.db.ref(`/daily_statistics/${this.time.getDateForFirebase()}/deactivated`)
       .transaction(currentValue => (currentValue || 0) + 1)
+
+    this.track('users.deactivate')
   }
 
   incrementEnginesCount () {
@@ -171,6 +187,15 @@ class GlobalStats {
 
     this.db.ref(`/daily_statistics/${this.time.getDateForFirebase()}/engines`)
       .transaction(currentValue => (currentValue || 0) + 1)
+
+    this.track('engine.new')
+  }
+
+  track (eventName) {
+    segmentClient.track({
+      event: eventName,
+      userId: 'userId'
+    })
   }
 }
 
