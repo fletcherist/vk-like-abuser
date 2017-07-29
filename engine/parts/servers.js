@@ -91,9 +91,8 @@ const getMostRelevantServer = async function () {
   try {
     const snap = await db.ref('/servers').once('value')
     const servers = snap.val()
-    console.log(servers)
 
-    let minUsers = 100
+    let minUsers = 1
     let relevantServer = null
 
     for (const server in servers) {
@@ -112,6 +111,8 @@ const getMostRelevantServer = async function () {
     return false
   }
 }
+
+getMostRelevantServer()
 
 // updateServersInformation()
 // getServers().then(r => console.log(r))
