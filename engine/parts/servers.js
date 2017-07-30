@@ -92,20 +92,11 @@ const getMostRelevantServer = async function () {
     const snap = await db.ref('/servers').once('value')
     const servers = snap.val()
 
-    let minUsers = 1
-    let relevantServer = null
-
-    for (const server in servers) {
-      if (!servers[server]) continue
-      const { users, clientId } = servers[server]
-      if (!users || !clientId) continue
-      if (users <= minUsers) {
-        relevantServer = server
-        minUsers = users
-      }
-    }
-
-    return servers[relevantServer]
+    const relevantServer = Object.values(servers)
+      .reduce((server1, server2) =>
+        server1.users < server2.users ? server1 : server2
+      )
+    return relevantServer
   } catch (e) {
     console.error(e)
     return false
