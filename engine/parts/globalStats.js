@@ -199,4 +199,25 @@ class GlobalStats {
   }
 }
 
+class AgeStats extends GlobalStats {
+  constructor () {
+    super()
+
+    this.path = '/global_stats/age'
+  }
+
+  async setMedianFemaleAge (age) {
+    return await this.db.ref(`${this.path}/median_female`).transaction(curr => age)
+  }
+
+  async setMedianMaleAge (age) {
+    return await this.db.ref(`${this.path}/median_male`).transaction(curr => age)
+  }
+
+  async setMedianCommonAge (age) {
+    return await this.db.ref(`${this.path}/median_common`).transaction(curr => age)
+  }
+}
+
 module.exports = GlobalStats
+module.exports.AgeStats = AgeStats

@@ -108,9 +108,6 @@ getMostRelevantServer()
 // updateServersInformation()
 // getServers().then(r => console.log(r))
 
-// setServerUsers('mars', 60)
-// setServerUsers('earth', 2000)
-
 setInterval(updateServersInformation, 36e5)
 
 module.exports = {

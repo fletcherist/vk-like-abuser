@@ -1,4 +1,5 @@
 const Backup = require('./backup')
+const { AgeStats } = require('./globalStats')
 
 const _ = require('lodash')
 const Delay = require('../funcs/delay')
@@ -132,8 +133,15 @@ statistics.initialize().then(async () => {
 
   // const deactivatedUsers = await usersAnalytics.findDeactivatedUsers()
   // console.log(deactivatedUsers)
+  const ageStats = new AgeStats()
+  console.log(ageStats)
 
-  // console.log(medianAge)
+  await Promise.all([
+    ageStats.setMedianFemaleAge(medianAge.women),
+    ageStats.setMedianMaleAge(medianAge.men),
+    ageStats.setMedianCommonAge(medianAge.common)
+  ]).then(r => console.log(r))
+
   // console.log(inactiveUsers)
 })
 
