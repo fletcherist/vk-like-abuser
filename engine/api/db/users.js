@@ -2,19 +2,29 @@ const _log = require('../../parts/console').log
 const { db } = require('../../parts/app')
 const { random } = require('lodash')
 
-async function getUsers (limit) {
-  if (!limit) limit = 10000
+async function getUsers (limit = 10000) {
   const snapshot = await db.ref(`/users`).limitToLast(limit).once('value')
   const users = snapshot.val()
   return users
 }
 
-async function getActiveUsers () {
+async function getActiveUsers() {
   const snapshot = await db.ref(`/users`)
     .orderByChild('isActive')
     .equalTo(true)
     .once('value')
   const users = snapshot.val()
+  return users
+}
+
+async function getInactiveUsers(limit = 100) {
+  const snapshot = await db.ref(`/users`)
+    .orderByChild('isActive')
+    .equalTo(false)
+    .limitToLast(limit)
+    .once('value')
+  const users = snapshot.val()
+  console.log(users)
   return users
 }
 
@@ -64,6 +74,7 @@ async function getRandomUser () {
 module.exports = {
   getUsers,
   getActiveUsers,
+  getInactiveUsers,
   getUser,
   isUserExist,
 

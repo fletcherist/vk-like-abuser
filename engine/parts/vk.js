@@ -131,7 +131,7 @@ class VK {
       })
 
       if (count === 0) {
-        throw new Error()
+        return null
       }
 
       for (let i = 0; i < items.length; i++) {
@@ -145,8 +145,8 @@ class VK {
           }
         }
       }
-    } catch (e) {
-      throw new Error(e)
+    } catch (error) {
+      return null
     }
   }
 }

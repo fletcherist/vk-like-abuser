@@ -1,11 +1,11 @@
-const fetch = require('node-fetch')
+// const fetch = require('node-fetch')
 const firebase = require('firebase')
 
 const { db } = require('../parts/app')
 
 const { isWallpostExist } = require('../api/vk/wall')
 const { isPhotoExist } = require('../api/vk/photos')
-const delay = require('../funcs/delay')
+// const delay = require('../funcs/delay')
 
 const { parseVKLink } = require('./parseVKLink')
 
@@ -21,42 +21,40 @@ async function isItemExist ({type, userId, itemId}) {
   }
 }
 
-async function foo () {
-  const links = [
-    'https://vk.com/fletcherist?z=photo96170043_456239376%2Fphotos96170043',
-    // 'https://vk.com/fletcherist?w=wall96170043_3051',
-    // 'https://vk.com/tech?w=wall-147415323_713',
-    // 'https://vk.com/vkcup?w=wall-41208167_1250'
-  ]
+// async function foo() {
+//   const links = [
+//     'https://vk.com/fletcherist?z=photo96170043_456239376%2Fphotos96170043',
+//     // 'https://vk.com/fletcherist?w=wall96170043_3051',
+//     // 'https://vk.com/tech?w=wall-147415323_713',
+//     // 'https://vk.com/vkcup?w=wall-41208167_1250'
+//   ]
 
-  const parsedLinks = links.map(link => parseVKLink(link))
-  for (const item of parsedLinks) {
-    await delay(1000)
-    console.log(await isItemExist(item))
-  }
-}
+//   const parsedLinks = links.map(link => parseVKLink(link))
+//   for (const item of parsedLinks) {
+//     await delay(1000)
+//     console.log(await isItemExist(item))
+//   }
+// }
 
 // foo()
 
 async function processing ({url, ownerUserId}) {
-
   const parsedLink = await parseVKLink(url)
   if (!await isItemExist(parsedLink)) {
     console.log('This item is not exist')
     return false
   }
 
-  const { type, userId, itemId } = parsedLink
+  // const { type, userId, itemId } = parsedLink
   // createPaymentTask({type, userId, itemId, ownerUserId})
 
   // findPaymentTask({userId, itemId})
 
-  const task = await new PaymentTask('-Kp5Ts83L6f2rB7rN3z9')
+  // const task = await new PaymentTask('-Kp5Ts83L6f2rB7rN3z9')
   // task.setStatus(STATUSES.DONE)
   // task.setTimestamp(STATUSES.DONE)
   // const _task = task.get()
   // console.log(_task)
-
 }
 
 processing({
@@ -137,7 +135,6 @@ class PaymentTask {
 
   async setStatus (status) {
     if (!this._checkStatus(status)) return false
-    
 
     await db.ref(`${this.path}/status`)
       .transaction(currentStatus => status)

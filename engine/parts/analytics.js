@@ -141,8 +141,6 @@ statistics.initialize().then(async () => {
     ageStats.setMedianMaleAge(medianAge.men),
     ageStats.setMedianCommonAge(medianAge.common)
   ]).then(r => console.log(r))
-
-  // console.log(inactiveUsers)
 })
 
 module.exports = Statistics

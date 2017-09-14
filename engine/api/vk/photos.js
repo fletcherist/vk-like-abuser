@@ -24,7 +24,27 @@ async function getPhotoById (userId, photoId) {
   }
 }
 
+const getRandomFromArray = array => array[Math.floor(Math.random() * array.length)]
+async function getRandomUserPhotoId (userId) {
+  if (!userId) throw new Error('No userId provided')
+  try {
+    const { count, items } = await api.call('photos.get', {
+      owner_id: userId,
+      album_id: getRandomFromArray(['wall', 'profile']),
+      extended: 1,
+      rev: 1
+    })
+
+    if (count === 0) return null
+    return getRandomFromArray(items).id
+  } catch (error) {
+    console.log(error)
+    return null
+  }
+}
+
 module.exports = {
   isPhotoExist,
-  getPhotoById
+  getPhotoById,
+  getRandomUserPhotoId
 }
