@@ -9,7 +9,7 @@ const { isPhotoExist } = require('../api/vk/photos')
 
 const { parseVKLink } = require('./parseVKLink')
 
-async function isItemExist ({type, userId, itemId}) {
+async function isItemExist({type, userId, itemId}) {
   if (!type || !userId || !itemId) return false
   switch (type) {
     case 'photo': return await isPhotoExist(userId, itemId)
@@ -38,7 +38,7 @@ async function isItemExist ({type, userId, itemId}) {
 
 // foo()
 
-async function processing ({url, ownerUserId}) {
+async function processing({url, ownerUserId}) {
   const parsedLink = await parseVKLink(url)
   if (!await isItemExist(parsedLink)) {
     console.log('This item is not exist')
@@ -62,7 +62,7 @@ processing({
   ownerUserId: '5'
 })
 
-async function createPaymentTask ({
+async function createPaymentTask({
   type,
   userId,
   itemId,
@@ -87,7 +87,7 @@ async function createPaymentTask ({
   return task
 }
 
-async function findPaymentTask ({
+async function findPaymentTask({
   userId,
   itemId
 }) {
@@ -110,7 +110,7 @@ const STATUSES = {
 }
 
 class PaymentTask {
-  constructor (taskId) {
+  constructor(taskId) {
     if (!taskId) return false
     this.taskId = taskId
     this.path = `/payments/${this.taskId}`
@@ -119,12 +119,12 @@ class PaymentTask {
     return this
   }
 
-  async get () {
+  async get() {
     this.task = (await db.ref(this.path).once('value')).val()
     return this.task
   }
 
-  _checkStatus (status) {
+  _checkStatus(status) {
     if (!status) return false
     // If status is not in the list of available statuses
     // it seems to be an error
@@ -133,14 +133,14 @@ class PaymentTask {
     return true
   }
 
-  async setStatus (status) {
+  async setStatus(status) {
     if (!this._checkStatus(status)) return false
 
     await db.ref(`${this.path}/status`)
       .transaction(currentStatus => status)
   }
 
-  async setTimestamp (status) {
+  async setTimestamp(status) {
     if (!this._checkStatus(status)) return false
 
     await db.ref(`${this.path}/timestamps/${status}`)
