@@ -1,9 +1,8 @@
 const APP_VERSION = '0.3.5'
-const ENV = 'debug'
+// const ENV = 'debug'
 // const VKABUSER_SERVER = 'https://vkabuser.fletcherist.com'
 const VKABUSER_SERVER = 'http://localhost:5000'
 // const ENV = 'production'
-
 
 Vue.component('preloader', {
   template: `
@@ -151,7 +150,6 @@ Vue.component('like-exchanger', {
   }
 })
 
-
 const TELEGRAM_CHANNEL = 'https://t.me/joinchat/AAAAAEL5zbAb46YiIsuOVg'
 Vue.component('follow-us', {
   template: `
@@ -267,7 +265,7 @@ Vue.component('money-spender', {
         <div class='shop__item shop__item--disabled'>
           <div class='shop__emoji'>❤️</div>
           <div class='shop__description'>150 лайков</div>
-          <div class='shop__price'>Купить за 50₽</div>
+          <div class='shop__price'>Купить за 50₽</div>
         </div>
         <div class='shop__item'></div>
         <div class='shop__item'></div>
@@ -293,16 +291,15 @@ Vue.component('money-spender', {
         body: JSON.stringify({
           url: this.linkInput
         })
-      })
-      .then(r => r.json())
-      .then(r => {
-        const { type } = r
-        if (!type || type === 'undefined') {
-          this.status = 'invalid'
-        } else {
-          this.status = 'valid'
-        }
-      })
+      }).then(r => r.json())
+        .then(r => {
+          const { type } = r
+          if (!type || type === 'undefined') {
+            this.status = 'invalid'
+          } else {
+            this.status = 'valid'
+          }
+        })
       console.log(this.status)
     }
   },

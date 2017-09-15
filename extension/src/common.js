@@ -19,11 +19,11 @@ Vue.use(VueFire)
 
 const db = firebase.database()
 
-const users = db.ref('/users').limitToFirst(20)
+// const users = db.ref('/users').limitToFirst(20)
 const me = db.ref(`/users/${MY_ID}`)
 const stats = db.ref(`/statistics/${MY_ID}`)
-const likes = db.ref('/likes').limitToLast(10)
-const tasks = db.ref(`/tasks/${MY_ID}`)
+// const likes = db.ref('/likes').limitToLast(10)
+// const tasks = db.ref(`/tasks/${MY_ID}`)
 const globalStats = db.ref('/global_stats')
 
 Vue.component('global-stats', {
@@ -150,7 +150,6 @@ Vue.component('donate', {
       <b><a href='https://vk.com/app5727453_-116428466' target='_blank'>Пожертвовать!</a></b>
     </div>`
 })
-
 
 const faq = [
   {

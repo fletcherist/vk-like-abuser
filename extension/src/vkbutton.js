@@ -1,6 +1,6 @@
 (function () {
-  const API = 'https://api.vk.com/method'
-  const env = 'DEBUG'
+  // const API = 'https://api.vk.com/method'
+  // const env = 'DEBUG'
   // const env = 'PRODUCTION'
 
   const likes = document.querySelectorAll('.post_full_like_wrap')
@@ -15,7 +15,7 @@
       </div>
     `
 
-    const postLikes = like.querySelector('.post_full_like')
+    // const postLikes = like.querySelector('.post_full_like')
     like.appendChild(abuserLike)
   })
 })()
