@@ -1,7 +1,8 @@
-const APP_VERSION = '0.3.5'
+const APP_VERSION = '0.3.6'
 // const ENV = 'debug'
-// const VKABUSER_SERVER = 'https://vkabuser.fletcherist.com'
-const VKABUSER_SERVER = 'http://localhost:5000'
+const VKABUSER_SERVER = 'https://vkabuser.fletcherist.com'
+// const VKABUSER_SERVER = 'http://localhost:5000'
+const TELEGRAM_CHANNEL = 'https://t.me/joinchat/AAAAAEN_IDZdpjLdsWIaDg'
 // const ENV = 'production'
 
 Vue.component('preloader', {
@@ -14,7 +15,7 @@ Vue.component('preloader', {
 
 Vue.component('telegram-logo', {
   template: `
-  <svg width="70px" height="70px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 240 240">
+  <svg width="50px" height="50px" class="telegram-logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 240 240">
     <defs>
     <linearGradient id="b" x1="0.6667" y1="0.1667" x2="0.4167" y2="0.75">
       <stop stop-color="#37aee2" offset="0"/>
@@ -79,9 +80,6 @@ Vue.component('help', {
     <div class='help'>
       <div>
         <span class='text-grey'>v${APP_VERSION}</span>
-      </div>
-      <div class='help__group'>
-        <a href='https://vkabuser.ru' target='_blank'>Наш сайт</a>
       </div>
     </div>
   `
@@ -150,14 +148,13 @@ Vue.component('like-exchanger', {
   }
 })
 
-const TELEGRAM_CHANNEL = 'https://t.me/joinchat/AAAAAEL5zbAb46YiIsuOVg'
 Vue.component('follow-us', {
   template: `
-    <div class=''>
-      <h1>Следите за новостями</h1>
-      <span>Наша группа ВКонтакте <b>заблокирована</b>.
-        Последние обновления. Ход разработки. Не пропустите главное. Наш телеграм канал:
-      </span>
+    <div class="follow-us">
+      <div class="follow-us__text">
+        Подписывайтесь на наш телеграм канал, чтобы получать последние новости
+        об обновлениях и разработке.
+      </div>
       <div class="follow-us__channels">
         <a href="${TELEGRAM_CHANNEL}" target="_blank" class="follow-us__channel no-underline">
           <telegram-logo></telegram-logo>

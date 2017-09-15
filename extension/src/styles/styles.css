@@ -190,13 +190,6 @@ a:hover {
   margin-top: 1rem;
 }
 
-.help__messages {
-}
-
-.help__group {
-  margin-left: auto;
-}
-
 .svg__image {
   clip-path: border-box;
   border-radius: 25%;
@@ -547,18 +540,25 @@ a:hover {
   max-width: var(--right-block-max-width);
 }
 
-.follow-us__channels {
+.follow-us {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  align-items: center;
+}
+.follow-us__text {
+  padding: 5px;
+}
+
+.follow-us__channels {
   width: 100%;
-  margin: 1rem auto;
-  padding: .5rem;
+  /*paddi: 20px;*/
+  /*margin: 1rem auto;*/
+  /*padding: .5rem;*/
 }
 
 .follow-us__channel {
   margin: 0px auto;
-  width: 33%;
+  padding: 10px;
+  justify-content: center;
 }
 
 .news {
@@ -637,4 +637,13 @@ a:hover {
 
 .shop__description, .shop__price {
   text-align: center;
+}
+
+.telegram-logo {
+  opacity: 0.7;
+  transition: all .1s ease-in;
+}
+
+.telegram-logo:hover {
+  opacity: 1;
 }
