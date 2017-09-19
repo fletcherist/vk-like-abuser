@@ -260,6 +260,10 @@ a:hover {
   background-color: #f3f3f3;
 }
 
+.navigation__block {
+  padding: 5px;
+}
+
 .realtime-likes__photo {
   border-radius: 100px;
   width: 50px;
@@ -350,6 +354,7 @@ a:hover {
 
 .global-stats {
   display: flex;
+  flex-wrap: wrap;
 }
 
 @media (max-width: 200px) {
@@ -364,7 +369,7 @@ a:hover {
 
 .global-stats__stat {
   min-width: 30%;
-  padding: 0 .5rem 0 1rem;
+  padding: 0 .7rem 0 1rem;
   border-right: 1px solid #e3e4e8;
 }
 
@@ -536,6 +541,10 @@ a:hover {
   margin-bottom: .5rem;
 }
 
+.faq > h1:first {
+  margin-top: 0rem;
+}
+
 .block__right {
   max-width: var(--right-block-max-width);
 }
@@ -545,7 +554,7 @@ a:hover {
   align-items: center;
 }
 .follow-us__text {
-  padding: 5px;
+  
 }
 
 .follow-us__channels {

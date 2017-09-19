@@ -20,14 +20,14 @@ class TimeAssistant {
     }
   }
 
-  formatValue (value) {
+  formatValue(value) {
     if (value < 10) {
       value = '0' + value
     }
     return value
   }
 
-  getFormattedTime () {
+  getFormattedTime() {
     const currentTime = this.getCurrentTime()
     let hours = currentTime.hours
     if (hours < 10) {
@@ -43,14 +43,14 @@ class TimeAssistant {
   }
 
   // ex 2017/06/13
-  getDateForFirebase () {
+  getDateForFirebase() {
     let time = this.getCurrentTime()
     const { year, month, date } = time
     return `${year}/${this.formatValue(month)}/${this.formatValue(date)}`
   }
 
   // ex 2017-06-13
-  getDateForLogs () {
+  getDateForLogs() {
     let time = this.getCurrentTime()
     const { year, month, date } = time
     return `${year}-${this.formatValue(month)}-${this.formatValue(date)}`

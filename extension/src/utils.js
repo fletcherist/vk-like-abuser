@@ -24,6 +24,13 @@ const getMonthShort = time => {
 */
 const formatNumber = num => num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
 
+const formatMonthDate = date => date < 10 ? '0' + date : date
+const getDailyStatisticsDate = time => [
+  time.getFullYear(),
+  formatMonthDate(time.getMonth()),
+  formatMonthDate(time.getDate())
+].join('/')
+
 function throttle(callback, limit) {
   var wait = false
   return function () {

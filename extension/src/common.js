@@ -25,6 +25,7 @@ const stats = db.ref(`/statistics/${MY_ID}`)
 // const likes = db.ref('/likes').limitToLast(10)
 // const tasks = db.ref(`/tasks/${MY_ID}`)
 const globalStats = db.ref('/global_stats')
+// const todayStats = db.ref(getDailyStatisticsDate(new Date()))
 
 Vue.component('global-stats', {
   template: `
@@ -58,6 +59,7 @@ Vue.component('global-stats', {
           this.globalStats.likes.all) {
         return formatNumber(this.globalStats.likes.all)
       }
+
       return 0
     },
 
@@ -66,12 +68,21 @@ Vue.component('global-stats', {
           this.globalStats.users.total) {
         return formatNumber(this.globalStats.users.total)
       }
+
+      return 0
+    },
+
+    dailySignups: function () {
+      if (this.dailyStatistics && this.dailyStatistics.users) {
+        return formatNumber(this.dailyStatistics.users)
+      }
+
       return 0
     }
   }
 })
 
-function getRealtimeLikesFromCache () {
+function getRealtimeLikesFromCache() {
   try {
     const realtimeLikes = JSON.parse(localStorage.getItem('realtime_likes'))
     return realtimeLikes
@@ -142,7 +153,6 @@ Vue.component('realtime-likes', {
 Vue.component('donate', {
   template: `
     <div>
-      <h1>Пожертвования</h1>
       <div>
         Пожертвование — это хороший способ поддержать разработчиков и
         <b>сделать вклад</b> в развитие проекта. Деньги идут на покупку рекламы.
@@ -173,27 +183,12 @@ const faq = [
       `Да, работает. Можете не держать эту вкладку всё время открытой.
       Накрутка происходит даже когда компьютер выключен.
       `
-  },
-  // {
-  //   title: 'Хьюстон?',
-  //   description: `Ничего не работает? Все вопросы и предложения
-  //     можно задать прямо разработчикам.`,
-  //   additionHtml: `
-  //     <div class='developers'>
-  //       <div class='developers__developer'>
-  //         <a href='https://vk.com/im?sel=96170043' target='_blank'>Фил Романов</a>
-  //         и
-  //         <a href='https://vk.com/im?media=&sel=142395293' target='_blank'>Никита Жуков</a>
-  //         попробуют помочь
-  //       </div>
-  //     </div>`
-  // }
+  }
 ]
 
-const howItWorks = Vue.component('faq', {
+Vue.component('faq', {
   template: `
     <div>
-      <h1>Быстрый старт</h1>
       <div class='faq'>
         <div v-for='item in faq'>
           <h1>{{item.title}}</h1>
@@ -249,9 +244,9 @@ Vue.component('main-navigation', {
           }">Новости
         </div>
       </div>
-      <div v-if='this.currentPage === 1'><faq></faq></div>
-      <div v-if='this.currentPage === 2'><donate></donate></div>
-      <div v-if='this.currentPage === 3'><follow-us></follow-us></div>
+      <div v-if='this.currentPage === 1' class='navigation__block'><faq></faq></div>
+      <div v-if='this.currentPage === 2' class='navigation__block'><donate></donate></div>
+      <div v-if='this.currentPage === 3' class='navigation__block'><follow-us></follow-us></div>
     </div>
   `,
   data: function () {
@@ -295,7 +290,7 @@ const app = new Vue({
   el: '#app',
   data: () => {
     return {
-      authorized: MY_ID ? true : false,
+      authorized: Boolean(MY_ID),
       activated: false,
       agreedWithTerms: false,
       loaded: false
@@ -333,7 +328,6 @@ const app = new Vue({
         username: null,
         photo_100: null
       }, () => {
-
         /* Logout from firebase */
         firebase.auth().signOut()
         chrome.tabs.reload()

