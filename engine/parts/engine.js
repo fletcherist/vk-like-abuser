@@ -12,7 +12,7 @@ const RESTART_ENGINE_TIME = 60000
 const defaultWaiter = () => 5000
 
 class Engine {
-  constructor (config) {
+  constructor(config) {
     this.situation = null
     this.target = null
     this.amount = null
@@ -21,15 +21,15 @@ class Engine {
     if (config) {
       const { situation, target, amount, waiter } = config
       if (situation && situation.length > 0) {
-        this.situation = config.situation
-        this.target = config.target
+        this.situation = situation
+        this.target = target
       }
 
       if (amount) {
         this.amount = amount
       }
 
-      if (waiter && typeof waiter() === 'Number') {
+      if (waiter && typeof waiter() === 'number') {
         this.waiter = waiter
       } else {
         this.waiter = defaultWaiter
@@ -65,12 +65,12 @@ class Engine {
       })
   }
 
-  start () {
+  start() {
     this.getNextTask()
     this.startTime = new Date()
   }
 
-  complete () {
+  complete() {
     this.globalStats.incrementEnginesCount()
 
     this.stopTime = new Date()
@@ -93,10 +93,9 @@ class Engine {
       new Console().notify('{Engine} New engine has been just started')
       return new Engine()
     }, RESTART_ENGINE_TIME)
-    return
   }
 
-  getTasks () {
+  getTasks() {
     new Console().notify(`{Engine} Current Situation >>> «${this.situation}»`)
     switch (this.situation) {
       case SITUATIONS.DEFAULT:
@@ -130,19 +129,19 @@ class Engine {
     }
   }
 
-  getNextTask () {
+  getNextTask() {
     if (this.tasks.length === 0) {
       return this.complete()
     }
 
-    setTimeout (() => {
+    setTimeout(() => {
       this.doTask(this.tasks[0])
       this.tasks.shift()
       this.getNextTask()
     }, this.waiter())
   }
 
-  async doTask ({object, target}) {
+  async doTask({object, target}) {
     try {
       await Like({object, target})
       this.globalStats.incrementLikesCount()
@@ -152,7 +151,7 @@ class Engine {
     }
   }
 
-  isItTimeToRunEngine () {
+  isItTimeToRunEngine() {
     const currentTime = new Date().getHours()
 
     if (currentTime >= 2 && currentTime < 8) {

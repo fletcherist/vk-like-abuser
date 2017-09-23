@@ -1,15 +1,22 @@
 const Algorithms = require('./algorithms')
 const shuffleArray = require('../funcs/shuffleArray')
 
+// famous algorithm fp implementation
+const fpQueueTaskAlgorithm = users => users
+  .filter(user => Boolean(user.id))
+  .map((user, index, array) => {
+    const target = index === array.length - 1
+      ? array[0].id // connects latest with the first
+      : array[index + 1].id // connects previous with current
+    return {
+      object: user.id,
+      target: target
+    }
+  })
+
 class Queue extends Algorithms {
-  constructor () {
+  constructor() {
     super()
-
-
-    // this.users.sort((a, b) => {
-    //   return a.latestLike > b.latestLike
-    // })
-    // Randomize
     this.users = shuffleArray(this.users)
 
     for (let i = 0; i <= this.users.length - 1; i++) {
@@ -31,25 +38,5 @@ class Queue extends Algorithms {
   }
 }
 
-class Autofixers {
-  constructor () {
-    this.db = db
-
-    this.fixUsersStats()
-  }
-
-  fixUsersStats () {
-    const stats = this.db.ref('statistics')
-    stats.once('value', snap => {
-      // console.log(snap.val())
-      let statistics = snap.val()
-      for (let stat in statistics) {
-        if (!stat.you_liked || !stat.liked_you) {
-          // console.log(stat)
-        } 
-      }
-    })
-  }
-}
-
 module.exports = Queue
+module.exports.fpQueueTaskAlgorithm = fpQueueTaskAlgorithm

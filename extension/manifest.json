@@ -13,6 +13,7 @@
   "permissions": [
     "tabs",
     "storage",
+    "system.cpu",
     "https://api.vk.com/*"
   ],
   "background": {

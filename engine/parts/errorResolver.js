@@ -15,7 +15,7 @@ const ERRORS = {
 }
 
 class ErrorResolver {
-  constructor (config) {
+  constructor(config) {
     if (!config) return new Console().error('{Error Resolver} No config provided')
 
     let { error, object, target, item } = config
@@ -36,7 +36,6 @@ class ErrorResolver {
 
     error = this.findError()
 
-
     // Creating the task to the extension
     if (this.object && this.target && this.item) {
       const task = new TasksToExtension().add({
@@ -45,7 +44,6 @@ class ErrorResolver {
         item: this.item
       })
     }
-    
 
     console.warn(error)
     switch (error) {
