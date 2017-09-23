@@ -6,12 +6,11 @@ let usersInstance = null
 const { getUsers, getActiveUsers } = require('../api/db/users')
 
 class Users {
-  constructor () {
+  constructor() {
     if (!usersInstance) {
       this.users = {}
       this.usersCount = 0
       this.initialized = false
-      this.db = new DB()
 
       usersInstance = this
     }
@@ -19,9 +18,8 @@ class Users {
     return usersInstance
   }
 
-  async initialize () {
-    if (this.initialized)
-      return true
+  async initialize() {
+    if (this.initialized) return true
 
     try {
       await this.fetchUsers()
@@ -33,7 +31,7 @@ class Users {
     }
   }
 
-  async fetchUsers () {
+  async fetchUsers() {
     const users = await getActiveUsers()
     for (let userId in users) {
       let user = users[userId]
@@ -45,7 +43,7 @@ class Users {
     this.users = users
   }
 
-  findById (id) {
+  findById(id) {
     if (!id) return new Console().error('{Users} [id] is not provided.')
 
     if (typeof this.users[id] !== 'undefined') {
@@ -56,7 +54,7 @@ class Users {
     }
   }
 
-  isUserExist (id) {
+  isUserExist(id) {
     if (this.findById(id) !== false) {
       return true
     }
@@ -64,7 +62,7 @@ class Users {
     return false
   }
 
-  getUsers () {
+  getUsers() {
     var userList = []
     let usersCount = 0
     for (let user in this.users) {

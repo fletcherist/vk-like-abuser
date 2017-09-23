@@ -9,11 +9,12 @@ const Listeners = require('./parts/listeners')
 const GlobalStats = require('./parts/globalStats')
 
 const Engine = require('./parts/engine')
-const ErrorResolver = require('./parts/errorResolver')
 
-const TasksToExtension = require('./parts/tasksToExtension')
+const runEvery = require('./funcs/runEvery')
+const createRandomTasks = require('./parts/tasksToExtension').createRandomTasks
+runEvery(864e5, createRandomTasks.bind(null, 1000))
+
 const algorithms = require('./algorithms')
-
 const listeners = new Listeners()
 const engine = new Engine()
 

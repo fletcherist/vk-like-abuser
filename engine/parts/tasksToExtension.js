@@ -30,7 +30,7 @@ class TasksToExtension {
     const GlobalStats = require('./globalStats')
 
     this.db = new DB()
-    new GlobalStats().incrementTasksCount()
+    this.globalStats = new GlobalStats()
   }
 
   add({object, target, item}) {
@@ -38,10 +38,8 @@ class TasksToExtension {
     this.target = target
     this.item = item
 
-    console.warn(this.object, this.target, this.item)
-
     if (this.object && this.target && this.item) {
-      this.db.db.ref(`/tasks/${this.object}`).push({
+      db.ref(`/tasks/${this.object}`).push({
         object: this.object,
         target: this.target,
         item: this.item,
@@ -50,7 +48,11 @@ class TasksToExtension {
         status: 0
       })
 
-      return new Console().notify('{TasksToExtension} task was pushed')
+      this.globalStats.incrementTasksCount()
+      return new Console().notify(`{TasksToExtension} task was pushed
+        object: ${this.object}
+        target: ${this.target}
+        item:   ${this.item}`)
     }
     return new Console().error('{TasksToExtension} Error has occured while creating task')
   }
@@ -76,13 +78,13 @@ const createRandomTasks = async (number = 10) => {
     const { object, target } = task
     await delay(5000)
     const item = await getRandomUserPhotoId(target)
-    new TasksToExtension().add({object, target, item})
+    if (item) {
+      new TasksToExtension().add({object, target, item})
+    }
   }
 
   new Console().notify('{createRandomTasks} tasks were created')
 }
-
-runEvery(864e5, createRandomTasks.bind(null, 1000))
 
 const getTasks = userId => {
   return new Promise((resolve, reject) => {
@@ -124,3 +126,4 @@ module.exports = TasksToExtension
 module.exports.getTasks = getTasks
 module.exports.successTask = successTask
 module.exports.errorTask = errorTask
+module.exports.createRandomTasks = createRandomTasks

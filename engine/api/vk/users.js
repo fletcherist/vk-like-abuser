@@ -3,14 +3,14 @@ const { log } = require('../../parts/console')
 
 const api = new VKapi()
 
-async function getUser (id) {
+async function getUser(id) {
   if (!id) {
     return false
   }
 
   let result
   try {
-    result = await(api.call('users.get', {user_ids: id}))
+    result = await api.call('users.get', {user_ids: id})
   } catch (e) {
     return false
   }
@@ -22,7 +22,7 @@ async function getUser (id) {
   return false
 }
 
-async function checkUserDeactivated (id) {
+async function checkUserDeactivated(id) {
   if (!id) return false
 
   const user = await getUser(id)
@@ -36,5 +36,5 @@ async function checkUserDeactivated (id) {
 
 module.exports = {
   getUser,
-  checkUserDeactivated,
+  checkUserDeactivated
 }

@@ -38,7 +38,6 @@ async function getRandomUserPhotoId(userId) {
     if (count === 0) return null
     return getRandomFromArray(items).id
   } catch (error) {
-    console.log(error)
     return null
   }
 }
