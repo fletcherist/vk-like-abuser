@@ -1,4 +1,4 @@
-function shuffleArray (arr) {
+function shuffleArray(arr) {
   let i = arr.length
   while (i > 0) {
     i--

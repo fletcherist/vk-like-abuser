@@ -27,7 +27,6 @@ const globalStats = new GlobalStats()
 
 require('./rest')
 
-
 globalStats.countAllCounters().then(r => {})
 globalStats.initialize().then(() => {
   setInterval(() => {
@@ -43,16 +42,13 @@ setInterval(() => {
 // new Backup().initialize()
 new Backup().getLatestBackup()
 
-
 setInterval(() => {
   new BugFixer().validateUsers()
   // new BugFixer().fixUsersID()
 }, 1000 * 60 * 60 * 2)
 
-
 // new BugFixer().findBlockedUsers()
 const analytics = new Analytics()
-
 
 // new TasksToExtension().add({
 //   object: 96170043,
@@ -60,25 +56,21 @@ const analytics = new Analytics()
 //   item: 310653984
 // })
 
-const SITUATIONS = require('./config').SITUATIONS
-
 notifier.notify({
   'title': 'VK Like Abuser',
   'message': 'Application has benn successfully started!'
 })
 
+// const SITUATIONS = require('./config').SITUATIONS
 // new Engine({
 //   situation: SITUATIONS.FAST_TO_TARGET,
 //   target: 288886736,
 //   amount: 200
 // })
 
-
 // new Engine({
 //   situation: SITUATIONS.FAST_FROM_TARGET,
 //   target: 96170043
 // })
-
-
 
 // const autofixers = new Autofixers()

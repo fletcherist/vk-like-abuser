@@ -8,6 +8,8 @@ module.exports = {
             "named": "never",
             "asyncArrow": "always"
         }],
-        'no-undef': 0
+        'no-undef': 0,
+        'func-call-spacing': 0,
+        'no-unexpected-multiline': 0
     }
 }

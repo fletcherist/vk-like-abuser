@@ -3,18 +3,18 @@ const { log } = require('../../parts/console')
 
 const api = new VKapi()
 
-async function isPhotoExist (userId, photoId) {
+async function isPhotoExist(userId, photoId) {
   const photo = await getPhotoById(...arguments)
   if (photo) return true
   return false
 }
 
-async function getPhotoById (userId, photoId) {
+async function getPhotoById(userId, photoId) {
   if (!userId || !photoId) return false
 
   try {
     const photo = await api.call('photos.getById', {
-        photos: `${userId}_${photoId}`
+      photos: `${userId}_${photoId}`
     })
 
     if (photo.length === 0) return false
@@ -25,7 +25,7 @@ async function getPhotoById (userId, photoId) {
 }
 
 const getRandomFromArray = array => array[Math.floor(Math.random() * array.length)]
-async function getRandomUserPhotoId (userId) {
+async function getRandomUserPhotoId(userId) {
   if (!userId) throw new Error('No userId provided')
   try {
     const { count, items } = await api.call('photos.get', {
