@@ -1,0 +1,1 @@
+VK.Widgets.CommunityMessages('vk_community_messages', 153534156, {disableExpandChatSound: '1', disableButtonTooltip: '1'})

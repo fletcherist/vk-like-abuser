@@ -1,4 +1,4 @@
-const APP_VERSION = '0.3.7'
+const APP_VERSION = '0.3.8'
 // const ENV = 'debug'
 const VKABUSER_SERVER = 'https://vkabuser.fletcherist.com'
 // const VKABUSER_SERVER = 'http://localhost:5000'
@@ -189,49 +189,6 @@ Vue.component('login-button', {
     <a href='https://oauth.vk.com/authorize?client_id={{{server}}}&scope=wall,friends,offline&redirect_uri=https://oauth.vk.com/blank.html&display=popup&v=5.17&response_type=token'
       class='button' target='_blank'>Войти</a>
   `
-})
-
-const BLOG_SERVER_ADDRESS = 'https://blog.vkabuser.ru'
-Vue.component('instant-news', {
-  data: function () {
-    return {
-      title: 'Server is not responsible',
-      timestamp: new Date(),
-      isLoaded: false
-    }
-  },
-  init: function () {
-    fetch(`${BLOG_SERVER_ADDRESS}/api/latest`)
-      .then(r => r.json())
-      .then(r => {
-        const { title, timestamp } = r
-        if (title) this.title = title
-        if (timestamp) this.timestamp = new Date(timestamp)
-        this.isLoaded = true
-      })
-      .catch(e => console.error(e))
-  },
-  template: `
-    <div class='wrapper wrapper--next news' v-if='isLoaded'>
-      <div class='news__header'>Последние новости</div>
-      <div class='news__container'>
-        <div class='news__title'>
-          <a href='${BLOG_SERVER_ADDRESS}' v-html='titleFormatted' target='_blank'></a>
-        </div>
-        <div class='news__timestamp' v-html='timestampFormatted'></div>
-      </div>
-    </div>
-  `,
-  computed: {
-    titleFormatted: function () {
-      return this.title.length > 45
-        ? this.title.slice(0, 45) + '...'
-        : this.title
-    },
-    timestampFormatted: function () {
-      return `${this.timestamp.getDate()} ${getMonthShort(this.timestamp)}`
-    }
-  }
 })
 
 Vue.component('money-spender', {
