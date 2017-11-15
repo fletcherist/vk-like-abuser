@@ -6,10 +6,10 @@ const GlobalStats = require('./globalStats')
 
 const algorithms = require('../algorithms')
 const SITUATIONS = require('../config').SITUATIONS
-const RESTART_ENGINE_TIME = 60000
+const RESTART_ENGINE_TIME = 120000
 
 // const waiter = () => 3000
-const defaultWaiter = () => 10000
+const defaultWaiter = () => 20000
 
 class Engine {
   constructor(config) {
