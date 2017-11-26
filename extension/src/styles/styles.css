@@ -26,7 +26,7 @@ a:hover {
 }
 
 .text-grey {
-  color: rgba(0, 0, 0, .4);
+  color: var(--grey-color);
 }
 
 .button {
@@ -188,6 +188,16 @@ a:hover {
   display: flex;
   width: 100%;
   margin-top: 1rem;
+}
+
+.help__right {
+  width: 100%;
+  text-align: right;
+}
+
+.help__right a {
+  text-decoration: none;
+  color: 
 }
 
 .svg__image {

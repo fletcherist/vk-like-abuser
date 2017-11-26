@@ -2,7 +2,7 @@ const _log = require('../../parts/console').log
 const { db } = require('../../parts/app')
 const { random } = require('lodash')
 
-async function getUsers(limit = 10000) {
+async function getUsers(limit = 1000) {
   const snapshot = await db.ref(`/users`).limitToLast(limit).once('value')
   const users = snapshot.val()
   return users
@@ -69,12 +69,18 @@ async function getRandomUser() {
   return randomUser
 }
 
+async function removeUser(userId) {
+  if (!userId) return false
+  await db.ref(`/users/${userId}`).remove()
+}
+
 module.exports = {
   getUsers,
   getActiveUsers,
   getInactiveUsers,
   getUser,
   isUserExist,
+  removeUser,
 
   deactivateUser,
   activateUser,

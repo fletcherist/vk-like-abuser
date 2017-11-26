@@ -1,12 +1,12 @@
 import gulp from 'gulp'
 import zip from 'gulp-zip'
 import clean from 'gulp-clean'
-import htmlreplace from 'gulp-html-replace'
+// import htmlreplace from 'gulp-html-replace'
 import csso from 'gulp-csso'
-import rename from 'gulp-rename'
+// import rename from 'gulp-rename'
 import concat from 'gulp-concat'
-import uglify from 'gulp-uglify'
-import babel from 'gulp-babel'
+// import uglify from 'gulp-uglify'
+// import babel from 'gulp-babel'
 
 import postcss from 'gulp-postcss'
 import cssVariables from 'postcss-css-variables'
@@ -21,11 +21,9 @@ const PATHS = {
    Set watchers for the development
 */
 gulp.task('default', () => {
-
   gulp.watch(['index.html', 'manifest.json'], gulp.series('html', 'manifest-icon'))
   gulp.watch('src/**/*.js', gulp.series('js', 'assets'))
   gulp.watch('src/**/*.css', gulp.series('styles'))
-
 })
 
 gulp.task('clean', () => {
@@ -46,10 +44,10 @@ gulp.task('assets', () => {
 */
 gulp.task('js', () => {
   return gulp.src(PATHS.JS)
-    .pipe(babel({
-      presets: ['es2015']
-    }))
-    .pipe(uglify())
+    // .pipe(babel({
+    //   presets: ['es2015']
+    // }))
+    // .pipe(uglify())
     .pipe(gulp.dest('dist/src'))
 })
 
