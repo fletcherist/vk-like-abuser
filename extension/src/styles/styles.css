@@ -258,6 +258,10 @@ a:hover {
   transition: background-color .2s;
 }
 
+.navigation__button-full-width {
+  margin: 0px 0px 10px;
+}
+
 .navigation__button:hover {
   background-color: var(--blue);
 }
@@ -679,4 +683,13 @@ a:hover {
 
 .telegram-logo:hover {
   opacity: 1;
+}
+
+.progress-bar {
+  background-color: var(--blue);
+  height: 20px;
+}
+
+.progress-counter {
+  text-align: right;
 }

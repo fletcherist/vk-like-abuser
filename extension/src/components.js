@@ -200,6 +200,16 @@ Vue.component('login-button', {
   `
 })
 
+Vue.component('progress-bar', {
+  props: ['progress'],
+
+  template: `
+    <div class='progress-bar' v-bind:style="{
+      width: (progress > 100 ? 100 : progress) + '%',
+    }"></div>
+  `
+})
+
 Vue.component('money-spender', {
   data: function () {
     return {
@@ -210,7 +220,9 @@ Vue.component('money-spender', {
       ],
       linkInput: '',
       status: null,
-      selectedType: -1
+      selectedType: -1,
+      progressPercents: 1,
+      progress: 0
     }
   },
   template: `
@@ -257,7 +269,16 @@ Vue.component('money-spender', {
           <div class='shop__price'>Купить за {{{types[2].price}}}₽</div>
         </div>
       </div>
-      <div class='navigation__button' v-on:click='handlePressContinue'>Продолжить</div>
+      <div>
+        <div v-if='status === null'>
+          <div class='navigation__button navigation__button-full-width' v-on:click='handlePressContinue'>Продолжить</div>
+        </div>
+        <div v-else>
+          <div class='navigation__button navigation__button-full-width navigation__button--not-selected' v-on:click='handlePressCancel'>Отменить</div>
+          <progress-bar v-bind:progress='progressPercents'></progress-bar>
+          <div class='progress-counter'>{{{progress}}}/{{{types[selectedType].amount}}}</div>
+        </div>
+      </div>
     </div>
   `,
   methods: {
@@ -278,9 +299,9 @@ Vue.component('money-spender', {
         body: JSON.stringify({
           url: this.linkInput
         })
-      }).then(r => r.json())
-        .then(r => {
-          const { type } = r
+      }).then(res => res.json())
+        .then(res => {
+          const { type } = res
           if (!type || type === 'undefined') {
             this.status = 'invalid'
           } else {
@@ -295,8 +316,13 @@ Vue.component('money-spender', {
         `&short-dest=@RobotCashBot&quickpay-form=donate&targets=Пополнение%20баланса&label=vkabuser.&sum=1&paymentType=PC`
       window.open(payLink)
     },
+    handlePressCancel: function () {
+
+    },
     selectType: function (type) {
       this.selectedType = type
+      this.progress++
+      this.progressPercents = (this.progress / this.types[this.selectedType].amount) * 100
     }
   },
   computed: {
