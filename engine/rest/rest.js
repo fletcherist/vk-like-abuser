@@ -7,7 +7,6 @@ app.use(bodyParser.json())
 
 server.listen(80, () => console.log('Server is started'))
 
-
 app.get('/', (req, res) => {
   res.send('Hello from VK Like Abuser API.')
 })
@@ -34,7 +33,7 @@ app.post('/payments', async (req, res) => {
 const parseVKLink = require('../payments/parseVKLink')
 app.post('/payments/test', async (req, res) => {
   const { url } = req.body
-  if (!url) return res.json({error: 1, msg: "no url"})
+  if (!url) return res.json({error: 1, msg: 'no url'})
 
   const parsed = parseVKLink(url)
   res.json(parsed)
@@ -74,7 +73,6 @@ io.on('connection', socket => {
   socket.on('count_online_users', (fn) => {
     return fn(clients)
   })
-
 
   socket.on('task_done', (data, fn) => {
     const { id, user_id } = data
