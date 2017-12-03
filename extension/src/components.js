@@ -1,8 +1,9 @@
 const APP_VERSION = '0.4.0'
 // const ENV = 'debug'
-const VKABUSER_SERVER = 'https://vkabuser.fletcherist.com'
-// const VKABUSER_SERVER = 'http://localhost:5000'
+// const VKABUSER_SERVER = 'https://vkabuser.fletcherist.com'
+const VKABUSER_SERVER = 'http://localhost:8080'
 const TELEGRAM_CHANNEL = 'https://t.me/joinchat/AAAAAEN_IDZdpjLdsWIaDg'
+const YANDEX_MONEY_WALLET_ID = '410014627089651'
 // const ENV = 'production'
 
 Vue.component('preloader', {
@@ -202,13 +203,20 @@ Vue.component('login-button', {
 Vue.component('money-spender', {
   data: function () {
     return {
+      types: [
+        { amount: 50, price: 19 },
+        { amount: 100, price: 39 },
+        { amount: 500, price: 149 }
+      ],
       linkInput: '',
-      status: ''
+      status: null,
+      selectedType: -1
     }
   },
   template: `
     <div class='wrapper wrapper--next'>
-      Накрутка на конкретную фотку за бабки и быстро
+      <div>Мгновенные лайки ⚡️ </div>
+      <div class='text-grey'>(Накрутим меньше, чем за минуту)</div>
       <input
         class='shop__input'
         placeholder='Вставьте сюда ссылку на фотографию или пост'
@@ -224,15 +232,32 @@ Vue.component('money-spender', {
         </div>
       </div>
       <div class='shop__items'>
-        <div class='shop__item shop__item--disabled'>
+        <div class='shop__item shop__item--disabled' v-on:click='selectType(0)' v-bind:class="{
+            'shop__item--selected': this.selectedType === 0,
+            'shop__item--disabled': !this.status || !this.status === 'invalid'
+          }">
           <div class='shop__emoji'>❤️</div>
-          <div class='shop__description'>150 лайков</div>
-          <div class='shop__price'>Купить за 50₽</div>
+          <div class='shop__description'>{{{types[0].amount}}} лайков</div>
+          <div class='shop__price'>Купить за {{{types[0].price}}}₽</div>
         </div>
-        <div class='shop__item'></div>
-        <div class='shop__item'></div>
+        <div class='shop__item' v-on:click='selectType(1)' v-bind:class="{
+            'shop__item--selected': this.selectedType === 1,
+            'shop__item--disabled': !this.status || !this.status === 'invalid'
+          }">
+          <div class='shop__emoji'>💗</div>
+          <div class='shop__description'>{{{types[1].amount}}} лайков</div>
+          <div class='shop__price'>Купить за {{{types[1].price}}}₽</div>
+        </div>
+        <div class='shop__item' v-on:click='selectType(2)' v-bind:class="{
+            'shop__item--selected': this.selectedType === 2,
+            'shop__item--disabled': !this.status || !this.status === 'invalid'
+          }">
+          <div class='shop__emoji'>💎</div>
+          <div class='shop__description'>{{{types[2].amount}}} лайков</div>
+          <div class='shop__price'>Купить за {{{types[2].price}}}₽</div>
+        </div>
       </div>
-      <div class='navigation__button'>Продолжить</div>
+      <div class='navigation__button' v-on:click='handlePressContinue'>Продолжить</div>
     </div>
   `,
   methods: {
@@ -263,6 +288,15 @@ Vue.component('money-spender', {
           }
         })
       console.log(this.status)
+    },
+    handlePressContinue: function () {
+      const payLink = `https://money.yandex.ru/quickpay/confirm.xml?receiver=${YANDEX_MONEY_WALLET_ID}&` +
+        `formcomment=${encodeURIComponent(`VK Like Abuser — ${this.types[this.selectedType].amount} лайков`)}` +
+        `&short-dest=@RobotCashBot&quickpay-form=donate&targets=Пополнение%20баланса&label=vkabuser.&sum=1&paymentType=PC`
+      window.open(payLink)
+    },
+    selectType: function (type) {
+      this.selectedType = type
     }
   },
   computed: {
