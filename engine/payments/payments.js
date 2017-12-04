@@ -7,7 +7,15 @@ const { isWallpostExist } = require('../api/vk/wall')
 const { isPhotoExist } = require('../api/vk/photos')
 // const delay = require('../funcs/delay')
 
-const { parseVKLink } = require('./parseVKLink')
+const parseVKLink = require('./parseVKLink')
+
+const STATUSES = Object.freeze({
+  CREATED: 'created',
+  WAITING_PAYMENT: 'waitingPayment',
+  IN_PROGRESS: 'inProgress',
+  DONE: 'done',
+  FAILED: 'failed'
+})
 
 async function isItemExist({type, userId, itemId}) {
   if (!type || !userId || !itemId) return false
@@ -21,52 +29,52 @@ async function isItemExist({type, userId, itemId}) {
   }
 }
 
-// async function foo() {
-//   const links = [
-//     'https://vk.com/fletcherist?z=photo96170043_456239376%2Fphotos96170043',
-//     // 'https://vk.com/fletcherist?w=wall96170043_3051',
-//     // 'https://vk.com/tech?w=wall-147415323_713',
-//     // 'https://vk.com/vkcup?w=wall-41208167_1250'
-//   ]
-
-//   const parsedLinks = links.map(link => parseVKLink(link))
-//   for (const item of parsedLinks) {
-//     await delay(1000)
-//     console.log(await isItemExist(item))
-//   }
-// }
-
-// foo()
-
-async function processing({url, ownerUserId}) {
+async function processing({url, ownerUserId, taskSignature}) {
   const parsedLink = await parseVKLink(url)
   if (!await isItemExist(parsedLink)) {
     console.log('This item is not exist')
     return false
   }
 
-  // const { type, userId, itemId } = parsedLink
-  // createPaymentTask({type, userId, itemId, ownerUserId})
+  const { type, userId, itemId } = parsedLink
+  const task = await findPaymentTask({userId, itemId})
+  if (task) {
+    console.log('Already created', task)
+    return task
+  }
 
-  // findPaymentTask({userId, itemId})
+  const paymentTask = await createPaymentTask({type, userId, itemId, ownerUserId, taskSignature})
+  return paymentTask
 
   // const task = await new PaymentTask('-Kp5Ts83L6f2rB7rN3z9')
-  // task.setStatus(STATUSES.DONE)
-  // task.setTimestamp(STATUSES.DONE)
+  // task.setStatus(STATUSES.CREATED)
+  // task.setTimestamp(STATUSES.CREATED)
   // const _task = task.get()
   // console.log(_task)
+  // return _task
 }
 
-processing({
-  url: 'https://vk.com/fletcherist?z=photo96170043_456239376%2Fphotos96170043',
-  ownerUserId: '5'
-})
+async function doPaymentTask(paymentTaskId) {
+  const task = await new PaymentTask(paymentTaskId)
+  await task.setStatus(STATUSES.IN_PROGRESS)
+  await task.setTimestamp(STATUSES.IN_PROGRESS)
+
+
+}
+
+//  
+
+// processing({
+//   url: 'https://vk.com/fletcherist?z=photo96170043_456239376%2Fphotos96170043',
+//   ownerUserId: '5'
+// })
 
 async function createPaymentTask({
   type,
   userId,
   itemId,
-  ownerUserId
+  ownerUserId,
+  taskSignature
 }) {
   const task = await db.ref('/payments').push({
     type,
@@ -80,7 +88,8 @@ async function createPaymentTask({
       done: null,
       failed: null
     },
-    status: 'created'
+    status: 'created',
+    progress: 0
   })
 
   console.log(task)
@@ -99,14 +108,7 @@ async function findPaymentTask({
 
   const task = taskSnapshot.val()
   console.log(task)
-}
-
-const STATUSES = {
-  CREATED: 'created',
-  WAITING_PAYMENT: 'waitingPayment',
-  IN_PROGRESS: 'inProgress',
-  DONE: 'done',
-  FAILED: 'failed'
+  return task
 }
 
 class PaymentTask {
@@ -146,10 +148,16 @@ class PaymentTask {
     await db.ref(`${this.path}/timestamps/${status}`)
       .transaction(currentTimestamp => firebase.database.ServerValue.TIMESTAMP)
   }
+
+  async incrementProgress() {
+    await db.ref(`${this.path}/progress`)
+      .transaction(currentProgress => currentProgress + 1)
+  }
 }
 
 module.exports = {
   parseVKLink,
   createPaymentTask,
+  processing,
   PaymentTask
 }

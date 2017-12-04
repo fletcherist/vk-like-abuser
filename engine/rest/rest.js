@@ -3,40 +3,67 @@ const server = require('http').Server(app)
 const io = require('socket.io')(server)
 const bodyParser = require('body-parser')
 
+const {
+  VK_LIKE_ABUSER_PAYMENT_CONFIRMATION_TOKEN
+} = require('../config')
+
 app.use(bodyParser.json())
 
-server.listen(80, () => console.log('Server is started'))
+server.listen(8080, () => console.log('Server is started'))
 
 app.get('/', (req, res) => {
   res.send('Hello from VK Like Abuser API.')
 })
 
-// @deprecated
-// app.get('/exchanger/get_target', (req, res) => {
-//   console.log(api)
-
-//   const user = api.getUserToExchangeLikes()
-//   return res.json(user)
-// })
 const { getMostRelevantServer } = require('../parts/servers')
 const { getTasks, successTask, errorTask } = require('../parts/tasksToExtension')
+const parseVKLink = require('../payments/parseVKLink')
+const processingPaymentTask = require('../payments/payments').processing
 
 app.get('/server', async (req, res) => {
   const server = await getMostRelevantServer()
   res.send({msg: 'we found a relevant server for you!', server: server})
 })
 
-app.post('/payments', async (req, res) => {
-  console.log(req.body)
-})
+console.log(VK_LIKE_ABUSER_PAYMENT_CONFIRMATION_TOKEN)
 
-const parseVKLink = require('../payments/parseVKLink')
 app.post('/payments/test', async (req, res) => {
   const { url } = req.body
   if (!url) return res.json({error: 1, msg: 'no url'})
 
-  const parsed = parseVKLink(url)
-  res.json(parsed)
+  try {
+    const parsed = parseVKLink(url)
+    res.json(parsed)
+  } catch (error) {
+    console.error(error)
+    res.send({
+      msg: 'Unexpected error'
+    })
+  }
+})
+
+app.post('/payments/create', async (req, res) => {
+  const { url, taskSignature, ownerUserId } = req.body
+  if (!url) return res.json({ status: 'error', msg: '{url} wasn`t sent' })
+  if (!taskSignature) res.json({ status: 'error', msg: '{taskSignature} wasn`t sent' })
+  if (!ownerUserId) res.json({ status: 'error', msg: '{ownerUserId} wasn`t sent' })
+
+  const paymentTask = await processingPaymentTask({url, taskSignature, ownerUserId})
+
+  console.log(url, taskSignature, paymentTask)
+  return res.json({
+    status: 'success',
+    paymentTaskId: 'test'
+  })
+})
+
+app.get(`/payments/confirm/${VK_LIKE_ABUSER_PAYMENT_CONFIRMATION_TOKEN}/:paymentTaskId`, async (req, res) => {
+  const paymentTaskId = req.params.paymentTaskId
+
+  console.log('started doing task!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+  return res.send({
+    msg: `task (${paymentTaskId}) confirmed. Lets abuse now`
+  })
 })
 
 const clients = []

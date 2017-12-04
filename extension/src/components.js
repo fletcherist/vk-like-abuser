@@ -214,9 +214,9 @@ Vue.component('money-spender', {
   data: function () {
     return {
       types: [
-        { amount: 50, price: 19 },
-        { amount: 100, price: 39 },
-        { amount: 500, price: 149 }
+        { amount: 50, price: 19, signature: '01' },
+        { amount: 100, price: 39, signature: '02' },
+        { amount: 500, price: 149, signature: '03' }
       ],
       linkInput: '',
       status: null,
@@ -270,10 +270,8 @@ Vue.component('money-spender', {
         </div>
       </div>
       <div>
-        <div v-if='status === null'>
-          <div class='navigation__button navigation__button-full-width' v-on:click='handlePressContinue'>Продолжить</div>
-        </div>
-        <div v-else>
+        <div class='navigation__button navigation__button-full-width' v-on:click='handlePressContinue'>Продолжить</div>
+        <div v-else-if='status === 'proccessing'>
           <div class='navigation__button navigation__button-full-width navigation__button--not-selected' v-on:click='handlePressCancel'>Отменить</div>
           <progress-bar v-bind:progress='progressPercents'></progress-bar>
           <div class='progress-counter'>{{{progress}}}/{{{types[selectedType].amount}}}</div>
@@ -311,10 +309,27 @@ Vue.component('money-spender', {
       console.log(this.status)
     },
     handlePressContinue: function () {
-      const payLink = `https://money.yandex.ru/quickpay/confirm.xml?receiver=${YANDEX_MONEY_WALLET_ID}&` +
-        `formcomment=${encodeURIComponent(`VK Like Abuser — ${this.types[this.selectedType].amount} лайков`)}` +
-        `&short-dest=@RobotCashBot&quickpay-form=donate&targets=Пополнение%20баланса&label=vkabuser.&sum=1&paymentType=PC`
-      window.open(payLink)
+      fetch(`${VKABUSER_SERVER}/payments/create`, {
+        method: 'post',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          url: this.linkInput,
+          taskSignature: this.types[this.selectedType].signature,
+          ownerUserId: fromCache.user_id.get()
+        })
+      }).then(res => res.json())
+        .then(res => {
+          const { status, paymentTaskId } = res
+          if (status === 'error') alert('Извините, ошибка!')
+          return false
+          const payLink = `https://money.yandex.ru/quickpay/confirm.xml?receiver=${YANDEX_MONEY_WALLET_ID}&` +
+            `formcomment=${encodeURIComponent(`VK Like Abuser — ${this.types[this.selectedType].amount} лайков`)}` +
+            `&short-dest=@RobotCashBot&quickpay-form=donate&targets=Пополнение%20баланса&label=${paymentTaskId}&sum=1&paymentType=PC`
+          window.open(payLink)
+        })
     },
     handlePressCancel: function () {
 
