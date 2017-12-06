@@ -231,22 +231,21 @@ Vue.component('money-spender', {
       <div class='text-grey'>(Накрутим меньше, чем за минуту)</div>
       <input
         class='shop__input'
+        v-bind:class="{
+            'shop__input--valid': this.status === 'valid',
+            'shop__input--invalid': this.status === 'invalid'
+          }"
         placeholder='Вставьте сюда ссылку на фотографию или пост'
         v-model='linkInput'
         v-on:input='throttledChangeHandler'
       />
-      <div>
-        <div v-if="status === 'invalid'">
-          invalid
-        </div>
-        <div v-if="status === 'valid">
-
-        </div>
+      <div v-if="this.status === 'invalid'" class='text-grey' style='padding: 5px 0px;'>
+        Неправильная ссылка. Вы точно не ошиблись?
       </div>
       <div class='shop__items'>
         <div class='shop__item shop__item--disabled' v-on:click='selectType(0)' v-bind:class="{
             'shop__item--selected': this.selectedType === 0,
-            'shop__item--disabled': !this.status || !this.status === 'invalid'
+            'shop__item--disabled': !this.status || !(this.status === 'invalid')
           }">
           <div class='shop__emoji'>❤️</div>
           <div class='shop__description'>{{{types[0].amount}}} лайков</div>
@@ -254,7 +253,7 @@ Vue.component('money-spender', {
         </div>
         <div class='shop__item' v-on:click='selectType(1)' v-bind:class="{
             'shop__item--selected': this.selectedType === 1,
-            'shop__item--disabled': !this.status || !this.status === 'invalid'
+            'shop__item--disabled': !this.status || !(this.status === 'invalid')
           }">
           <div class='shop__emoji'>💗</div>
           <div class='shop__description'>{{{types[1].amount}}} лайков</div>
@@ -262,7 +261,7 @@ Vue.component('money-spender', {
         </div>
         <div class='shop__item' v-on:click='selectType(2)' v-bind:class="{
             'shop__item--selected': this.selectedType === 2,
-            'shop__item--disabled': !this.status || !this.status === 'invalid'
+            'shop__item--disabled': !this.status || !(this.status === 'invalid')
           }">
           <div class='shop__emoji'>💎</div>
           <div class='shop__description'>{{{types[2].amount}}} лайков</div>
@@ -299,6 +298,7 @@ Vue.component('money-spender', {
         })
       }).then(res => res.json())
         .then(res => {
+          console.log(res)
           const { type } = res
           if (!type || type === 'undefined') {
             this.status = 'invalid'

@@ -625,6 +625,14 @@ a:hover {
   margin-top: .5rem;
 }
 
+.shop__input--valid {
+  border-color: var(--green-color);
+}
+
+.shop__input--invalid {
+  border-color: var(--red-color);
+}
+
 .shop__emoji {
   font-size: 3rem;
   text-align: center;
