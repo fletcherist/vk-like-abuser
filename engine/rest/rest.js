@@ -60,6 +60,7 @@ app.post('/payments/create', async (req, res) => {
 
 app.get(`/payments/confirm/${VK_LIKE_ABUSER_PAYMENT_CONFIRMATION_TOKEN}/:paymentTaskId`, async (req, res) => {
   const paymentTaskId = req.params.paymentTaskId
+  console.log('CONFIRMATION REQUESTED SUCCESSFULLY', paymentTaskId)
   doPaymentTask(paymentTaskId)
 
   return res.send({
