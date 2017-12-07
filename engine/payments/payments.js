@@ -206,14 +206,15 @@ class PaymentTask {
   }
 
   async pushRealtimeLike(objectUser, targetUser, item) {
+    const DEFAULT_PHOTO_100 = 'http://vk.com/images/camera_a.gif'
     await db.ref(`${this.path}/realtime_likes`).push({
       object: {
-        photo_100: objectUser.photo_100,
+        photo_100: objectUser.photo_100 || DEFAULT_PHOTO_100,
         id: objectUser.id
       },
       target: {
-        photo_100: targetUser.photo_100,
-        id: targetUser.id
+        photo_100: targetUser ? targetUser.photo_100 : DEFAULT_PHOTO_100,
+        id: targetUser ? targetUser.id : 0
       },
       item: item
     })
