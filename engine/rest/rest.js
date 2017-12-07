@@ -9,7 +9,7 @@ const {
 
 app.use(bodyParser.json())
 
-const PORT = 443
+const PORT = 80
 server.listen(PORT, () => console.log(`Server is started on port ${PORT}`))
 
 app.get('/', (req, res) => {
