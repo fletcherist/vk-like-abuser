@@ -9,7 +9,8 @@ const {
 
 app.use(bodyParser.json())
 
-server.listen(8080, () => console.log('Server is started'))
+const PORT = 443
+server.listen(PORT, () => console.log(`Server is started on port ${PORT}`))
 
 app.get('/', (req, res) => {
   res.send('Hello from VK Like Abuser API.')
