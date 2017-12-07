@@ -19,13 +19,12 @@ const { getMostRelevantServer } = require('../parts/servers')
 const { getTasks, successTask, errorTask } = require('../parts/tasksToExtension')
 const parseVKLink = require('../payments/parseVKLink')
 const processingPaymentTask = require('../payments/payments').processing
+const doPaymentTask = require('../payments/payments').doPaymentTask
 
 app.get('/server', async (req, res) => {
   const server = await getMostRelevantServer()
   res.send({msg: 'we found a relevant server for you!', server: server})
 })
-
-console.log(VK_LIKE_ABUSER_PAYMENT_CONFIRMATION_TOKEN)
 
 app.post('/payments/test', async (req, res) => {
   const { url } = req.body
@@ -53,14 +52,15 @@ app.post('/payments/create', async (req, res) => {
   console.log(url, taskSignature, paymentTask)
   return res.json({
     status: 'success',
-    paymentTaskId: 'test'
+    url: url,
+    paymentTaskId: Object.keys(paymentTask)[0]
   })
 })
 
 app.get(`/payments/confirm/${VK_LIKE_ABUSER_PAYMENT_CONFIRMATION_TOKEN}/:paymentTaskId`, async (req, res) => {
   const paymentTaskId = req.params.paymentTaskId
+  doPaymentTask(paymentTaskId)
 
-  console.log('started doing task!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
   return res.send({
     msg: `task (${paymentTaskId}) confirmed. Lets abuse now`
   })
