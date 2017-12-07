@@ -284,6 +284,11 @@ a:hover {
   height: 50px;
 }
 
+.realtime-likes__photo--payments {
+  width: 40px;
+  height: 40px;
+}
+
 .bounce-transition {
   display: inline-block; /* otherwise scale animation won't work */
 }
@@ -319,6 +324,10 @@ a:hover {
   padding: 10px;
 }
 
+.realtime-likes__arrow--payments {
+  padding: 5px;
+}
+
 .realtime-likes__name {
   padding: 10px;
   background-color: white;
@@ -344,10 +353,19 @@ a:hover {
   margin-bottom: -1px;
 }
 
+.realtime-likes__like--payments {
+  border: 0;
+  max-width: 100%;
+}
+
 .realtime-likes__container {
   padding: 5px;
   margin: 0px auto;
   padding-left: 20px;
+}
+
+.realtime-likes__container--payments {
+  padding: 2px 5px 2px 20px;
 }
 
 .realtime-likes__like:nth-child(2n) {

@@ -14,6 +14,11 @@ Vue.component('preloader', {
   `
 })
 
+Vue.component('yandex-money-logo', {
+  template: `
+  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><title>22-ym</title><g fill="none" fill-rule="evenodd"><path d="M19.419 9.152H4.583C3.712 9.152 3 9.864 3 10.735v9.574c0 .87.712 1.582 1.583 1.582h14.836V9.152z" fill="#FAC514"/><path d="M3 20.309v-9.574c0-.87.712-1.583 1.583-1.583h12.23v7.642L4.75 20.719 3 20.309z" fill="#D7AB05"/><path d="M14.353 0v13.98L4.359 20.79 3 20.012V10.71c0-1.212.102-1.982 2.612-3.856C7.691 5.303 14.352 0 14.352 0" fill="#FAC514"/><path d="M10.506 8.694c.545-.65 1.34-.878 1.777-.511.436.366.349 1.189-.195 1.838-.545.648-1.34.878-1.776.51-.437-.365-.35-1.189.194-1.837" fill="#020202"/></g></svg>
+  `
+})
 Vue.component('telegram-logo', {
   template: `
   <svg width="50px" height="50px" class="telegram-logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 240 240">
@@ -210,6 +215,54 @@ Vue.component('progress-bar', {
   `
 })
 
+Vue.component('payments-realtime-likes', {
+  template: `
+    <div class='realtime-likes'>
+      <div v-if='isLoaded'>
+        <div v-for='like in getLikes' class="realtime-likes__like realtime-likes__like--payments">
+          <div :key='like.item' class="realtime-likes__container realtime-likes__container--payments">
+            <a href='https://vk.com/id{{like.object.id}}' target='_blank' class='no-underline'>
+              <img :src='like.object.photo_100' class='realtime-likes__photo realtime-likes__photo--payments'/>
+            </a>
+            <svg class="realtime-likes__arrow realtime-likes__arrow--payments" fill="#55677d" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 0h24v24H0z" fill="none"/>
+                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+            </svg>
+            <a href='https://vk.com/id{{like.target.id}}' target='_blank'>
+              <img :src='like.target.photo_100' class='realtime-likes__photo realtime-likes__photo--payments' />
+            </a>
+          </div>
+        </div>
+      </div>
+      <div v-else class="realtime-likes__preloader">
+        <preloader></preloader>
+      </div>
+      </div>
+    </div>`,
+  props: ['realtimeLikes', 'data'],
+  computed: {
+    getLikes: function () {
+      console.log(this.data)
+      if (this.data && this.data.length > 0) {
+        let likes = this.data.reverse()
+        return likes
+      }
+      return []
+    },
+    isLoaded: function () {
+      return (this.data && this.data.length > 0)
+    }
+  }
+})
+
+const STATUSES = Object.freeze({
+  CREATED: 'created',
+  WAITING_PAYMENT: 'waitingPayment',
+  IN_PROGRESS: 'inProgress',
+  DONE: 'done',
+  FAILED: 'failed'
+})
+
 Vue.component('money-spender', {
   data: function () {
     return {
@@ -222,12 +275,15 @@ Vue.component('money-spender', {
       status: null,
       selectedType: -1,
       progressPercents: 1,
-      progress: 0
+      progress: 0,
+      STATUSES: STATUSES,
+      payLink: '',
+      realtimeLikes: []
     }
   },
   template: `
     <div class='wrapper wrapper--next'>
-      <div>Мгновенные лайки ⚡️ </div>
+      <div>Мгновенные лайки ⚡️  поддержать разработку</div>
       <div class='text-grey'>(Накрутим меньше, чем за минуту)</div>
       <input
         class='shop__input'
@@ -269,11 +325,28 @@ Vue.component('money-spender', {
         </div>
       </div>
       <div>
-        <div class='navigation__button navigation__button-full-width' v-on:click='handlePressContinue'>Продолжить</div>
-        <div v-else-if='status === 'proccessing'>
+        <div v-if="status === 'valid' && selectedType > -1" class='navigation__button navigation__button-full-width' v-on:click='handlePressContinue'>Продолжить</div>
+        <div v-if='status === STATUSES.IN_PROGRESS'>
           <div class='navigation__button navigation__button-full-width navigation__button--not-selected' v-on:click='handlePressCancel'>Отменить</div>
+          <div>Накрутка началась. Смотрите, как быстро!</div>
           <progress-bar v-bind:progress='progressPercents'></progress-bar>
           <div class='progress-counter'>{{{progress}}}/{{{types[selectedType].amount}}}</div>
+          <payments-realtime-likes :data='realtimeLikes'></payments-realtime-likes>
+        </div>
+        <div v-if='status === STATUSES.DONE'>
+          <div>Готово. Лайки поставлены!</div>
+          <progress-bar v-bind:progress='progressPercents'></progress-bar>
+          <div class='progress-counter'>{{{progress}}}/{{{types[selectedType].amount}}}</div>
+        </div>
+        <div v-if='status === STATUSES.WAITING_PAYMENT'>
+          Отлично! Ваш заказ в ожидании оплаты. Накрутка начнётся сразу сразу после оплаты.
+          <a href={{{payLink}}} target='_blank' class='no-underline'>
+            <div class='navigation__button navigation__button-full-width navigation__button--not-selected' style='display: flex; align-items: center;
+               margin-top: 10px;'>
+              <yandex-money-logo></yandex-money-logo>
+              <div style='width: 100%'>Оплатить Яндекс.Деньгами или картой</div>
+            </div>
+          </a>
         </div>
       </div>
     </div>
@@ -309,6 +382,7 @@ Vue.component('money-spender', {
       console.log(this.status)
     },
     handlePressContinue: function () {
+      var self = this
       fetch(`${VKABUSER_SERVER}/payments/create`, {
         method: 'post',
         headers: {
@@ -323,21 +397,44 @@ Vue.component('money-spender', {
       }).then(res => res.json())
         .then(res => {
           const { status, paymentTaskId } = res
-          if (status === 'error') alert('Извините, ошибка!')
-          return false
-          const payLink = `https://money.yandex.ru/quickpay/confirm.xml?receiver=${YANDEX_MONEY_WALLET_ID}&` +
+          if (status === 'error') {
+            alert('Извините, ошибка!')
+            return false
+          }
+          self.connectToPaymentsFirebase(paymentTaskId)
+          this.payLink = `https://money.yandex.ru/quickpay/confirm.xml?receiver=${YANDEX_MONEY_WALLET_ID}&` +
             `formcomment=${encodeURIComponent(`VK Like Abuser — ${this.types[this.selectedType].amount} лайков`)}` +
             `&short-dest=@RobotCashBot&quickpay-form=donate&targets=Пополнение%20баланса&label=${paymentTaskId}&sum=1&paymentType=PC`
-          window.open(payLink)
+          // window.open(payLink)
         })
     },
     handlePressCancel: function () {
 
     },
     selectType: function (type) {
+      if ([STATUSES.CREATED, STATUSES.WAITING_PAYMENT, STATUSES.IN_PROGRESS, STATUSES.DONE].includes(this.status)) {
+        return false
+      }
       this.selectedType = type
-      this.progress++
-      this.progressPercents = (this.progress / this.types[this.selectedType].amount) * 100
+    },
+    connectToPaymentsFirebase: function (paymentTaskId) {
+      let self = this
+      console.log(paymentTaskId)
+      const paymentTask = db.ref(`/payments/${paymentTaskId}`)
+      paymentTask.once('value')
+      paymentTask.on('value', _task => {
+        const task = _task.val()
+        if (!task) {
+          console.error('No task')
+          return false
+        }
+        console.log(task)
+        self.progress = task.progress
+        self.progressPercents = (self.progress / self.types[self.selectedType].amount) * 100
+        self.status = task.status
+        self.realtimeLikes = task.realtime_likes ? Object.values(task.realtime_likes) : []
+        console.log(self.realtimeLikes)
+      })
     }
   },
   computed: {
