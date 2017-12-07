@@ -1,6 +1,6 @@
 const APP_VERSION = '0.4.0'
 // const ENV = 'debug'
-const VKABUSER_SERVER = 'https://vkabuser.fletcherist.com:8080'
+const VKABUSER_SERVER = 'https://vkabuser.fletcherist.com'
 // const VKABUSER_SERVER = 'http://localhost:8080'
 const TELEGRAM_CHANNEL = 'https://t.me/joinchat/AAAAAEN_IDZdpjLdsWIaDg'
 const YANDEX_MONEY_WALLET_ID = '410014627089651'
@@ -349,6 +349,14 @@ Vue.component('money-spender', {
           </a>
         </div>
       </div>
+      <div class="help__right">
+        <span class="text-grey">
+          по всем вопросам пишите
+          <a href="https://vk.com/im?media=&sel=96170043" target="_blank">
+            сюда
+          </a>
+        </span>
+      </div>
     </div>
   `,
   methods: {
@@ -401,10 +409,11 @@ Vue.component('money-spender', {
             alert('Извините, ошибка!')
             return false
           }
+          const { amount, price } = this.types[this.selectedType]
           self.connectToPaymentsFirebase(paymentTaskId)
           this.payLink = `https://money.yandex.ru/quickpay/confirm.xml?receiver=${YANDEX_MONEY_WALLET_ID}&` +
-            `formcomment=${encodeURIComponent(`VK Like Abuser — ${this.types[this.selectedType].amount} лайков`)}` +
-            `&short-dest=@RobotCashBot&quickpay-form=donate&targets=Пополнение%20баланса&label=${paymentTaskId}&sum=1&paymentType=PC`
+            `formcomment=${encodeURIComponent(`VK Like Abuser — ${amount} лайков`)}` +
+            `&short-dest=@VkAbuser&quickpay-form=donate&targets=Пополнение%20баланса&label=${paymentTaskId}&sum=${price}&paymentType=PC`
           // window.open(payLink)
         })
     },

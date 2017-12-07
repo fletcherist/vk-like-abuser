@@ -68,7 +68,7 @@ async function doPaymentTask(paymentTaskId) {
   await task.setStatus(STATUSES.IN_PROGRESS)
   await task.setTimestamp(STATUSES.IN_PROGRESS)
 
-  let needed = TASK_SIGNATURES[taskSignature].amount || 50
+  let needed = TASK_SIGNATURES[taskSignature].amount + 20 || 50
   let done = 0
   let currentUserIndex = 0
 
