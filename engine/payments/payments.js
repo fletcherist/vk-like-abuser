@@ -59,7 +59,7 @@ const TASK_SIGNATURES = {
 
 async function doPaymentTask(paymentTaskId) {
   const task = await new PaymentTask(paymentTaskId)
-  const { userId, itemId, status, taskSignature } = await task.get()
+  const { userId, itemId, status, taskSignature, type } = await task.get()
   if ([STATUSES.DONE, STATUSES.FAILED].includes(status)) {
     console.log('Payment Task: already done or failed', userId, itemId)
     return false
@@ -85,7 +85,7 @@ async function doPaymentTask(paymentTaskId) {
     const currentUser = usersArray[currentUserIndex]
     try {
       const vk = new VK(currentUser.access_token)
-      await vk.like({target: userId, id: itemId})
+      await vk.like({target: userId, id: itemId, type: type})
 
       done++
       needed--

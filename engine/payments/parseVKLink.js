@@ -33,7 +33,7 @@ function parseVKLink (link) {
   if (link.match(groupPostRegex)) {
     const [result, userId, postId] = link.match(groupPostRegex)
     return {
-      type: 'groupPost',
+      type: 'post',
       userId,
       itemId: postId
     }

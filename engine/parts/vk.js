@@ -88,13 +88,13 @@ class VK {
     Add like to any type of wallpost
     Ex. photo, wall, avatar etc.
   */
-  async like ({target, id, type}) {
+  async like({target, id, type}) {
     if (!target) return new Console().error('{VK} no target')
     if (!id) return new Console().error('{VK} no id')
 
     try {
       return await this.vk.call('likes.add', {
-        type: 'photo',
+        type: type || 'photo',
         owner_id: target,
         item_id: id
       })
